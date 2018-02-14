@@ -10,9 +10,15 @@ namespace WpfHandGazeDistance.Models
     /// </summary>
     public class BgrImage
     {
+        private Image<Bgr, Byte> _image;
+
         #region Public Properties
 
-        public Image<Bgr, Byte> Image { get; set; }
+        public Image<Bgr, Byte> Image
+        {
+            get => _image;
+            set => _image = value;
+        }
 
         #endregion
 

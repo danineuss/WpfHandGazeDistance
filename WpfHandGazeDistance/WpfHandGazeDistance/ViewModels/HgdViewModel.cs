@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using WpfHandGazeDistance.Models;
 using WpfHandGazeDistance.ViewModels.Base;
 
 namespace WpfHandGazeDistance.ViewModels
 {
     public class HgdViewModel : BaseViewModel
     {
+        private Video _video;
 
+        private EyeTrackingData _eyeTrackingData;
     }
 }
