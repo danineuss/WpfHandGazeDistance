@@ -1,17 +1,31 @@
 ﻿using System.ComponentModel;
-using PropertyChanged;
+using System.Runtime.CompilerServices;
 
 namespace WpfHandGazeDistance.ViewModels.Base
 {
     /// <summary>
     /// A base view model that fires Property Changed events as needed
     /// </summary>
-    [AddINotifyPropertyChangedInterface]
-    public class BaseViewModel : INotifyPropertyChanged
+    public class BaseViewModel : INotifyPropertyChanged, INotifyPropertyChanging
     {
-        /// <summary>
-        /// The event that is fired when any child property changes its value
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged = (sender, e) => { };
+        public event PropertyChangingEventHandler PropertyChanging;
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void ChangeAndNotify<T>(T value, ref T property, [CallerMemberName] string propertyName = null)
+        {
+            OnPropertyChanging(propertyName);
+            property = value;
+            OnPropertyChanged(propertyName);
+        }
+
+        protected virtual void OnPropertyChanging(string propertyName)
+        {
+            PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
+        }
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }
