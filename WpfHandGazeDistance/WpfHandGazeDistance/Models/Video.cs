@@ -1,6 +1,5 @@
 ﻿using System.Windows.Media.Imaging;
 using Emgu.CV;
-using Emgu.CV.CvEnum;
 
 namespace WpfHandGazeDistance.Models
 {
@@ -12,26 +11,7 @@ namespace WpfHandGazeDistance.Models
     {
         #region Private Properties
 
-        private string _videoSource;
-
         private VideoCapture _capture;
-
-        #endregion
-
-        #region Public Properties
-
-        /// <summary>
-        /// Automatically creates a new VideoCapture when the video source is set.
-        /// </summary>
-        public string VideoSource
-        {
-            get => _videoSource;
-            set
-            {
-                _videoSource = value;
-                _capture = new VideoCapture(value);
-            }
-        }
 
         #endregion
 
@@ -40,40 +20,25 @@ namespace WpfHandGazeDistance.Models
         /// <summary>
         /// The constructor simply calls the VideoSource property setter which instantiates a new video capture.
         /// </summary>
-        /// <param name="videoSource"></param>
-        public Video(string videoSource = null)
+        /// <param name="videoPath"></param>
+        public Video(string videoPath = null)
         {
-            if (videoSource != null)
-            {
-                VideoSource = videoSource;
-            }
+            if (videoPath == null) return;
+
+            _capture = new VideoCapture(videoPath);
         }
 
         #endregion
 
         /// <summary>
-        /// Queries the first image of the video and returns it as a Mat.
-        /// </summary>
-        /// <returns>Mat containing the first frame.</returns>
-        public Mat GetMat()
-        {
-            Mat frame = _capture.QueryFrame();
-            return frame;
-        }
-
-        /// <summary>
         /// Queries the first image of the video and returns it as a BitmapSource which can be displayed
         /// in the View.
         /// </summary>
-        /// <returns>BitmapSource containing the first frame.</returns>
-        public BitmapSource GetBitmap()
+        /// <returns></returns>
+        public BitmapSource GetFrame()
         {
-            return BitMapConverter.ToBitmapSource(GetMat());
-        }
-
-        public double NumberOfFrames()
-        {
-            return _capture.GetCaptureProperty(CapProp.FrameCount);
+            Mat frame = _capture.QueryFrame();
+            return BitMapConverter.ToBitmapSource(frame);
         }
     }
 }

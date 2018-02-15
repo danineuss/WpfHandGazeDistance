@@ -5,8 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfHandGazeDistance"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="350" Width="734.213">
     <Grid>
-        
+        <Button DataContext="{Binding BeGazeViewModel}" Command="{Binding LoadCommand}" Content="Load BeGaze" HorizontalAlignment="Left" Margin="62,81,0,0" VerticalAlignment="Top" Width="95"/>
+        <TextBox DataContext="{Binding BeGazeViewModel}" HorizontalAlignment="Left" Height="23" Margin="194,80,0,0" TextWrapping="Wrap" Text="{Binding BeGazePath}" VerticalAlignment="Top" Width="483"/>
+
+        <Button DataContext="{Binding VideoViewModel}" Command="{Binding LoadCommand}" Content="Load Video" HorizontalAlignment="Left" Margin="62,121,0,0" VerticalAlignment="Top" Width="95"/>
+        <TextBox DataContext="{Binding VideoViewModel}" HorizontalAlignment="Left" Height="23" Margin="194,120,0,0" TextWrapping="Wrap" Text="{Binding VideoPath}" VerticalAlignment="Top" Width="483"/>
     </Grid>
 </Window>

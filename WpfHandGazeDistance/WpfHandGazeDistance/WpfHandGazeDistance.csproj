@@ -68,13 +68,15 @@
     </ApplicationDefinition>
     <Compile Include="Models\BgrImage.cs" />
     <Compile Include="Models\BitMapConverter.cs" />
-    <Compile Include="Models\EyeTrackingData.cs" />
+    <Compile Include="Models\BeGazeData.cs" />
     <Compile Include="Models\HgdData.cs" />
     <Compile Include="Models\Image.cs" />
     <Compile Include="Models\Video.cs" />
     <Compile Include="ViewModels\Base\BaseViewModel.cs" />
     <Compile Include="ViewModels\Base\RelayCommand.cs" />
-    <Compile Include="ViewModels\HgdViewModel.cs" />
+    <Compile Include="ViewModels\BeGazeViewModel.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\VideoViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -11,7 +11,7 @@ namespace WpfHandGazeDistance
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = new HgdViewModel();
+            this.DataContext = new MainViewModel();
         }
     }
 }

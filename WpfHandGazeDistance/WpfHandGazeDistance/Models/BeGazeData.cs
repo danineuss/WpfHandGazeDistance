@@ -2,11 +2,9 @@
 
 namespace WpfHandGazeDistance.Models
 {
-    public class EyeTrackingData
+    public class BeGazeData
     {
         #region Private Properties
-
-        private string _filePath;
 
         private Dictionary<int, float> _recordingTime;
 
@@ -26,10 +24,8 @@ namespace WpfHandGazeDistance.Models
 
         #region Constructor
 
-        public EyeTrackingData(string filePath)
+        public BeGazeData(string filePath)
         {
-            _filePath = filePath;
-
             _recordingTime = new Dictionary<int, float>();
             _xGaze = new Dictionary<int, float>();
             _yGaze = new Dictionary<int, float>();
@@ -52,7 +48,7 @@ namespace WpfHandGazeDistance.Models
 
         #region Private Members
 
-        private void LoadBeGazeFile()
+        private void LoadBeGazeFile(string beGazePath)
         {
 
         }
