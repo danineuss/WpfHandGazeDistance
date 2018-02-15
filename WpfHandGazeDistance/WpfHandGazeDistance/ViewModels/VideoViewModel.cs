@@ -21,6 +21,8 @@ namespace WpfHandGazeDistance.ViewModels
             }
         }
 
+        public bool ReadyToAnalyse => _video != null;
+
         public ICommand LoadCommand => new RelayCommand(LoadVideo, true);
 
         private void LoadVideo()

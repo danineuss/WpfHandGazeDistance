@@ -21,6 +21,8 @@ namespace WpfHandGazeDistance.ViewModels
             }
         }
 
+        public bool ReadyToAnalyse => _beGazeData != null;
+
         public ICommand LoadCommand => new RelayCommand(LoadBeGaze, true);
 
         private void LoadBeGaze()

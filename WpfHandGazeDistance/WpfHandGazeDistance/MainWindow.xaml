@@ -12,5 +12,7 @@
 
         <Button DataContext="{Binding VideoViewModel}" Command="{Binding LoadCommand}" Content="Load Video" HorizontalAlignment="Left" Margin="62,121,0,0" VerticalAlignment="Top" Width="95"/>
         <TextBox DataContext="{Binding VideoViewModel}" HorizontalAlignment="Left" Height="23" Margin="194,120,0,0" TextWrapping="Wrap" Text="{Binding VideoPath}" VerticalAlignment="Top" Width="483"/>
+        
+        <Button Command="{Binding AnalyseCommand}" Content="Analyse Data" HorizontalAlignment="Left" Margin="62,192,0,0" VerticalAlignment="Top" Width="95"/>
     </Grid>
 </Window>
