@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Data;
+using System.Data.OleDb;
 
 namespace WpfHandGazeDistance.Models
 {
@@ -48,9 +50,17 @@ namespace WpfHandGazeDistance.Models
 
         #region Private Members
 
-        private void LoadBeGazeFile(string beGazePath)
+        public void LoadBeGazeFile(string beGazePath)
         {
-
+            string HDR = "No";
+            string oleString;
+            if (beGazePath.Substring(beGazePath.LastIndexOf('.')).ToLower() == ".xlsx")
+                oleString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + beGazePath + ";Extended Properties=\"Excel 12.0;HDR=" + HDR + ";IMEX=0\"";
+            else
+                oleString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + beGazePath + ";Extended Properties=\"Excel 8.0;HDR=" + HDR + ";IMEX=0\"";
+            OleDbConnection oledbConnection = new OleDbConnection(oleString);
+            oledbConnection.Open();
+            DataTable dataTable = oledbConnection.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, new object[] { null, null, null, "TABLE" });
         }
 
         #endregion

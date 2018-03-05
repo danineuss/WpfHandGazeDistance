@@ -31,6 +31,7 @@ namespace WpfHandGazeDistance.ViewModels
             if (openFileDialog.ShowDialog() == true)
             {
                 BeGazePath = openFileDialog.FileName;
+                _beGazeData.LoadBeGazeFile(BeGazePath);
             }
         }
     }
