@@ -5,14 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfHandGazeDistance"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="734.213">
+        Title="MainWindow" Height="700" Width="1000">
     <Grid>
-        <Button DataContext="{Binding BeGazeViewModel}" Command="{Binding LoadCommand}" Content="Load BeGaze" HorizontalAlignment="Left" Margin="62,81,0,0" VerticalAlignment="Top" Width="95"/>
-        <TextBox DataContext="{Binding BeGazeViewModel}" HorizontalAlignment="Left" Height="23" Margin="194,80,0,0" TextWrapping="Wrap" Text="{Binding BeGazePath}" VerticalAlignment="Top" Width="483"/>
+        <Button DataContext="{Binding BeGazeViewModel}" Command="{Binding LoadCommand}" Content="Load BeGaze" HorizontalAlignment="Left" Margin="55,22,0,0" VerticalAlignment="Top" Width="95"/>
+        <TextBox DataContext="{Binding BeGazeViewModel}" HorizontalAlignment="Left" Height="23" Margin="187,21,0,0" TextWrapping="Wrap" Text="{Binding BeGazePath}" VerticalAlignment="Top" Width="483"/>
 
-        <Button DataContext="{Binding VideoViewModel}" Command="{Binding LoadCommand}" Content="Load Video" HorizontalAlignment="Left" Margin="62,121,0,0" VerticalAlignment="Top" Width="95"/>
-        <TextBox DataContext="{Binding VideoViewModel}" HorizontalAlignment="Left" Height="23" Margin="194,120,0,0" TextWrapping="Wrap" Text="{Binding VideoPath}" VerticalAlignment="Top" Width="483"/>
-        
-        <Button Command="{Binding AnalyseCommand}" Content="Analyse Data" HorizontalAlignment="Left" Margin="62,192,0,0" VerticalAlignment="Top" Width="95"/>
+        <Button DataContext="{Binding VideoViewModel}" Command="{Binding LoadCommand}" Content="Load Video" HorizontalAlignment="Left" Margin="55,62,0,0" VerticalAlignment="Top" Width="95"/>
+        <TextBox DataContext="{Binding VideoViewModel}" HorizontalAlignment="Left" Height="23" Margin="187,61,0,0" TextWrapping="Wrap" Text="{Binding VideoPath}" VerticalAlignment="Top" Width="483"/>
+
+        <Button Command="{Binding AnalyseCommand}" Content="Analyse Data" HorizontalAlignment="Left" Margin="55,98,0,0" VerticalAlignment="Top" Width="95"/>
+
+
+        <Image DataContext="{Binding VideoViewModel}" Source="{Binding InputImage}"  HorizontalAlignment="Left" Height="398" Margin="55,237,0,0" VerticalAlignment="Top" Width="425"/>
+        <Image DataContext="{Binding VideoViewModel}" Source="{Binding OutputImage}" HorizontalAlignment="Left" Height="398" Margin="513,237,0,0" VerticalAlignment="Top" Width="457"/>
+        <Button DataContext="{Binding VideoViewModel}" Command="{Binding LoadImageCommand}" Content="Load Image" HorizontalAlignment="Left" Margin="55,187,0,0" VerticalAlignment="Top" Width="95"/>
+        <Button DataContext="{Binding VideoViewModel}" Command="{Binding AnalyseCommand}" Content="Analyse Image" HorizontalAlignment="Left" Margin="513,187,0,0" VerticalAlignment="Top" Width="95" RenderTransformOrigin="2.558,0.636"/>
     </Grid>
 </Window>

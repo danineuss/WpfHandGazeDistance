@@ -7,9 +7,15 @@ namespace WpfHandGazeDistance.ViewModels
 {
     public class BeGazeViewModel : BaseViewModel
     {
+        #region Private Members
+
         private string _beGazePath;
 
         private BeGazeData _beGazeData;
+
+        #endregion
+
+        #region Public Properties
 
         public string BeGazePath
         {
@@ -21,6 +27,8 @@ namespace WpfHandGazeDistance.ViewModels
             }
         }
 
+        #endregion
+
         public bool ReadyToAnalyse => _beGazeData != null;
 
         public ICommand LoadCommand => new RelayCommand(LoadBeGaze, true);
@@ -28,10 +36,11 @@ namespace WpfHandGazeDistance.ViewModels
         private void LoadBeGaze()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
+
             if (openFileDialog.ShowDialog() == true)
             {
                 BeGazePath = openFileDialog.FileName;
-                _beGazeData.LoadBeGazeFile(BeGazePath);
+                _beGazeData = new BeGazeData(BeGazePath);
             }
         }
     }

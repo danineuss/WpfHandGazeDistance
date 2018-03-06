@@ -1,5 +1,7 @@
-﻿using System.Windows.Media.Imaging;
+﻿using System;
+using System.Windows.Media.Imaging;
 using Emgu.CV;
+using Emgu.CV.CvEnum;
 
 namespace WpfHandGazeDistance.Models
 {
@@ -30,15 +32,29 @@ namespace WpfHandGazeDistance.Models
 
         #endregion
 
+        #region Public Members
+
+        public Mat GetMatFrame()
+        {
+            return _capture.QueryFrame();
+        }
+
         /// <summary>
         /// Queries the first image of the video and returns it as a BitmapSource which can be displayed
         /// in the View.
         /// </summary>
         /// <returns></returns>
-        public BitmapSource GetFrame()
+        public BitmapSource GetBitmapFrame()
         {
             Mat frame = _capture.QueryFrame();
             return BitMapConverter.ToBitmapSource(frame);
         }
+
+        public int NumberOfFrames()
+        {
+            return (int)Math.Floor(_capture.GetCaptureProperty(CapProp.FrameCount));
+        }
+
+        #endregion
     }
 }

@@ -6,15 +6,13 @@ namespace WpfHandGazeDistance.Models
     {
         #region Private Properties
 
-        private Dictionary<int, float> _recordingTime;
-
-        private Dictionary<int, float> _hgdRaw;
+        private List<float> _recordingTime;
 
         #endregion
 
         #region Public Properties
 
-
+        public List<float> RawData { get; set; }
 
         #endregion
 
@@ -22,8 +20,8 @@ namespace WpfHandGazeDistance.Models
 
         public HgdData()
         {
-            _recordingTime = new Dictionary<int, float>();
-            _hgdRaw = new Dictionary<int, float>();
+            _recordingTime = new List<float>();
+            RawData = new List<float>();
         }
 
         #endregion

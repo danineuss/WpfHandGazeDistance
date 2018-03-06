@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Data;
-using System.Data.OleDb;
 using System.IO;
 using System.Linq;
-using System.Text;
 using OfficeOpenXml;
 
 namespace WpfHandGazeDistance.Models
@@ -12,19 +9,17 @@ namespace WpfHandGazeDistance.Models
     {
         #region Private Properties
 
-        private List<float> _recordingTime;
-
-        private List<float> _xGaze;
-
-        private List<float> _yGaze;
-
-        private Dictionary<string, List<float>> _columnsBeGaze;
+        private readonly Dictionary<string, List<float>> _columnsBeGaze;
 
         #endregion
 
         #region Public Properties
 
+        public List<float> RecordingTime { get; }
 
+        public List<float> XGaze { get; }
+
+        public List<float> YGaze { get; }
 
         #endregion
 
@@ -32,53 +27,52 @@ namespace WpfHandGazeDistance.Models
 
         public BeGazeData(string filePath)
         {
-            _recordingTime = new List<float>();
-            _xGaze = new List<float>();
-            _yGaze = new List<float>();
+            RecordingTime = new List<float>();
+            XGaze = new List<float>();
+            YGaze = new List<float>();
 
             _columnsBeGaze = new Dictionary<string, List<float>>()
             {
-                { "RecordingTime [ms]", _recordingTime },
-                { "Point of Regard Binocular X [px]", _xGaze },
-                { "Point of Regard Binocular Y [px]", _yGaze }
+                { "RecordingTime [ms]", RecordingTime },
+                { "Point of Regard Binocular X [px]", XGaze },
+                { "Point of Regard Binocular Y [px]", YGaze }
             };
+
+            LoadBeGazeFile(filePath);
         }
 
         #endregion
 
         #region Public Members
 
-
-
         #endregion
 
         #region Private Members
-
+        
         /// <summary>
         /// This loads a .xlsx file and fills the values of specific columns, which can be found in <see cref="_columnsBeGaze"/>.
         /// The top row contains the name of the column, the rest are values.
         /// </summary>
         /// <param name="beGazePath">The windows path to the BeGaze data file. Is selected from the GUI.</param>
-        public void LoadBeGazeFile(string beGazePath)
+        private void LoadBeGazeFile(string beGazePath)
         {
-            using (ExcelPackage excelPackage = new ExcelPackage(new FileInfo(beGazePath)))
+            using (var excelPackage = new ExcelPackage(new FileInfo(beGazePath)))
             {
                 var myWorksheet = excelPackage.Workbook.Worksheets.First();
                 var totalRows = myWorksheet.Dimension.End.Row;
                 var totalColumns = myWorksheet.Dimension.End.Column;
 
-                for (int i = 1; i <= totalColumns; i++)
+                for (var i = 1; i <= totalColumns; i++)
                 {
-                    string currentKey = myWorksheet.GetValue<string>(1, i);
+                    var currentKey = myWorksheet.GetValue<string>(1, i);
 
-                    if (_columnsBeGaze.ContainsKey(currentKey))
+                    if (!_columnsBeGaze.ContainsKey(currentKey)) continue;
+
+                    for (var j = 2; j <= totalRows; j++)
                     {
-                        for (int j = 2; j <= totalRows; j++)
-                        {
-                            _columnsBeGaze[currentKey].Add(myWorksheet.GetValue<float>(j, i));
-                        }
+                        _columnsBeGaze[currentKey].Add(myWorksheet.GetValue<float>(j, i));
                     }
-                }                
+                }
             }
         }
 
