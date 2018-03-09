@@ -52,18 +52,29 @@ namespace WpfHandGazeDistance.Helpers
 
         private Image<Gray, byte> ColorSegment(Image<Bgr, byte> inputImage)
         {
-            throw new NotImplementedException();
-
             var minimumSegment = MinimumSegment(inputImage);
             var hsvSegment = HsvSegment(inputImage);
+
             Image<Gray, byte> segmentedImage = new Image<Gray, byte>(inputImage.Size);
             CvInvoke.BitwiseAnd(minimumSegment, hsvSegment, segmentedImage);
+
+            return segmentedImage;
         }
 
         private Image<Gray, byte> MinimumSegment(Image<Bgr, byte> inputImage)
         {
-            Image<Gray, byte> outputImage = inputImage.Copy().Convert<Gray, byte>();
-            VectorOfMat channels = SplitChannels(inputImage);
+            Mat deltaOne = new Mat();
+            Mat deltaTwo = new Mat();
+
+            VectorOfMat bgrChannels = new VectorOfMat(3);
+            CvInvoke.Split(inputImage, bgrChannels);
+            CvInvoke.Subtract(bgrChannels[2], bgrChannels[1], deltaOne);
+            CvInvoke.Subtract(bgrChannels[2], bgrChannels[0], deltaTwo);
+
+            Mat mixedMat = new Mat();
+            CvInvoke.Min(deltaOne, deltaTwo, mixedMat);
+            Image<Gray, byte> outputImage = mixedMat.ToImage<Gray, byte>().InRange(new Gray(10), new Gray(200));
+
             return outputImage;
         }
 
@@ -79,8 +90,8 @@ namespace WpfHandGazeDistance.Helpers
 
             Image<Gray, byte> lowerThreshold = hsvImage.InRange(hsvThresholdOne, hsvThresholdTwo);
             Image<Gray, byte> upperThreshold = hsvImage.InRange(hsvThresholdThree, hsvThresholdFour);
-
             CvInvoke.BitwiseOr(lowerThreshold, upperThreshold, outputImage);
+
             return outputImage;
         }
 

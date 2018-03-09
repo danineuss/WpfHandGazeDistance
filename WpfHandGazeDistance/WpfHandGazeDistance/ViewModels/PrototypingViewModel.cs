@@ -56,6 +56,18 @@ namespace WpfHandGazeDistance.ViewModels
             set
             {
                 ChangeAndNotify(value, ref _imageIndex);
+                if (value == 0)
+                {
+                    ColorSegment();
+                }
+                else if (value == 1)
+                {
+                    OutputImage = BitMapConverter.ToBitmapSource(MinimumSegment());
+                }
+                else
+                {
+                    OutputImage = BitMapConverter.ToBitmapSource(HsvSegment());
+                }
             }
         }
 
@@ -65,7 +77,7 @@ namespace WpfHandGazeDistance.ViewModels
 
         public ICommand AnalyseCommand => new RelayCommand(AnalyseImage, true);
 
-        public ICommand HsvSegmentCommand => new RelayCommand(HsvSegment, true);
+        public ICommand SegmentCommand => new RelayCommand(ColorSegment, true);
 
         private void LoadImage()
         {
@@ -89,37 +101,35 @@ namespace WpfHandGazeDistance.ViewModels
 
         private void ColorSegment()
         {
-            //Image<Bgr, byte> inputImage = new Image<Bgr, byte>(ImagePath);
-            //var minimumSegment = MinimumSegment(inputImage);
-            //var hsvSegment = HsvSegment(inputImage);
+            Image<Bgr, byte> inputImage = new Image<Bgr, byte>(ImagePath);
+            var minimumSegment = MinimumSegment();
+            var hsvSegment = HsvSegment();
 
-            //Image<Gray, byte> segmentedImage = new Image<Gray, byte>(inputImage.Size);
-            //CvInvoke.BitwiseAnd(minimumSegment, hsvSegment, segmentedImage);
+            Image<Gray, byte> segmentedImage = new Image<Gray, byte>(inputImage.Size);
+            CvInvoke.BitwiseAnd(minimumSegment, hsvSegment, segmentedImage);
 
-            //OutputImage = BitMapConverter.ToBitmapSource(segmentedImage);
+            OutputImage = BitMapConverter.ToBitmapSource(segmentedImage);
         }
 
-        private Image<Gray, byte> MinimumSegment(Image<Bgr, byte> inputImage)
+        private Image<Gray, byte> MinimumSegment()
         {
-            Image<Gray, byte> outputImage = inputImage.Copy().Convert<Gray, byte>();
-            VectorOfMat channels = new VectorOfMat(3);
-            Mat blueMat = channels[0];
-            Mat greenMat = channels[1];
-            Mat redMat = channels[2];
-
+            Image<Bgr, byte> inputImage = new Image<Bgr, byte>(ImagePath);
             Mat deltaOne = new Mat();
             Mat deltaTwo = new Mat();
-            CvInvoke.Subtract(redMat, greenMat, deltaOne);
-            CvInvoke.Subtract(redMat, blueMat, deltaTwo);
 
-            Mat lowerMat = new Mat();
-            Mat higherMat = new Mat();
-            
-            CvInvoke.Split(inputImage, channels);
+            VectorOfMat bgrChannels = new VectorOfMat(3);
+            CvInvoke.Split(inputImage, bgrChannels);
+            CvInvoke.Subtract(bgrChannels[2], bgrChannels[1], deltaOne);
+            CvInvoke.Subtract(bgrChannels[2], bgrChannels[0], deltaTwo);
+
+            Mat mixedMat = new Mat();
+            CvInvoke.Min(deltaOne, deltaTwo, mixedMat);
+
+            Image<Gray, byte> outputImage = mixedMat.ToImage<Gray, byte>().InRange(new Gray(10), new Gray(200));
             return outputImage;
         }
-        
-        private void HsvSegment()
+
+        private Image<Gray, byte> HsvSegment()
         {
             Image<Hsv, byte> hsvImage = new Image<Hsv, byte>(ImagePath);
             Image<Gray, byte> outputImage = new Image<Gray, byte>(hsvImage.Size);
@@ -133,7 +143,7 @@ namespace WpfHandGazeDistance.ViewModels
             Image<Gray, byte> upperThreshold = hsvImage.InRange(hsvThresholdThree, hsvThresholdFour);
 
             CvInvoke.BitwiseOr(lowerThreshold, upperThreshold, outputImage);
-            OutputImage = BitMapConverter.ToBitmapSource(outputImage);
+            return outputImage;
         }
     }
-}
+};

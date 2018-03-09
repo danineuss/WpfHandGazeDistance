@@ -19,7 +19,7 @@
         <Image DataContext="{Binding PrototypingViewModel}" Source="{Binding InputImage}"  HorizontalAlignment="Left" Height="398" Margin="55,237,0,0" VerticalAlignment="Top" Width="425"/>
         <Image DataContext="{Binding PrototypingViewModel}" Source="{Binding OutputImage}" HorizontalAlignment="Left" Height="398" Margin="513,237,0,0" VerticalAlignment="Top" Width="457"/>
         <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding LoadImageCommand}" Content="Load Image" HorizontalAlignment="Left" Margin="55,187,0,0" VerticalAlignment="Top" Width="95"/>
-        <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding HsvSegmentCommand}" Content="HSV Segment" HorizontalAlignment="Left" Margin="513,187,0,0" VerticalAlignment="Top" Width="95" RenderTransformOrigin="2.558,0.636"/>
+        <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding SegmentCommand}" Content="HSV Segment" HorizontalAlignment="Left" Margin="513,187,0,0" VerticalAlignment="Top" Width="95" RenderTransformOrigin="2.558,0.636"/>
     <Slider DataContext="{Binding PrototypingViewModel}" Minimum="0" Maximum="2" Value="{Binding ImageIndex}" HorizontalAlignment="Left" Margin="831,187,0,0" VerticalAlignment="Top" Height="19" Width="119"/>
   </Grid>
 </Window>
