@@ -40,13 +40,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Emgu.CV.UI">
-      <HintPath>..\..\..\..\..\..\Emgu\Emgu CV 3.3\bin\Emgu.CV.UI.dll</HintPath>
+      <HintPath>C:\Emgu\Emgu CV 3.3\bin\Emgu.CV.UI.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.UI.GL">
-      <HintPath>..\..\..\..\..\..\Emgu\Emgu CV 3.3\bin\Emgu.CV.UI.GL.dll</HintPath>
+      <HintPath>C:\Emgu\Emgu CV 3.3\bin\Emgu.CV.UI.GL.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.World">
-      <HintPath>..\..\..\..\..\..\Emgu\Emgu CV 3.3\bin\Emgu.CV.World.dll</HintPath>
+      <HintPath>C:\Emgu\Emgu CV 3.3\bin\Emgu.CV.World.dll</HintPath>
     </Reference>
     <Reference Include="EPPlus, Version=4.1.1.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
       <HintPath>..\packages\EPPlus.4.1.1\lib\net40\EPPlus.dll</HintPath>
