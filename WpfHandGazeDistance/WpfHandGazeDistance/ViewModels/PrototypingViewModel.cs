@@ -2,12 +2,14 @@
 using System.Windows.Media.Imaging;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using Emgu.CV.Util;
 using Microsoft.Win32;
 using WpfHandGazeDistance.Helpers;
 using WpfHandGazeDistance.Models;
 using WpfHandGazeDistance.ViewModels.Base;
 
 namespace WpfHandGazeDistance.ViewModels
+{
     public class PrototypingViewModel : BaseViewModel
     {
         #region Private Properties
@@ -17,6 +19,8 @@ namespace WpfHandGazeDistance.ViewModels
         private BitmapSource _inputImage;
 
         private BitmapSource _outputImage;
+
+        private int _imageIndex;
 
         #endregion
 
@@ -45,11 +49,19 @@ namespace WpfHandGazeDistance.ViewModels
             set => ChangeAndNotify(value, ref _outputImage);
         }
 
+        public int ImageIndex
+        {
+            get => _imageIndex;
+            set => ChangeAndNotify(value, ref _imageIndex);
+        }
+
         #endregion
 
         public ICommand LoadImageCommand => new RelayCommand(LoadImage, true);
 
         public ICommand AnalyseCommand => new RelayCommand(AnalyseImage, true);
+
+        public ICommand SplitCommand => new RelayCommand(SplitImage, true);
 
         private void LoadImage()
         {
@@ -69,6 +81,17 @@ namespace WpfHandGazeDistance.ViewModels
 
             CvInvoke.DrawContours(blackImage, contours, -1, new MCvScalar(255, 0, 0));
             OutputImage = BitMapConverter.ToBitmapSource(blackImage);
+        }
+
+        private void SplitImage()
+        {
+            Image<Bgr, byte> inputImage = new Image<Bgr, byte>(ImagePath);
+            VectorOfMat channels = new VectorOfMat(3);
+            CvInvoke.Split(inputImage, channels);
+
+            Image<Gray, byte> channel = channels[ImageIndex].ToImage<Gray, byte>();
+
+            OutputImage = BitMapConverter.ToBitmapSource(channel);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace WpfHandGazeDistance.Helpers
 
             for (var i = 0; i < lengthBeGaze; i++)
             {
-                Mat handsImage = FindHands(Video.GetMatFrame());
+                Image<Bgr, byte> handsImage = FindHands(Video.GetImageFrame());
                 Tuple<float, float> gazeCoordinates = new Tuple<float, float>(BeGazeData.XGaze[i], BeGazeData.YGaze[i]);
 
                 float distance = MeasureDistance(handsImage, gazeCoordinates);
@@ -41,7 +41,7 @@ namespace WpfHandGazeDistance.Helpers
             return HgdData;
         }
 
-        private Mat FindHands(Mat inputImage)
+        private Image<Bgr, byte> FindHands(Image<Bgr, byte> inputImage)
         {
             throw new NotImplementedException();
 
@@ -50,9 +50,28 @@ namespace WpfHandGazeDistance.Helpers
 
         }
 
-        private Image<Gray, byte> ColorSegment(Mat inputImage)
+        private Image<Gray, byte> ColorSegment(Image<Bgr, byte> inputImage)
         {
             throw new NotImplementedException();
+
+            var minimumSegment = MinimumSegment(inputImage);
+            var hsvSegment = HsvSegment(inputImage);
+            Image<Gray, byte> segmentedImage = new Image<Gray, byte>(inputImage.Size);
+            CvInvoke.BitwiseAnd(minimumSegment, hsvSegment, segmentedImage);
+        }
+
+        private Image<Gray, byte> MinimumSegment(Image<Bgr, byte> inputImage)
+        {
+            Image<Gray, byte> outputImage = inputImage.Copy().Convert<Gray, byte>();
+            VectorOfMat channels = new VectorOfMat(3);
+            CvInvoke.Split(inputImage, channels);
+            return outputImage;
+        }
+
+        private Image<Gray, byte> HsvSegment(Image<Bgr, byte> inputImage)
+        {
+            Image<Gray, byte> outputImage = inputImage.Copy().Convert<Gray, byte>();
+            return outputImage;
         }
 
         public static VectorOfVectorOfPoint FindContours(Image<Gray, byte> inputImage)
@@ -67,7 +86,7 @@ namespace WpfHandGazeDistance.Helpers
             return contours;
         }
 
-        private float MeasureDistance(Mat handsImage, Tuple<float, float> gazeCoordinates)
+        private float MeasureDistance(Image<Bgr, byte> handsImage, Tuple<float, float> gazeCoordinates)
         {
             throw new NotImplementedException();
         }

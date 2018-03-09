@@ -2,6 +2,7 @@
 using System.Windows.Media.Imaging;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
+using Emgu.CV.Structure;
 
 namespace WpfHandGazeDistance.Models
 {
@@ -37,6 +38,12 @@ namespace WpfHandGazeDistance.Models
         public Mat GetMatFrame()
         {
             return _capture.QueryFrame();
+        }
+
+        public Image<Bgr, byte> GetImageFrame()
+        {
+            Mat frameMat = _capture.QueryFrame();
+            return frameMat.ToImage<Bgr, byte>();
         }
 
         /// <summary>
