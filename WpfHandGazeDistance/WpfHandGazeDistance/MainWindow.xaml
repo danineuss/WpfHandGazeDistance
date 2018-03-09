@@ -13,12 +13,12 @@
         <Button DataContext="{Binding VideoViewModel}" Command="{Binding LoadCommand}" Content="Load Video" HorizontalAlignment="Left" Margin="55,62,0,0" VerticalAlignment="Top" Width="95"/>
         <TextBox DataContext="{Binding VideoViewModel}" HorizontalAlignment="Left" Height="23" Margin="187,61,0,0" TextWrapping="Wrap" Text="{Binding VideoPath}" VerticalAlignment="Top" Width="483"/>
 
-        <Button Command="{Binding AnalyseCommand}" Content="Analyse Data" HorizontalAlignment="Left" Margin="55,98,0,0" VerticalAlignment="Top" Width="95"/>
+        <Button DataContext="{Binding MainViewModel}" Command="{Binding AnalyseCommand}" Content="Analyse Data" HorizontalAlignment="Left" Margin="55,98,0,0" VerticalAlignment="Top" Width="95"/>
 
-
-        <Image DataContext="{Binding VideoViewModel}" Source="{Binding InputImage}"  HorizontalAlignment="Left" Height="398" Margin="55,237,0,0" VerticalAlignment="Top" Width="425"/>
-        <Image DataContext="{Binding VideoViewModel}" Source="{Binding OutputImage}" HorizontalAlignment="Left" Height="398" Margin="513,237,0,0" VerticalAlignment="Top" Width="457"/>
-        <Button DataContext="{Binding VideoViewModel}" Command="{Binding LoadImageCommand}" Content="Load Image" HorizontalAlignment="Left" Margin="55,187,0,0" VerticalAlignment="Top" Width="95"/>
-        <Button DataContext="{Binding VideoViewModel}" Command="{Binding AnalyseCommand}" Content="Analyse Image" HorizontalAlignment="Left" Margin="513,187,0,0" VerticalAlignment="Top" Width="95" RenderTransformOrigin="2.558,0.636"/>
+        <!-- Prototyping Corner starts here -->
+        <Image DataContext="{Binding PrototypingViewModel}" Source="{Binding InputImage}"  HorizontalAlignment="Left" Height="398" Margin="55,237,0,0" VerticalAlignment="Top" Width="425"/>
+        <Image DataContext="{Binding PrototypingViewModel}" Source="{Binding OutputImage}" HorizontalAlignment="Left" Height="398" Margin="513,237,0,0" VerticalAlignment="Top" Width="457"/>
+        <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding LoadImageCommand}" Content="Load Image" HorizontalAlignment="Left" Margin="55,187,0,0" VerticalAlignment="Top" Width="95"/>
+        <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding AnalyseCommand}" Content="Analyse Image" HorizontalAlignment="Left" Margin="513,187,0,0" VerticalAlignment="Top" Width="95" RenderTransformOrigin="2.558,0.636"/>
     </Grid>
 </Window>

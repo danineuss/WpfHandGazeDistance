@@ -84,6 +84,7 @@
     <Compile Include="ViewModels\BeGazeViewModel.cs" />
     <Compile Include="ViewModels\HgdViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\PrototypingViewModel.cs" />
     <Compile Include="ViewModels\VideoViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

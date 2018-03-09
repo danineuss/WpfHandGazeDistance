@@ -14,6 +14,8 @@ namespace WpfHandGazeDistance.ViewModels
 
         public HgdViewModel HgdViewModel { get; }
 
+        public PrototypingViewModel PrototypingViewModel { get; }
+
         public bool ReadyToAnalyse => VideoViewModel.ReadyToAnalyse && BeGazeViewModel.ReadyToAnalyse;
 
         #endregion
@@ -23,6 +25,7 @@ namespace WpfHandGazeDistance.ViewModels
             VideoViewModel = new VideoViewModel();
             BeGazeViewModel = new BeGazeViewModel();
             HgdViewModel = new HgdViewModel();
+            PrototypingViewModel = new PrototypingViewModel();
         }
 
         public ICommand AnalyseCommand => new RelayCommand(AnalyseData, ReadyToAnalyse);
