@@ -63,14 +63,24 @@ namespace WpfHandGazeDistance.Helpers
         private Image<Gray, byte> MinimumSegment(Image<Bgr, byte> inputImage)
         {
             Image<Gray, byte> outputImage = inputImage.Copy().Convert<Gray, byte>();
-            VectorOfMat channels = new VectorOfMat(3);
-            CvInvoke.Split(inputImage, channels);
+            VectorOfMat channels = SplitChannels(inputImage);
             return outputImage;
         }
 
         private Image<Gray, byte> HsvSegment(Image<Bgr, byte> inputImage)
         {
-            Image<Gray, byte> outputImage = inputImage.Copy().Convert<Gray, byte>();
+            Image<Hsv, byte> hsvImage = inputImage.Copy().Convert<Hsv, byte>();
+            Image<Gray, byte> outputImage = new Image<Gray, byte>(hsvImage.Size);
+
+            Hsv hsvThresholdOne = new Hsv(0, 0, 0);
+            Hsv hsvThresholdTwo = new Hsv(30, 255, 255);
+            Hsv hsvThresholdThree = new Hsv(160, 0, 0);
+            Hsv hsvThresholdFour = new Hsv(180, 255, 255);
+
+            Image<Gray, byte> lowerThreshold = hsvImage.InRange(hsvThresholdOne, hsvThresholdTwo);
+            Image<Gray, byte> upperThreshold = hsvImage.InRange(hsvThresholdThree, hsvThresholdFour);
+
+            CvInvoke.BitwiseOr(lowerThreshold, upperThreshold, outputImage);
             return outputImage;
         }
 
@@ -89,6 +99,18 @@ namespace WpfHandGazeDistance.Helpers
         private float MeasureDistance(Image<Bgr, byte> handsImage, Tuple<float, float> gazeCoordinates)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// This will split an image into its three color channels, storing them in a three-dimensional array of Mats.
+        /// </summary>
+        /// <param name="inputImage">Any 3-channel color image (HSV, BGR, ...)</param>
+        /// <returns></returns>
+        private VectorOfMat SplitChannels(IInputArray inputImage)
+        {
+            VectorOfMat channels = new VectorOfMat(3);
+            CvInvoke.Split(inputImage, channels);
+            return channels;
         }
     }
 }

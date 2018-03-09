@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Emgu.CV;
 using Emgu.CV.Structure;
@@ -52,7 +53,10 @@ namespace WpfHandGazeDistance.ViewModels
         public int ImageIndex
         {
             get => _imageIndex;
-            set => ChangeAndNotify(value, ref _imageIndex);
+            set
+            {
+                ChangeAndNotify(value, ref _imageIndex);
+            }
         }
 
         #endregion
@@ -61,7 +65,7 @@ namespace WpfHandGazeDistance.ViewModels
 
         public ICommand AnalyseCommand => new RelayCommand(AnalyseImage, true);
 
-        public ICommand SplitCommand => new RelayCommand(SplitImage, true);
+        public ICommand HsvSegmentCommand => new RelayCommand(HsvSegment, true);
 
         private void LoadImage()
         {
@@ -83,15 +87,53 @@ namespace WpfHandGazeDistance.ViewModels
             OutputImage = BitMapConverter.ToBitmapSource(blackImage);
         }
 
-        private void SplitImage()
+        private void ColorSegment()
         {
-            Image<Bgr, byte> inputImage = new Image<Bgr, byte>(ImagePath);
+            //Image<Bgr, byte> inputImage = new Image<Bgr, byte>(ImagePath);
+            //var minimumSegment = MinimumSegment(inputImage);
+            //var hsvSegment = HsvSegment(inputImage);
+
+            //Image<Gray, byte> segmentedImage = new Image<Gray, byte>(inputImage.Size);
+            //CvInvoke.BitwiseAnd(minimumSegment, hsvSegment, segmentedImage);
+
+            //OutputImage = BitMapConverter.ToBitmapSource(segmentedImage);
+        }
+
+        private Image<Gray, byte> MinimumSegment(Image<Bgr, byte> inputImage)
+        {
+            Image<Gray, byte> outputImage = inputImage.Copy().Convert<Gray, byte>();
             VectorOfMat channels = new VectorOfMat(3);
+            Mat blueMat = channels[0];
+            Mat greenMat = channels[1];
+            Mat redMat = channels[2];
+
+            Mat deltaOne = new Mat();
+            Mat deltaTwo = new Mat();
+            CvInvoke.Subtract(redMat, greenMat, deltaOne);
+            CvInvoke.Subtract(redMat, blueMat, deltaTwo);
+
+            Mat lowerMat = new Mat();
+            Mat higherMat = new Mat();
+            
             CvInvoke.Split(inputImage, channels);
+            return outputImage;
+        }
+        
+        private void HsvSegment()
+        {
+            Image<Hsv, byte> hsvImage = new Image<Hsv, byte>(ImagePath);
+            Image<Gray, byte> outputImage = new Image<Gray, byte>(hsvImage.Size);
 
-            Image<Gray, byte> channel = channels[ImageIndex].ToImage<Gray, byte>();
+            Hsv hsvThresholdOne = new Hsv(0, 0, 0);
+            Hsv hsvThresholdTwo = new Hsv(30, 255, 255);
+            Hsv hsvThresholdThree = new Hsv(160, 0, 0);
+            Hsv hsvThresholdFour = new Hsv(180, 255, 255);
 
-            OutputImage = BitMapConverter.ToBitmapSource(channel);
+            Image<Gray, byte> lowerThreshold = hsvImage.InRange(hsvThresholdOne, hsvThresholdTwo);
+            Image<Gray, byte> upperThreshold = hsvImage.InRange(hsvThresholdThree, hsvThresholdFour);
+
+            CvInvoke.BitwiseOr(lowerThreshold, upperThreshold, outputImage);
+            OutputImage = BitMapConverter.ToBitmapSource(outputImage);
         }
     }
 }
