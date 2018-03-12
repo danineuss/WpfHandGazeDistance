@@ -20,9 +20,11 @@
         <Image DataContext="{Binding PrototypingViewModel}" Source="{Binding OutputBitmap}" HorizontalAlignment="Left" Height="398" Margin="513,237,0,0" VerticalAlignment="Top" Width="457"/>
         <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding LoadImageCommand}" Content="Load Image" HorizontalAlignment="Left" Margin="55,187,0,0" VerticalAlignment="Top" Width="95"/>
         <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding AnalyseCommand}" Content="Process Image" HorizontalAlignment="Left" Margin="513,187,0,0" VerticalAlignment="Top" Width="95" RenderTransformOrigin="2.558,0.636"/>
-        <TextBox DataContext="{Binding PrototypingViewModel}" Text="{Binding NumberOfHands, StringFormat='Number of Hands: {0}'}" HorizontalAlignment="Left" Height="23" Margin="629,187,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="139"/>
+
         <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding SubtractCommand}" Content="-" HorizontalAlignment="Left" Margin="790,184,0,0" VerticalAlignment="Top" Width="23"/>
         <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding AddCommand}" Content="+" HorizontalAlignment="Left" Margin="945,184,0,0" VerticalAlignment="Top" Width="23"/>
         <TextBox DataContext="{Binding PrototypingViewModel}" Text="{Binding ImageIndex, StringFormat=Index: \{0\}}" HorizontalAlignment="Left" Height="23" Margin="829,184,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="99"/>
+        <TextBox DataContext="{Binding PrototypingViewModel}" Text="{Binding NumberOfHands, StringFormat=Number of Hands: \{0\}}" HorizontalAlignment="Left" Height="23" Margin="629,187,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="139"/>
+        <TextBox DataContext="{Binding PrototypingViewModel}" Text="{Binding Distance, StringFormat=Distance to Hands: \{0\}}" HorizontalAlignment="Left" Height="21" Margin="629,151,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="184"/>
     </Grid>
 </Window>

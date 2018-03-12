@@ -35,6 +35,8 @@ namespace WpfHandGazeDistance.ViewModels
 
         private int _numberOfHands;
 
+        private float _distance;
+
         #endregion
 
         #region Public Properties
@@ -88,6 +90,12 @@ namespace WpfHandGazeDistance.ViewModels
             set => ChangeAndNotify(value, ref _numberOfHands);
         }
 
+        public float Distance
+        {
+            get => _distance;
+            set => ChangeAndNotify(value, ref _distance);
+        }
+
         #endregion
 
         public PrototypingViewModel()
@@ -117,8 +125,24 @@ namespace WpfHandGazeDistance.ViewModels
         private void AnalyseImage()
         {
             ColorSegment();
-            OutputImage = Erode(OutputImage);
-            FindHands(OutputImage);
+            OutputImage = Erode(_outputImage);
+            VectorOfVectorOfPoint sortedContours = FindHands(_outputImage);
+            Distance = MeasureDistance(sortedContours, new PointF(0, 0));
+            Debug.Print(Distance.ToString());
+        }
+
+        private float MeasureDistance(VectorOfVectorOfPoint handContours, PointF gazeCoordinates)
+        {
+            if (handContours.Size == 0) return -1.0f;
+
+            List<double> distances = new List<double>();
+            for (int i = 0; i < handContours.Size; i++)
+            {
+                double distance = Math.Abs(CvInvoke.PointPolygonTest(handContours[i], gazeCoordinates, true));
+                distances.Add(distance);
+            }
+
+            return (float)distances.Min();
         }
 
         private void ColorSegment()
@@ -168,21 +192,22 @@ namespace WpfHandGazeDistance.ViewModels
             return outputImage;
         }
 
-        private Image<Gray, byte> Erode(Image<Gray, byte> inputImage)
+        private Image<Gray, byte> Erode(Image<Gray, byte> inputImage, int iterations = 3)
         {
             Image<Gray, byte> erodedImage = new Image<Gray, byte>(inputImage.Size);
 
             Mat kernelMat = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(-1, -1));
-            CvInvoke.Erode(inputImage, erodedImage, kernelMat, new Point(-1, -1), 3, BorderType.Default,
-                CvInvoke.MorphologyDefaultBorderValue);
+            CvInvoke.Erode(inputImage, erodedImage, kernelMat, new Point(-1, -1), iterations, BorderType.Default, CvInvoke.MorphologyDefaultBorderValue);
 
             return erodedImage;
         }
 
-        private void FindHands(Image<Gray, byte> inputImage, int pixelThreshold = 10000)
+        private VectorOfVectorOfPoint FindHands(Image<Gray, byte> inputImage, int pixelThreshold = 10000, int numberOfContours = 2)
         {
             VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
+            VectorOfVectorOfPoint sortedContours = new VectorOfVectorOfPoint();
             Mat hierarchyMat = new Mat();
+
             CvInvoke.FindContours(inputImage, contours, hierarchyMat, RetrType.Tree, ChainApproxMethod.ChainApproxNone);
 
             if (contours.Size > 0)
@@ -195,22 +220,17 @@ namespace WpfHandGazeDistance.ViewModels
                 }
 
                 var orderedDict = contourDict.OrderByDescending(area => area.Value).TakeWhile(area => area.Value > pixelThreshold);
-                if (orderedDict.Count() > 2) orderedDict = orderedDict.Take(2);
-                VectorOfVectorOfPoint sortedContours = new VectorOfVectorOfPoint();
-                foreach (var item in orderedDict)
-                {
-                    sortedContours.Push(item.Key);
-                }
+                if (orderedDict.Count() > numberOfContours) orderedDict = orderedDict.Take(numberOfContours);
+                foreach (var contour in orderedDict) sortedContours.Push(contour.Key);
 
                 var singleContour = new Image<Gray, byte>(inputImage.Size);
-                for (int i = 0; i < contours.Size; i++)
-                {
-                    CvInvoke.DrawContours(singleContour, contours, i, new MCvScalar(255), -1);
-                }
+                CvInvoke.DrawContours(singleContour, sortedContours, ImageIndex > sortedContours.Size - 1 ? sortedContours.Size - 1 : ImageIndex, new MCvScalar(255), -1);
                 OutputImage = singleContour;
 
                 NumberOfHands = sortedContours.Size;
             }
+
+            return sortedContours;
         }
 
         private void AddIndex()

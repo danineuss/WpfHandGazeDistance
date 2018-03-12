@@ -36,29 +36,23 @@ namespace WpfHandGazeDistance.Helpers
 
             for (var i = 0; i < lengthBeGaze; i++)
             {
-                Image<Bgr, byte> handsImage = FindHands(Video.GetImageFrame());
-                Tuple<float, float> gazeCoordinates = new Tuple<float, float>(BeGazeData.XGaze[i], BeGazeData.YGaze[i]);
+                VectorOfVectorOfPoint handContours = FindHands(Video.GetImageFrame());
+                PointF gazeCoordinates = new PointF(BeGazeData.XGaze[i], BeGazeData.YGaze[i]);
 
-                float distance = MeasureDistance(handsImage, gazeCoordinates);
+                float distance = MeasureDistance(handContours, gazeCoordinates);
                 HgdData.RawData.Add(distance);
             }
 
             return HgdData;
         }
 
-        private Image<Bgr, byte> FindHands(Image<Bgr, byte> inputImage)
+        private VectorOfVectorOfPoint FindHands(Image<Bgr, byte> inputImage)
         {
-            Image<Bgr, byte> handsContourImage = new Image<Bgr, byte>(inputImage.Size);
+            Image<Gray, byte> segmentedImage = ColorSegment(inputImage);
+            segmentedImage = Erode(segmentedImage);
+            VectorOfVectorOfPoint handContours = LargestContours(segmentedImage);
 
-            var segmentedImage = ColorSegment(inputImage);
-            var contours = FindHands(segmentedImage);
-
-            for (int i = 0; i < contours.Size; i++)
-            {
-                CvInvoke.DrawContours(handsContourImage, contours, i, new MCvScalar(255), -1);
-            }
-
-            return handsContourImage;
+            return handContours;
         }
 
         /// <summary>
@@ -130,7 +124,7 @@ namespace WpfHandGazeDistance.Helpers
         /// <param name="inputImage">A standard BGR image.</param>
         /// <param name="iterations">How often the image is eroded. Standard value is 3.</param>
         /// <returns></returns>
-        private Image<Gray, byte> Erode(Image<Gray, byte> inputImage, int iterations=3)
+        private Image<Gray, byte> Erode(IImage inputImage, int iterations=3)
         {
             Image<Gray, byte> erodedImage = new Image<Gray, byte>(inputImage.Size);
 
@@ -145,7 +139,7 @@ namespace WpfHandGazeDistance.Helpers
         /// </summary>
         /// <param name="inputImage">A standard BGR image.</param>
         /// <param name="iterations">How often the image is dilated. Standard value is 3.</param>
-        private Image<Gray, byte> Dilate(Image<Gray, byte> inputImage, int iterations = 3)
+        private Image<Gray, byte> Dilate(IImage inputImage, int iterations = 3)
         {
             Image<Gray, byte> dilatedImage = new Image<Gray, byte>(inputImage.Size);
 
@@ -161,8 +155,9 @@ namespace WpfHandGazeDistance.Helpers
         /// </summary>
         /// <param name="inputImage">Already segmented grayscale image.</param>
         /// <param name="pixelThreshold">Number of pixels required to be counted as a hand.</param>
+        /// <param name="numberOfContours">The n largest contours which will be picked from the list.</param>
         /// <returns>Vector of contours</returns>
-        public VectorOfVectorOfPoint FindHands(Image<Gray, byte> inputImage, int pixelThreshold = 10000)
+        public VectorOfVectorOfPoint LargestContours(Image<Gray, byte> inputImage, int pixelThreshold = 10000, int numberOfContours = 2)
         {
             VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
             VectorOfVectorOfPoint sortedContours = new VectorOfVectorOfPoint();
@@ -180,28 +175,32 @@ namespace WpfHandGazeDistance.Helpers
                 }
 
                 var orderedDict = contourDict.OrderByDescending(area => area.Value).TakeWhile(area => area.Value > pixelThreshold);
-                if (orderedDict.Count() > 2) orderedDict = orderedDict.Take(2);
+                if (orderedDict.Count() > numberOfContours) orderedDict = orderedDict.Take(numberOfContours);
                 foreach (var contour in orderedDict) sortedContours.Push(contour.Key);
             }
 
             return sortedContours;
         }
 
-        private float MeasureDistance(Image<Bgr, byte> handsImage, Tuple<float, float> gazeCoordinates)
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
-        /// This will split an image into its three color channels, storing them in a three-dimensional array of Mats.
+        /// This function measures the minimum distance between any point and the hand contours.
+        /// Hereby, the shortest of the distances is picked as the relevant one.
         /// </summary>
-        /// <param name="inputImage">Any 3-channel color image (HSV, BGR, ...)</param>
-        /// <returns></returns>
-        private VectorOfMat SplitChannels(IInputArray inputImage)
+        /// <param name="handContours">The hand contour[s] as vector of vector of points.</param>
+        /// <param name="point">The desired [gaze] point</param>
+        /// <returns>Distance in (float) number of pixels.</returns>
+        private static float MeasureDistance(VectorOfVectorOfPoint handContours, PointF point)
         {
-            VectorOfMat channels = new VectorOfMat(3);
-            CvInvoke.Split(inputImage, channels);
-            return channels;
+            if (handContours.Size == 0) return -1.0f;
+
+            List<double> distances = new List<double>();
+            for (int i = 0; i < handContours.Size; i++)
+            {
+                double distance = Math.Abs(CvInvoke.PointPolygonTest(handContours[i], point, true));
+                distances.Add(distance);
+            }
+
+            return (float)distances.Min();
         }
     }
 }
