@@ -1,7 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Emgu.CV;
+using Emgu.CV.Cuda;
+using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
 using Microsoft.Win32;
@@ -17,11 +23,17 @@ namespace WpfHandGazeDistance.ViewModels
 
         private string _imagePath;
 
-        private BitmapSource _inputImage;
+        private Image<Bgr, byte> _inputImage;
 
-        private BitmapSource _outputImage;
+        private Image<Gray, byte> _outputImage;
+
+        private BitmapSource _inputBitmap;
+
+        private BitmapSource _outputBitmap;
 
         private int _imageIndex;
+
+        private int _numberOfHands;
 
         #endregion
 
@@ -34,20 +46,30 @@ namespace WpfHandGazeDistance.ViewModels
             {
                 ChangeAndNotify(value, ref _imagePath);
                 Mat image = new Mat(_imagePath);
-                InputImage = BitMapConverter.ToBitmapSource(image);
+                InputBitmap = BitMapConverter.ToBitmapSource(image);
             }
         }
 
-        public BitmapSource InputImage
-        {
-            get => _inputImage;
-            set => ChangeAndNotify(value, ref _inputImage);
-        }
-
-        public BitmapSource OutputImage
+        public Image<Gray, byte> OutputImage
         {
             get => _outputImage;
-            set => ChangeAndNotify(value, ref _outputImage);
+            set
+            {
+                ChangeAndNotify(value, ref _outputImage);
+                OutputBitmap = BitMapConverter.ToBitmapSource(_outputImage);
+            }
+        }
+
+        public BitmapSource InputBitmap
+        {
+            get => _inputBitmap;
+            set => ChangeAndNotify(value, ref _inputBitmap);
+        }
+
+        public BitmapSource OutputBitmap
+        {
+            get => _outputBitmap;
+            set => ChangeAndNotify(value, ref _outputBitmap);
         }
 
         public int ImageIndex
@@ -56,28 +78,31 @@ namespace WpfHandGazeDistance.ViewModels
             set
             {
                 ChangeAndNotify(value, ref _imageIndex);
-                if (value == 0)
-                {
-                    ColorSegment();
-                }
-                else if (value == 1)
-                {
-                    OutputImage = BitMapConverter.ToBitmapSource(MinimumSegment());
-                }
-                else
-                {
-                    OutputImage = BitMapConverter.ToBitmapSource(HsvSegment());
-                }
+                AnalyseImage();
             }
         }
 
+        public int NumberOfHands
+        {
+            get => _numberOfHands;
+            set => ChangeAndNotify(value, ref _numberOfHands);
+        }
+
         #endregion
+
+        public PrototypingViewModel()
+        {
+            NumberOfHands = 0;
+        }
 
         public ICommand LoadImageCommand => new RelayCommand(LoadImage, true);
 
         public ICommand AnalyseCommand => new RelayCommand(AnalyseImage, true);
 
-        public ICommand SegmentCommand => new RelayCommand(ColorSegment, true);
+        public ICommand AddCommand => new RelayCommand(AddIndex, true);
+
+        public ICommand SubtractCommand => new RelayCommand(SubtractIndex, true);
+
 
         private void LoadImage()
         {
@@ -85,30 +110,27 @@ namespace WpfHandGazeDistance.ViewModels
             if (openFileDialog.ShowDialog() == true)
             {
                 ImagePath = openFileDialog.FileName;
+                _inputImage = new Image<Bgr, byte>(ImagePath);
             }
         }
 
         private void AnalyseImage()
         {
-            Image<Gray, byte> outputImage = new Image<Gray, byte>(_imagePath);
-            var contours = HandDetector.FindContours(new Image<Gray, byte>(_imagePath));
-
-            Image<Gray, byte> blackImage = new Image<Gray, byte>(outputImage.Width, outputImage.Height, new Gray(0));
-
-            CvInvoke.DrawContours(blackImage, contours, -1, new MCvScalar(255, 0, 0));
-            OutputImage = BitMapConverter.ToBitmapSource(blackImage);
+            ColorSegment();
+            OutputImage = Erode(OutputImage);
+            FindHands(OutputImage);
         }
 
         private void ColorSegment()
         {
             Image<Bgr, byte> inputImage = new Image<Bgr, byte>(ImagePath);
-            var minimumSegment = MinimumSegment();
-            var hsvSegment = HsvSegment();
+            Image<Gray, byte> minimumSegment = MinimumSegment();
+            Image<Gray, byte> hsvSegment = HsvSegment();
 
             Image<Gray, byte> segmentedImage = new Image<Gray, byte>(inputImage.Size);
             CvInvoke.BitwiseAnd(minimumSegment, hsvSegment, segmentedImage);
 
-            OutputImage = BitMapConverter.ToBitmapSource(segmentedImage);
+            _outputImage = segmentedImage;
         }
 
         private Image<Gray, byte> MinimumSegment()
@@ -144,6 +166,61 @@ namespace WpfHandGazeDistance.ViewModels
 
             CvInvoke.BitwiseOr(lowerThreshold, upperThreshold, outputImage);
             return outputImage;
+        }
+
+        private Image<Gray, byte> Erode(Image<Gray, byte> inputImage)
+        {
+            Image<Gray, byte> erodedImage = new Image<Gray, byte>(inputImage.Size);
+
+            Mat kernelMat = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(-1, -1));
+            CvInvoke.Erode(inputImage, erodedImage, kernelMat, new Point(-1, -1), 3, BorderType.Default,
+                CvInvoke.MorphologyDefaultBorderValue);
+
+            return erodedImage;
+        }
+
+        private void FindHands(Image<Gray, byte> inputImage, int pixelThreshold = 10000)
+        {
+            VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
+            Mat hierarchyMat = new Mat();
+            CvInvoke.FindContours(inputImage, contours, hierarchyMat, RetrType.Tree, ChainApproxMethod.ChainApproxNone);
+
+            if (contours.Size > 0)
+            {
+                Dictionary<VectorOfPoint, double> contourDict = new Dictionary<VectorOfPoint, double>();
+                for (int i = 0; i < contours.Size; i++)
+                {
+                    double contourArea = CvInvoke.ContourArea(contours[i]);
+                    contourDict.Add(contours[i], contourArea);
+                }
+
+                var orderedDict = contourDict.OrderByDescending(area => area.Value).TakeWhile(area => area.Value > pixelThreshold);
+                if (orderedDict.Count() > 2) orderedDict = orderedDict.Take(2);
+                VectorOfVectorOfPoint sortedContours = new VectorOfVectorOfPoint();
+                foreach (var item in orderedDict)
+                {
+                    sortedContours.Push(item.Key);
+                }
+
+                var singleContour = new Image<Gray, byte>(inputImage.Size);
+                for (int i = 0; i < contours.Size; i++)
+                {
+                    CvInvoke.DrawContours(singleContour, contours, i, new MCvScalar(255), -1);
+                }
+                OutputImage = singleContour;
+
+                NumberOfHands = sortedContours.Size;
+            }
+        }
+
+        private void AddIndex()
+        {
+            ImageIndex += 1;
+        }
+
+        private void SubtractIndex()
+        {
+            ImageIndex -= 1;
         }
     }
 };
