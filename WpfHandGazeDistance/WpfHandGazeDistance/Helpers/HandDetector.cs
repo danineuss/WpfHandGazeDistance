@@ -25,11 +25,48 @@ namespace WpfHandGazeDistance.Helpers
             HgdData = new HgdData();
         }
 
+        /// <summary>
+        /// This function will segment, erode and filter a BGR image to find the hands
+        /// and then return the hand contours as white contours on a black background.
+        /// </summary>
+        /// <param name="inputImage">A standard BGR image.</param>
+        /// <returns>A grayscale image with the hands as white.</returns>
         public static Image<Gray, byte> AnalyseImage(Image<Bgr, byte> inputImage)
+        {
+            Image<Gray, byte> outputImage = new Image<Gray, byte>(inputImage.Size);
+            VectorOfVectorOfPoint handContours = FindHands(inputImage);
+            CvInvoke.DrawContours(outputImage, handContours, -1 , new MCvScalar(255), -1);
+
+            return outputImage;
+        }
+
+        /// <summary>
+        /// This function will segment and erode a BGR image into a grayscale image with the hands
+        /// and then figure out the two largest contours above a certain size within that image.
+        /// By querying handContours.Size you can figure out the number of hands in the image.
+        /// </summary>
+        /// <param name="inputImage">Standard BGR image</param>
+        /// <returns>Vector of points with the two largest contours.</returns>
+        public static VectorOfVectorOfPoint FindHands(Image<Bgr, byte> inputImage)
         {
             Image<Gray, byte> segmentedImage = ColorSegment(inputImage);
             Image<Gray, byte> outputImage = Erode(segmentedImage);
-            return outputImage;
+            VectorOfVectorOfPoint handContours = LargestContours(outputImage);
+
+            return handContours;
+        }
+
+        /// <summary>
+        /// This will find the hands and measure the distance from the top-left corner of the image.
+        /// </summary>
+        /// <param name="inputImage">A standard BGR image.</param>
+        /// <returns>The distance between the top-left corner and the closest hand (in pixels).</returns>
+        public static float MeasureDistance(Image<Bgr, byte> inputImage)
+        {
+            VectorOfVectorOfPoint largestContours = FindHands(inputImage);
+            float distance = MeasureDistance(largestContours, new PointF(0, 0));
+
+            return distance;
         }
 
         public HgdData AnalyseData()
@@ -51,15 +88,6 @@ namespace WpfHandGazeDistance.Helpers
             }
 
             return HgdData;
-        }
-
-        private static VectorOfVectorOfPoint FindHands(Image<Bgr, byte> inputImage)
-        {
-            Image<Gray, byte> segmentedImage = ColorSegment(inputImage);
-            segmentedImage = Erode(segmentedImage);
-            VectorOfVectorOfPoint handContours = LargestContours(segmentedImage);
-
-            return handContours;
         }
 
         /// <summary>

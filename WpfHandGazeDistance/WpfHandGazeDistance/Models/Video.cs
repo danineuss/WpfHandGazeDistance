@@ -3,6 +3,7 @@ using System.Windows.Media.Imaging;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
+using WpfHandGazeDistance.Helpers;
 
 namespace WpfHandGazeDistance.Models
 {
