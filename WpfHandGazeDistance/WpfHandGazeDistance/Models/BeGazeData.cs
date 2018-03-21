@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using OfficeOpenXml;
@@ -44,6 +46,16 @@ namespace WpfHandGazeDistance.Models
         #endregion
 
         #region Public Members
+
+        public PointF GetCoordinatePoint(int index)
+        {
+            if (index > XGaze.Count - 1)
+            {
+                Debug.Print("Index: " + index + "/ XGaze.Count: " + XGaze.Count);
+                index = XGaze.Count - 1;
+            }
+            return new PointF(XGaze[index], YGaze[index]);
+        }
 
         #endregion
 

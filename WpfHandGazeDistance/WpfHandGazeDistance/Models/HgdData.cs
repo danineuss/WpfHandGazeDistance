@@ -1,18 +1,16 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace WpfHandGazeDistance.Models
 {
     public class HgdData
     {
-        #region Private Properties
-
-        private List<float> _recordingTime;
-
-        #endregion
-
         #region Public Properties
 
-        public List<float> RawData { get; set; }
+        public List<float> RecordingTime { get; set; }
+
+        public List<float> RawDistance { get; set; }
 
         #endregion
 
@@ -20,22 +18,15 @@ namespace WpfHandGazeDistance.Models
 
         public HgdData()
         {
-            _recordingTime = new List<float>();
-            RawData = new List<float>();
+            RecordingTime = new List<float>();
+            RawDistance = new List<float>();
         }
 
         #endregion
 
-        #region Public Members
-
-
-
-        #endregion
-
-        #region Private Members
-
-        
-
-        #endregion
+        public void SaveData(string savePath)
+        {
+            File.WriteAllLines(savePath, RawDistance.Select(d => d.ToString()));
+        }
     }
 }

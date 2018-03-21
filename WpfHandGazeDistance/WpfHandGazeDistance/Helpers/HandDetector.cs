@@ -12,11 +12,17 @@ namespace WpfHandGazeDistance.Helpers
 {
     public class HandDetector
     {
+        #region Public Properties
+
         public BeGazeData BeGazeData { get; }
 
         public Video Video { get; }
 
         public HgdData HgdData { get; }
+
+        #endregion
+
+        #region Public Members
 
         public HandDetector(BeGazeData beGazeData, Video video)
         {
@@ -35,7 +41,7 @@ namespace WpfHandGazeDistance.Helpers
         {
             Image<Gray, byte> outputImage = new Image<Gray, byte>(inputImage.Size);
             VectorOfVectorOfPoint handContours = FindHands(inputImage);
-            CvInvoke.DrawContours(outputImage, handContours, -1 , new MCvScalar(255), -1);
+            CvInvoke.DrawContours(outputImage, handContours, -1, new MCvScalar(255), -1);
 
             return outputImage;
         }
@@ -60,11 +66,12 @@ namespace WpfHandGazeDistance.Helpers
         /// This will find the hands and measure the distance from the top-left corner of the image.
         /// </summary>
         /// <param name="inputImage">A standard BGR image.</param>
+        /// <param name="point">The distance to the hand is measured from this point. In (x, y) coordinates from the top left.</param>
         /// <returns>The distance between the top-left corner and the closest hand (in pixels).</returns>
-        public static float MeasureDistance(Image<Bgr, byte> inputImage)
+        public static float MeasureDistance(Image<Bgr, byte> inputImage, PointF point)
         {
             VectorOfVectorOfPoint largestContours = FindHands(inputImage);
-            float distance = MeasureDistance(largestContours, new PointF(0, 0));
+            float distance = MeasureDistance(largestContours, point);
 
             return distance;
         }
@@ -84,11 +91,15 @@ namespace WpfHandGazeDistance.Helpers
                 PointF gazeCoordinates = new PointF(BeGazeData.XGaze[i], BeGazeData.YGaze[i]);
 
                 float distance = MeasureDistance(handContours, gazeCoordinates);
-                HgdData.RawData.Add(distance);
+                HgdData.RawDistance.Add(distance);
             }
 
             return HgdData;
         }
+
+        #endregion
+
+        #region Private Members
 
         /// <summary>
         /// The two color segmentations ('Minimum' and 'HSV') are combined to give a better prediction.
@@ -159,7 +170,7 @@ namespace WpfHandGazeDistance.Helpers
         /// <param name="inputImage">A standard BGR image.</param>
         /// <param name="iterations">How often the image is eroded. Standard value is 3.</param>
         /// <returns></returns>
-        private static Image<Gray, byte> Erode(IImage inputImage, int iterations=3)
+        private static Image<Gray, byte> Erode(IImage inputImage, int iterations = 3)
         {
             Image<Gray, byte> erodedImage = new Image<Gray, byte>(inputImage.Size);
 
@@ -237,5 +248,7 @@ namespace WpfHandGazeDistance.Helpers
 
             return (float)distances.Min();
         }
+
+        #endregion
     }
 }

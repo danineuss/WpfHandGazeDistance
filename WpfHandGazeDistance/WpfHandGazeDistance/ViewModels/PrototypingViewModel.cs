@@ -1,4 +1,6 @@
-﻿using System.Windows.Input;
+﻿using System.Diagnostics;
+using System.Drawing;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Emgu.CV;
 using Emgu.CV.Structure;
@@ -16,6 +18,10 @@ namespace WpfHandGazeDistance.ViewModels
         private string _imagePath;
 
         private string _videoPath;
+
+        private string _beGazePath;
+
+        private string _hgdPath;
 
         private Video _video;
 
@@ -36,6 +42,10 @@ namespace WpfHandGazeDistance.ViewModels
         private int _maxFrameCount;
 
         private int _frameStep = 60;
+
+        private BeGazeData _beGazeData;
+
+        private HgdData _hgdData;
 
         #endregion
 
@@ -59,6 +69,18 @@ namespace WpfHandGazeDistance.ViewModels
                 ChangeAndNotify(value, ref _videoPath);
                 Video = new Video(_videoPath);
             }
+        }
+
+        public string BeGazePath
+        {
+            get => _beGazePath;
+            set => ChangeAndNotify(value, ref _beGazePath);
+        }
+
+        public string HgdPath
+        {
+            get => _hgdPath;
+            set => ChangeAndNotify(value, ref _hgdPath);
         }
 
         public Video Video
@@ -128,6 +150,18 @@ namespace WpfHandGazeDistance.ViewModels
             set => ChangeAndNotify(value, ref _maxFrameCount);
         }
 
+        public BeGazeData BeGazeData
+        {
+            get => _beGazeData;
+            set => ChangeAndNotify(value, ref _beGazeData);
+        }
+
+        public HgdData HgdData
+        {
+            get => _hgdData;
+            set => ChangeAndNotify(value, ref _hgdData);
+        }
+
         #endregion
 
         #region Constructor
@@ -143,38 +177,38 @@ namespace WpfHandGazeDistance.ViewModels
 
         public ICommand LoadImageCommand => new RelayCommand(LoadImage, true);
 
-        public ICommand AnalyseCommand => new RelayCommand(AnalyseImage, true);
-
         public ICommand LoadVideoCommand => new RelayCommand(LoadVideo, true);
 
+        public ICommand LoadBeGazeCommand => new RelayCommand(LoadBeGaze, true);
+
+        public ICommand SetSavePathCommand => new RelayCommand(SetSavePath, true);
+
+        public ICommand AnalyseImageCommand => new RelayCommand(AnalyseImage, true);
+
         public ICommand NextImageCommand => new RelayCommand(NextImage, true);
+
+        public ICommand AnalyseDataCommand => new RelayCommand(AnalyseData, true);
 
         #endregion
 
         private void LoadImage()
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            if (openFileDialog.ShowDialog() == true)
-            {
-                ImagePath = openFileDialog.FileName;
-            }
-        }
-
-        private void AnalyseImage()
-        {
-            OutputImage = HandDetector.AnalyseImage(InputImage);
-            NumberOfHands = HandDetector.FindHands(InputImage).Size;
-            OutputImage = HandDetector.AnalyseImage(InputImage);
-            Distance = HandDetector.MeasureDistance(InputImage);
+            ImagePath = OpenFileDialog();
         }
 
         private void LoadVideo()
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            if (openFileDialog.ShowDialog() == true)
-            {
-                VideoPath = openFileDialog.FileName;
-            }
+            VideoPath = OpenFileDialog();
+        }
+
+        private void LoadBeGaze()
+        {
+            BeGazePath = OpenFileDialog();
+        }
+
+        private void SetSavePath()
+        {
+            HgdPath = SaveFileDialog();
         }
 
         private void NextImage()
@@ -188,6 +222,61 @@ namespace WpfHandGazeDistance.ViewModels
 
             CurrentFrameCount += _frameStep;
             InputImage = Video.GetImageFrame();
+        }
+
+        private void AnalyseImage()
+        {
+            OutputImage = HandDetector.AnalyseImage(InputImage);
+            NumberOfHands = HandDetector.FindHands(InputImage).Size;
+            OutputImage = HandDetector.AnalyseImage(InputImage);
+            Distance = HandDetector.MeasureDistance(InputImage, new PointF(0, 0));
+        }
+
+        private void AnalyseData()
+        {
+            BeGazeData = new BeGazeData(BeGazePath);
+            Video = new Video(VideoPath);
+            HgdData = new HgdData {RecordingTime = BeGazeData.RecordingTime};
+
+            for (int index = 0; index < Video.NumberOfFrames(); index++)
+            {
+                PointF coordinates = BeGazeData.GetCoordinatePoint(index);
+                Image<Bgr, byte> frame = Video.GetImageFrame();
+
+                float distance = HandDetector.MeasureDistance(frame, coordinates);
+                HgdData.RawDistance.Add(distance);
+
+                int outputStep = 3600;
+                if (index % outputStep == 0)
+                {
+                    int minutes = index / outputStep;
+                    Debug.Print(minutes.ToString() + " minutes done.");
+                }
+            }
+
+            SaveData();
+        }
+
+        private void SaveData()
+        {
+            HgdData.SaveData(HgdPath);
+        }
+
+        private string OpenFileDialog()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true) return openFileDialog.FileName;
+            return null;
+        }
+
+        private string SaveFileDialog()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                return saveFileDialog.FileName;
+            }
+            return null;
         }
     }
 };
