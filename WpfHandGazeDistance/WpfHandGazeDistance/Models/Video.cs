@@ -13,7 +13,7 @@ namespace WpfHandGazeDistance.Models
     public class Video
     {
         #region Private Properties
-
+        
         private VideoCapture _capture;
 
         #endregion
@@ -42,7 +42,7 @@ namespace WpfHandGazeDistance.Models
 
         public Image<Bgr, byte> GetImageFrame()
         {
-            Mat frameMat = _capture.QueryFrame();
+            Mat frameMat = GetMatFrame();
             return frameMat.ToImage<Bgr, byte>();
         }
 
@@ -53,7 +53,7 @@ namespace WpfHandGazeDistance.Models
         /// <returns></returns>
         public BitmapSource GetBitmapFrame()
         {
-            Mat frame = _capture.QueryFrame();
+            Mat frame = GetMatFrame();
             return BitMapConverter.ToBitmapSource(frame);
         }
 

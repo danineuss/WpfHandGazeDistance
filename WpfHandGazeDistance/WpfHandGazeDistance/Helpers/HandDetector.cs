@@ -25,6 +25,13 @@ namespace WpfHandGazeDistance.Helpers
             HgdData = new HgdData();
         }
 
+        public static Image<Gray, byte> AnalyseImage(Image<Bgr, byte> inputImage)
+        {
+            Image<Gray, byte> segmentedImage = ColorSegment(inputImage);
+            Image<Gray, byte> outputImage = Erode(segmentedImage);
+            return outputImage;
+        }
+
         public HgdData AnalyseData()
         {
             var lengthBeGaze = BeGazeData.RecordingTime.Count;
@@ -46,7 +53,7 @@ namespace WpfHandGazeDistance.Helpers
             return HgdData;
         }
 
-        private VectorOfVectorOfPoint FindHands(Image<Bgr, byte> inputImage)
+        private static VectorOfVectorOfPoint FindHands(Image<Bgr, byte> inputImage)
         {
             Image<Gray, byte> segmentedImage = ColorSegment(inputImage);
             segmentedImage = Erode(segmentedImage);
@@ -60,7 +67,7 @@ namespace WpfHandGazeDistance.Helpers
         /// </summary>
         /// <param name="inputImage">A standard BGR image.</param>
         /// <returns>A grayscale image with skin being white pixels.</returns>
-        private Image<Gray, byte> ColorSegment(Image<Bgr, byte> inputImage)
+        private static Image<Gray, byte> ColorSegment(Image<Bgr, byte> inputImage)
         {
             var minimumSegment = MinimumSegment(inputImage);
             var hsvSegment = HsvSegment(inputImage);
@@ -78,7 +85,7 @@ namespace WpfHandGazeDistance.Helpers
         /// </summary>
         /// <param name="inputImage">Standard BGR image.</param>
         /// <returns>Grayscale image with the white pixels containing skin.</returns>
-        private Image<Gray, byte> MinimumSegment(Image<Bgr, byte> inputImage)
+        private static Image<Gray, byte> MinimumSegment(Image<Bgr, byte> inputImage)
         {
             Mat deltaOne = new Mat();
             Mat deltaTwo = new Mat();
@@ -101,7 +108,7 @@ namespace WpfHandGazeDistance.Helpers
         /// </summary>
         /// <param name="inputImage">A standard BGR image.</param>
         /// <returns>Grayscale image with white pixels containing white skin.</returns>
-        private Image<Gray, byte> HsvSegment(Image<Bgr, byte> inputImage)
+        private static Image<Gray, byte> HsvSegment(Image<Bgr, byte> inputImage)
         {
             var hsvImage = inputImage.Copy().Convert<Hsv, byte>();
             var outputImage = new Image<Gray, byte>(hsvImage.Size);
@@ -124,7 +131,7 @@ namespace WpfHandGazeDistance.Helpers
         /// <param name="inputImage">A standard BGR image.</param>
         /// <param name="iterations">How often the image is eroded. Standard value is 3.</param>
         /// <returns></returns>
-        private Image<Gray, byte> Erode(IImage inputImage, int iterations=3)
+        private static Image<Gray, byte> Erode(IImage inputImage, int iterations=3)
         {
             Image<Gray, byte> erodedImage = new Image<Gray, byte>(inputImage.Size);
 
@@ -139,7 +146,7 @@ namespace WpfHandGazeDistance.Helpers
         /// </summary>
         /// <param name="inputImage">A standard BGR image.</param>
         /// <param name="iterations">How often the image is dilated. Standard value is 3.</param>
-        private Image<Gray, byte> Dilate(IImage inputImage, int iterations = 3)
+        private static Image<Gray, byte> Dilate(IImage inputImage, int iterations = 3)
         {
             Image<Gray, byte> dilatedImage = new Image<Gray, byte>(inputImage.Size);
 
@@ -157,7 +164,7 @@ namespace WpfHandGazeDistance.Helpers
         /// <param name="pixelThreshold">Number of pixels required to be counted as a hand.</param>
         /// <param name="numberOfContours">The n largest contours which will be picked from the list.</param>
         /// <returns>Vector of contours</returns>
-        public VectorOfVectorOfPoint LargestContours(Image<Gray, byte> inputImage, int pixelThreshold = 10000, int numberOfContours = 2)
+        public static VectorOfVectorOfPoint LargestContours(Image<Gray, byte> inputImage, int pixelThreshold = 10000, int numberOfContours = 2)
         {
             VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
             VectorOfVectorOfPoint sortedContours = new VectorOfVectorOfPoint();

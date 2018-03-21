@@ -23,6 +23,10 @@ namespace WpfHandGazeDistance.ViewModels
 
         private string _imagePath;
 
+        private string _videoPath;
+
+        private Video _video;
+
         private Image<Bgr, byte> _inputImage;
 
         private Image<Gray, byte> _outputImage;
@@ -37,6 +41,12 @@ namespace WpfHandGazeDistance.ViewModels
 
         private float _distance;
 
+        private int _currentFrameCount;
+
+        private int _maxFrameCount;
+
+        private int _frameStep = 60;
+
         #endregion
 
         #region Public Properties
@@ -47,8 +57,38 @@ namespace WpfHandGazeDistance.ViewModels
             set
             {
                 ChangeAndNotify(value, ref _imagePath);
-                Mat image = new Mat(_imagePath);
-                InputBitmap = BitMapConverter.ToBitmapSource(image);
+                InputImage = new Image<Bgr, byte>(_imagePath);
+            }
+        }
+
+        public string VideoPath
+        {
+            get => _videoPath;
+            set
+            {
+                ChangeAndNotify(value, ref _videoPath);
+                Video = new Video(_videoPath);
+            }
+        }
+
+        public Video Video
+        {
+            get => _video;
+            set
+            {
+                ChangeAndNotify(value, ref _video);
+                MaxFrameCount = Video.NumberOfFrames();
+                InputImage = _video.GetImageFrame();
+            }
+        }
+
+        public Image<Bgr, byte> InputImage
+        {
+            get => _inputImage;
+            set
+            {
+                ChangeAndNotify(value, ref _inputImage);
+                InputBitmap = BitMapConverter.ToBitmapSource(_inputImage);
             }
         }
 
@@ -96,12 +136,30 @@ namespace WpfHandGazeDistance.ViewModels
             set => ChangeAndNotify(value, ref _distance);
         }
 
+        public int CurrentFrameCount
+        {
+            get => _currentFrameCount;
+            set => ChangeAndNotify(value, ref _currentFrameCount);
+        }
+
+        public int MaxFrameCount
+        {
+            get => _maxFrameCount;
+            set => ChangeAndNotify(value, ref _maxFrameCount);
+        }
+
         #endregion
+
+        #region Constructor
 
         public PrototypingViewModel()
         {
             NumberOfHands = 0;
         }
+
+        #endregion
+
+        #region Commands
 
         public ICommand LoadImageCommand => new RelayCommand(LoadImage, true);
 
@@ -111,6 +169,11 @@ namespace WpfHandGazeDistance.ViewModels
 
         public ICommand SubtractCommand => new RelayCommand(SubtractIndex, true);
 
+        public ICommand LoadVideoCommand => new RelayCommand(LoadVideo, true);
+
+        public ICommand NextImageCommand => new RelayCommand(NextImage, true);
+
+        #endregion
 
         private void LoadImage()
         {
@@ -118,17 +181,36 @@ namespace WpfHandGazeDistance.ViewModels
             if (openFileDialog.ShowDialog() == true)
             {
                 ImagePath = openFileDialog.FileName;
-                _inputImage = new Image<Bgr, byte>(ImagePath);
             }
         }
 
         private void AnalyseImage()
         {
-            ColorSegment();
-            OutputImage = Erode(_outputImage);
+            OutputImage = HandDetector.AnalyseImage(InputImage);
             VectorOfVectorOfPoint sortedContours = FindHands(_outputImage);
             Distance = MeasureDistance(sortedContours, new PointF(0, 0));
-            Debug.Print(Distance.ToString());
+        }
+
+        private void LoadVideo()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+            {
+                VideoPath = openFileDialog.FileName;
+            }
+        }
+
+        private void NextImage()
+        {
+            if (VideoPath == null) return;
+
+            for (int i = 0; i < _frameStep; i++)
+            {
+                Mat temporaryMat = Video.GetMatFrame();
+            }
+
+            CurrentFrameCount += _frameStep;
+            InputImage = Video.GetImageFrame();
         }
 
         private float MeasureDistance(VectorOfVectorOfPoint handContours, PointF gazeCoordinates)
@@ -142,16 +224,15 @@ namespace WpfHandGazeDistance.ViewModels
                 distances.Add(distance);
             }
 
-            return (float)distances.Min();
+            return (float) distances.Min();
         }
 
         private void ColorSegment()
         {
-            Image<Bgr, byte> inputImage = new Image<Bgr, byte>(ImagePath);
             Image<Gray, byte> minimumSegment = MinimumSegment();
             Image<Gray, byte> hsvSegment = HsvSegment();
 
-            Image<Gray, byte> segmentedImage = new Image<Gray, byte>(inputImage.Size);
+            Image<Gray, byte> segmentedImage = new Image<Gray, byte>(InputImage.Size);
             CvInvoke.BitwiseAnd(minimumSegment, hsvSegment, segmentedImage);
 
             _outputImage = segmentedImage;
@@ -159,12 +240,11 @@ namespace WpfHandGazeDistance.ViewModels
 
         private Image<Gray, byte> MinimumSegment()
         {
-            Image<Bgr, byte> inputImage = new Image<Bgr, byte>(ImagePath);
             Mat deltaOne = new Mat();
             Mat deltaTwo = new Mat();
 
             VectorOfMat bgrChannels = new VectorOfMat(3);
-            CvInvoke.Split(inputImage, bgrChannels);
+            CvInvoke.Split(InputImage, bgrChannels);
             CvInvoke.Subtract(bgrChannels[2], bgrChannels[1], deltaOne);
             CvInvoke.Subtract(bgrChannels[2], bgrChannels[0], deltaTwo);
 
@@ -177,7 +257,7 @@ namespace WpfHandGazeDistance.ViewModels
 
         private Image<Gray, byte> HsvSegment()
         {
-            Image<Hsv, byte> hsvImage = new Image<Hsv, byte>(ImagePath);
+            Image<Hsv, byte> hsvImage = InputImage.Convert<Hsv, byte>();
             Image<Gray, byte> outputImage = new Image<Gray, byte>(hsvImage.Size);
 
             Hsv hsvThresholdOne = new Hsv(0, 0, 0);
@@ -197,12 +277,14 @@ namespace WpfHandGazeDistance.ViewModels
             Image<Gray, byte> erodedImage = new Image<Gray, byte>(inputImage.Size);
 
             Mat kernelMat = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(-1, -1));
-            CvInvoke.Erode(inputImage, erodedImage, kernelMat, new Point(-1, -1), iterations, BorderType.Default, CvInvoke.MorphologyDefaultBorderValue);
+            CvInvoke.Erode(inputImage, erodedImage, kernelMat, new Point(-1, -1), iterations, BorderType.Default,
+                CvInvoke.MorphologyDefaultBorderValue);
 
             return erodedImage;
         }
 
-        private VectorOfVectorOfPoint FindHands(Image<Gray, byte> inputImage, int pixelThreshold = 10000, int numberOfContours = 2)
+        private VectorOfVectorOfPoint FindHands(Image<Gray, byte> inputImage, int pixelThreshold = 10000,
+            int numberOfContours = 2)
         {
             VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
             VectorOfVectorOfPoint sortedContours = new VectorOfVectorOfPoint();
@@ -219,12 +301,15 @@ namespace WpfHandGazeDistance.ViewModels
                     contourDict.Add(contours[i], contourArea);
                 }
 
-                var orderedDict = contourDict.OrderByDescending(area => area.Value).TakeWhile(area => area.Value > pixelThreshold);
+                var orderedDict = contourDict.OrderByDescending(area => area.Value)
+                    .TakeWhile(area => area.Value > pixelThreshold);
                 if (orderedDict.Count() > numberOfContours) orderedDict = orderedDict.Take(numberOfContours);
                 foreach (var contour in orderedDict) sortedContours.Push(contour.Key);
 
                 var singleContour = new Image<Gray, byte>(inputImage.Size);
-                CvInvoke.DrawContours(singleContour, sortedContours, ImageIndex > sortedContours.Size - 1 ? sortedContours.Size - 1 : ImageIndex, new MCvScalar(255), -1);
+                CvInvoke.DrawContours(singleContour, sortedContours,
+                    ImageIndex > sortedContours.Size - 1 ? sortedContours.Size - 1 : ImageIndex, new MCvScalar(255),
+                    -1);
                 OutputImage = singleContour;
 
                 NumberOfHands = sortedContours.Size;
