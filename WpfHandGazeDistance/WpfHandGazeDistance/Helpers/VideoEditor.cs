@@ -1,12 +1,23 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using WpfHandGazeDistance.Models;
 
 namespace WpfHandGazeDistance.Helpers
 {
     public class VideoEditor
     {
-        private string _ffmpegPath = @"C:\FFmpeg\bin\ffmpeg.exe";
+        private static Video _video;
+
+        private const string FfmpegPath = @"C:\FFmpeg\bin\ffmpeg.exe";
+
+        private const string FfprobePath = @"C:\FFmpeg\bin\ffprobe.exe";
+
+        public VideoEditor(string videoPath)
+        {
+            _video = new Video(videoPath);
+        }
 
         /// <summary>
         /// This will start a process to launch the FFmpeg library in order to extract a video
@@ -20,7 +31,7 @@ namespace WpfHandGazeDistance.Helpers
         {   
             Process process = new Process
             {
-                StartInfo = new ProcessStartInfo(_ffmpegPath)
+                StartInfo = new ProcessStartInfo(FfmpegPath)
                 {
                     Arguments = FfmpegArgumentString(inputPath, outputPath, startTime, endTime),
                     RedirectStandardError = true,
@@ -52,9 +63,47 @@ namespace WpfHandGazeDistance.Helpers
         {
             string argumentString = "-i " + inputPath + " -ss ";
             argumentString += TimeToString(startTime) + " -t " + TimeToString(endTime - startTime);
+            argumentString += " -b:v " + ProbeVideo(inputPath, "bitrate:") + "k";
+            argumentString += " -r " + _video.GetFps();
             argumentString += " " + outputPath;
+            Debug.Print(argumentString);
 
             return argumentString;
+        }
+
+        /// <summary>
+        /// This function will FFprobe within a process in order to find out either the duration or the
+        /// bitrate of a given video file.
+        /// </summary>
+        /// <param name="targetKey">Either "Duration:" or "bitrate:"</param>
+        private static string ProbeVideo(string videoPath, string targetKey)
+        {
+            Process process = new Process
+            {
+                StartInfo = new ProcessStartInfo(FfprobePath)
+                {
+                    Arguments = videoPath,
+                    RedirectStandardError = true,
+                    UseShellExecute = false
+                }
+            };
+            process.Start();
+
+            string output = process.StandardError.ReadToEnd();
+            var encodingLines = output.Split(Environment.NewLine[0]).Where(
+                    line => string.IsNullOrWhiteSpace(line) == false && string.IsNullOrEmpty(line.Trim()) == false)
+                .Select(s => s.Trim()).ToList();
+
+            string videoInfo = "";
+            foreach (var line in encodingLines)
+            {
+                if (line.StartsWith("Duration"))
+                {
+                    videoInfo = GetValueFromItemData(line, targetKey);
+                }
+            }
+            process.Close();
+            return videoInfo;
         }
 
         /// <summary>
@@ -74,6 +123,26 @@ namespace WpfHandGazeDistance.Helpers
             timeString += decimalValue;
 
             return timeString;
+        }
+        
+        /// <summary>
+        /// This function will take the list of elements within the ffprobe line which contains
+        /// Duration, start and bitrate of the following format:
+        /// Duration: 00:10:53.79, start: 0.000000, bitrate: 12816 kb/s
+        /// </summary>
+        /// <param name="ffprobeLine">The list of elements in the "Duration" string line.</param>
+        /// <param name="targetKey">The element which is looked for ("Duration:" or "bitrate:")</param>
+        /// <returns></returns>
+        private static string GetValueFromItemData(string ffprobeLine, string targetKey)
+        {
+            var itemsOfData = ffprobeLine.Split(" "[0], "="[0]).Where(s => string.IsNullOrEmpty(s) == false).Select(s => s.Trim().Replace("=", string.Empty).Replace(",", string.Empty)).ToList();
+
+            var key = itemsOfData.FirstOrDefault(i => i.ToUpper() == targetKey.ToUpper());
+
+            if (key == null) return null;
+            var index = itemsOfData.IndexOf(key);
+            if (index >= itemsOfData.Count - 1) return null;
+            return itemsOfData[index + 1];
         }
     }
 }

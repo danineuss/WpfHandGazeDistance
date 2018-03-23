@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Emgu.CV;
@@ -277,7 +279,7 @@ namespace WpfHandGazeDistance.ViewModels
 
         private void CutVideo()
         {
-            VideoEditor videoEditor = new VideoEditor();
+            VideoEditor videoEditor = new VideoEditor(VideoPath);
             videoEditor.CutVideo(VideoPath, HgdPath, 0f, VideoDuration);
         }
 

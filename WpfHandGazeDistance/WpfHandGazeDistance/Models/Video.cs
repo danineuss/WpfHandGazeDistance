@@ -63,6 +63,11 @@ namespace WpfHandGazeDistance.Models
             return (int)Math.Floor(_capture.GetCaptureProperty(CapProp.FrameCount));
         }
 
+        public double GetFps()
+        {
+            return _capture.GetCaptureProperty(CapProp.Fps);
+        }
+
         #endregion
     }
 }
