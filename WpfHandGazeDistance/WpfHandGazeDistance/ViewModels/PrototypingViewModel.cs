@@ -277,28 +277,8 @@ namespace WpfHandGazeDistance.ViewModels
 
         private void CutVideo()
         {
-            string duration = "00:00:" + VideoDuration.ToString();
-            string cutVideoPath = @"..\..\Output\cutVideo.avi";
-
-            Process process = new Process
-            {
-                StartInfo = new ProcessStartInfo(@"C:\FFmpeg\bin\ffmpeg.exe")
-                {
-                    Arguments = "-i " + VideoPath + " -ss 00:00:00 -t " + duration + " " + cutVideoPath,
-                    RedirectStandardError = true,
-                    UseShellExecute = false
-                }
-            };
-            process.Start();
-
-            StreamReader reader = process.StandardError;
-            string line;
-            while ((line = reader.ReadLine()) != null)
-            {
-                Console.WriteLine(line);
-            }
-            process.Close();
-            Debug.Print("Done.");
+            VideoEditor videoEditor = new VideoEditor();
+            videoEditor.CutVideo(VideoPath, HgdPath, 0f, VideoDuration);
         }
 
         private string OpenFileDialog()
