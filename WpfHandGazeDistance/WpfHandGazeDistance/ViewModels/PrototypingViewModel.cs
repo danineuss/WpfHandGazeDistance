@@ -1,5 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Emgu.CV;
@@ -46,6 +48,8 @@ namespace WpfHandGazeDistance.ViewModels
         private BeGazeData _beGazeData;
 
         private HgdData _hgdData;
+
+        private float _videoDuration;
 
         #endregion
 
@@ -162,6 +166,12 @@ namespace WpfHandGazeDistance.ViewModels
             set => ChangeAndNotify(value, ref _hgdData);
         }
 
+        public float VideoDuration
+        {
+            get => _videoDuration;
+            set => ChangeAndNotify(value, ref _videoDuration);
+        }
+
         #endregion
 
         #region Constructor
@@ -169,6 +179,7 @@ namespace WpfHandGazeDistance.ViewModels
         public PrototypingViewModel()
         {
             NumberOfHands = 0;
+            VideoDuration = 10f;
         }
 
         #endregion
@@ -188,6 +199,8 @@ namespace WpfHandGazeDistance.ViewModels
         public ICommand NextImageCommand => new RelayCommand(NextImage, true);
 
         public ICommand AnalyseDataCommand => new RelayCommand(AnalyseData, true);
+
+        public ICommand CutVideoCommand => new RelayCommand(CutVideo, true);
 
         #endregion
 
@@ -260,6 +273,32 @@ namespace WpfHandGazeDistance.ViewModels
         private void SaveData()
         {
             HgdData.SaveData(HgdPath);
+        }
+
+        private void CutVideo()
+        {
+            string duration = "00:00:" + VideoDuration.ToString();
+            string cutVideoPath = @"..\..\Output\cutVideo.avi";
+
+            Process process = new Process
+            {
+                StartInfo = new ProcessStartInfo(@"C:\FFmpeg\bin\ffmpeg.exe")
+                {
+                    Arguments = "-i " + VideoPath + " -ss 00:00:00 -t " + duration + " " + cutVideoPath,
+                    RedirectStandardError = true,
+                    UseShellExecute = false
+                }
+            };
+            process.Start();
+
+            StreamReader reader = process.StandardError;
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                Console.WriteLine(line);
+            }
+            process.Close();
+            Debug.Print("Done.");
         }
 
         private string OpenFileDialog()
