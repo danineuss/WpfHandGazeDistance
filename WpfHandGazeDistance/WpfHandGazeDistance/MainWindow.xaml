@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="700" Width="1000">
     <Grid>
-        <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding LoadBeGazeCommand}" Content="Load BeGaze" HorizontalAlignment="Left" Margin="55,22,0,0" VerticalAlignment="Top" Width="95"/>
+        <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding LoadBeGazeCommand}" Content="Load BeGaze" HorizontalAlignment="Left" Margin="55,22,0,0" VerticalAlignment="Top" Width="95" Click="Button_Click_1"/>
         <TextBox DataContext="{Binding PrototypingViewModel}" HorizontalAlignment="Left" Height="23" Margin="187,21,0,0" TextWrapping="Wrap" Text="{Binding BeGazePath}" VerticalAlignment="Top" Width="774"/>
         <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding LoadVideoCommand}" Content="Load Video" HorizontalAlignment="Left" Margin="55,56,0,0" VerticalAlignment="Top" Width="95"/>
         <TextBox DataContext="{Binding PrototypingViewModel}" HorizontalAlignment="Left" Height="23" Margin="187,55,0,0" TextWrapping="Wrap" Text="{Binding VideoPath}" VerticalAlignment="Top" Width="774"/>

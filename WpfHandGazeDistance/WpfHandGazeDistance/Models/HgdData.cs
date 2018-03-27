@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Windows.Documents;
-using CsvHelper;
 
 namespace WpfHandGazeDistance.Models
 {
@@ -122,6 +120,8 @@ namespace WpfHandGazeDistance.Models
 
         #endregion
 
+        #region Public Members
+
         /// <summary>
         /// This will load the HGD Data from a .csv file. The first line is a header
         /// which is simply ignored. The rest is filled into the various list of floats
@@ -188,6 +188,8 @@ namespace WpfHandGazeDistance.Models
             MedianDistance = MovingMedian(RawDistance);
         }
 
+        #endregion
+
         #region Private Members
 
         /// <summary>
@@ -244,6 +246,8 @@ namespace WpfHandGazeDistance.Models
             }
             return outputValues;
         }
+
+
 
         #endregion
     }

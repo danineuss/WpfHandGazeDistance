@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using OfficeOpenXml;
 
 namespace WpfHandGazeDistance.Models
 {
@@ -11,7 +10,9 @@ namespace WpfHandGazeDistance.Models
     {
         #region Private Properties
 
-        private readonly Dictionary<string, List<float>> _columnsBeGaze;
+        private readonly Dictionary<int, List<float>> _indexBeGaze;
+
+        private char _csvDelimiter = '\t';
 
         #endregion
 
@@ -33,11 +34,11 @@ namespace WpfHandGazeDistance.Models
             XGaze = new List<float>();
             YGaze = new List<float>();
 
-            _columnsBeGaze = new Dictionary<string, List<float>>()
+            _indexBeGaze = new Dictionary<int, List<float>>()
             {
-                { "RecordingTime [ms]", RecordingTime },
-                { "Point of Regard Binocular X [px]", XGaze },
-                { "Point of Regard Binocular Y [px]", YGaze }
+                { 0, RecordingTime },
+                { 9, XGaze },
+                { 10, YGaze }
             };
 
             LoadBeGazeFile(filePath);
@@ -62,27 +63,23 @@ namespace WpfHandGazeDistance.Models
         #region Private Members
         
         /// <summary>
-        /// This loads a .xlsx file and fills the values of specific columns, which can be found in <see cref="_columnsBeGaze"/>.
+        /// This loads a .xlsx file and fills the values of specific columns, which can be found in <see cref="_indexBeGaze"/>.
         /// The top row contains the name of the column, the rest are values.
         /// </summary>
         /// <param name="beGazePath">The windows path to the BeGaze data file. Is selected from the GUI.</param>
         private void LoadBeGazeFile(string beGazePath)
         {
-            using (var excelPackage = new ExcelPackage(new FileInfo(beGazePath)))
+            using (var streamReader = new StreamReader(beGazePath))
             {
-                var myWorksheet = excelPackage.Workbook.Worksheets.First();
-                var totalRows = myWorksheet.Dimension.End.Row;
-                var totalColumns = myWorksheet.Dimension.End.Column;
-
-                for (var i = 1; i <= totalColumns; i++)
+                string headerLine = streamReader.ReadLine();
+                while (!streamReader.EndOfStream)
                 {
-                    var currentKey = myWorksheet.GetValue<string>(1, i);
+                    string line = streamReader.ReadLine();
+                    var values = line.Split(_csvDelimiter);
 
-                    if (!_columnsBeGaze.ContainsKey(currentKey)) continue;
-
-                    for (var j = 2; j <= totalRows; j++)
+                    foreach (KeyValuePair<int, List<float>> keyValuePair in _indexBeGaze)
                     {
-                        _columnsBeGaze[currentKey].Add(myWorksheet.GetValue<float>(j, i));
+                        keyValuePair.Value.Add(Single.Parse(values[keyValuePair.Key]));
                     }
                 }
             }

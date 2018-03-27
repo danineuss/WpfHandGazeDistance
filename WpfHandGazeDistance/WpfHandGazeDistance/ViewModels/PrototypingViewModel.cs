@@ -220,6 +220,7 @@ namespace WpfHandGazeDistance.ViewModels
         private void LoadBeGaze()
         {
             BeGazePath = OpenFileDialog();
+            BeGazeData = new BeGazeData(BeGazePath);
         }
 
         private void SetSavePath()
