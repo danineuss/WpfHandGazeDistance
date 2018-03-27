@@ -201,6 +201,10 @@ namespace WpfHandGazeDistance.ViewModels
 
         public ICommand CutVideoCommand => new RelayCommand(CutVideo, true);
 
+        public ICommand LoadHgdCommand => new RelayCommand(LoadHgd, true);
+
+        public ICommand SaveHgdCommand => new RelayCommand(SaveHgd, true);
+
         #endregion
 
         private void LoadImage()
@@ -280,6 +284,17 @@ namespace WpfHandGazeDistance.ViewModels
         {
             VideoEditor videoEditor = new VideoEditor(VideoPath);
             videoEditor.CutVideo(HgdPath, 0f, VideoDuration);
+        }
+
+        private void LoadHgd()
+        {
+            HgdData = new HgdData();
+            HgdData.LoadData(OpenFileDialog());
+        }
+
+        private void SaveHgd()
+        {
+            HgdData.SaveData(SaveFileDialog());
         }
 
         private static string OpenFileDialog()

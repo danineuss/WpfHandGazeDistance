@@ -36,5 +36,7 @@
         <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding CutVideoCommand}" Content="Cut Video" HorizontalAlignment="Left" Margin="513,158,0,0" VerticalAlignment="Top" Width="108"/>
         <TextBox DataContext="{Binding PrototypingViewModel}" Text="Video Duration:" HorizontalAlignment="Left" Height="23" Margin="629,155,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="101"/>
         <TextBox DataContext="{Binding PrototypingViewModel}" Text="{Binding VideoDuration}" HorizontalAlignment="Left" Height="23" Margin="741,154,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="61"/>
+        <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding LoadHgdCommand}" Content="Load HGD" HorizontalAlignment="Left" Margin="55,616,0,0" VerticalAlignment="Top" Width="106" Click="Button_Click"/>
+        <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding SaveHgdCommand}" Content="Save HGD" HorizontalAlignment="Left" Margin="187,616,0,0" VerticalAlignment="Top" Width="106" Click="Button_Click"/>
     </Grid>
 </Window>
