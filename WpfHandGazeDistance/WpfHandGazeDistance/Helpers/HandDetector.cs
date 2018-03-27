@@ -237,7 +237,7 @@ namespace WpfHandGazeDistance.Helpers
         /// <returns>Distance in (float) number of pixels.</returns>
         private static float MeasureDistance(VectorOfVectorOfPoint handContours, PointF point)
         {
-            if (handContours.Size == 0) return -1.0f;
+            if (handContours.Size == 0) return Single.NaN;
 
             List<double> distances = new List<double>();
             for (int i = 0; i < handContours.Size; i++)

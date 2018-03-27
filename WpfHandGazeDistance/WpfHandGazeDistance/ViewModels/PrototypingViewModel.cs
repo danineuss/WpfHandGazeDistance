@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
-using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Emgu.CV;
@@ -253,13 +250,14 @@ namespace WpfHandGazeDistance.ViewModels
             Video = new Video(VideoPath);
             HgdData = new HgdData {RecordingTime = BeGazeData.RecordingTime};
 
+            List<float> rawDistance = new List<float>();
             for (int index = 0; index < Video.NumberOfFrames(); index++)
             {
                 PointF coordinates = BeGazeData.GetCoordinatePoint(index);
                 Image<Bgr, byte> frame = Video.GetImageFrame();
 
                 float distance = HandDetector.MeasureDistance(frame, coordinates);
-                HgdData.RawDistance.Add(distance);
+                rawDistance.Add(distance);
 
                 int outputStep = 3600;
                 if (index % outputStep == 0)
@@ -269,6 +267,7 @@ namespace WpfHandGazeDistance.ViewModels
                 }
             }
 
+            HgdData.RawDistance = rawDistance;
             SaveData();
         }
 
@@ -280,17 +279,17 @@ namespace WpfHandGazeDistance.ViewModels
         private void CutVideo()
         {
             VideoEditor videoEditor = new VideoEditor(VideoPath);
-            videoEditor.CutVideo(VideoPath, HgdPath, 0f, VideoDuration);
+            videoEditor.CutVideo(HgdPath, 0f, VideoDuration);
         }
 
-        private string OpenFileDialog()
+        private static string OpenFileDialog()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true) return openFileDialog.FileName;
             return null;
         }
 
-        private string SaveFileDialog()
+        private static string SaveFileDialog()
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             if (saveFileDialog.ShowDialog() == true)

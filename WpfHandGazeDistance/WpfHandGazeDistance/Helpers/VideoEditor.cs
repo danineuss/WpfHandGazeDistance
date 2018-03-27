@@ -8,7 +8,9 @@ namespace WpfHandGazeDistance.Helpers
 {
     public class VideoEditor
     {
-        private static Video _video;
+        private readonly Video _video;
+
+        private readonly string _videoPath;
 
         private const string FfmpegPath = @"C:\FFmpeg\bin\ffmpeg.exe";
 
@@ -16,6 +18,7 @@ namespace WpfHandGazeDistance.Helpers
 
         public VideoEditor(string videoPath)
         {
+            _videoPath = videoPath;
             _video = new Video(videoPath);
         }
 
@@ -23,17 +26,16 @@ namespace WpfHandGazeDistance.Helpers
         /// This will start a process to launch the FFmpeg library in order to extract a video
         /// snippet from a large video file and then save the snippet to a defined location on disc.
         /// </summary>
-        /// <param name="inputPath">Path to the main video file.</param>
         /// <param name="outputPath">Output path of the resulting video snippet.</param>
         /// <param name="startTime">Number of seconds for the starting time.</param>
         /// <param name="endTime">Number of seconds for the end time.</param>
-        public void CutVideo(string inputPath, string outputPath, float startTime, float endTime)
+        public void CutVideo(string outputPath, float startTime, float endTime)
         {   
             Process process = new Process
             {
                 StartInfo = new ProcessStartInfo(FfmpegPath)
                 {
-                    Arguments = FfmpegArgumentString(inputPath, outputPath, startTime, endTime),
+                    Arguments = FfmpegArgumentString(outputPath, startTime, endTime),
                     RedirectStandardError = true,
                     UseShellExecute = false
                 }
@@ -53,17 +55,15 @@ namespace WpfHandGazeDistance.Helpers
         /// <summary>
         /// This will concat a string for the FFmpeg arguments, telling it to cut a video snippet.
         /// </summary>
-        /// <param name="inputPath">Path to the main video file.</param>
         /// <param name="outputPath">Output path of the resulting video snippet.</param>
         /// <param name="startTime">Number of seconds for the starting time.</param>
         /// <param name="endTime">Number of seconds for the end time.</param>
         /// <returns>FFmpeg arguments as a string.</returns>
-        private static string FfmpegArgumentString(
-            string inputPath, string outputPath, float startTime, float endTime)
+        private string FfmpegArgumentString(string outputPath, float startTime, float endTime)
         {
-            string argumentString = "-i " + inputPath + " -ss ";
+            string argumentString = "-i " + _videoPath + " -ss ";
             argumentString += TimeToString(startTime) + " -t " + TimeToString(endTime - startTime);
-            argumentString += " -b:v " + ProbeVideo(inputPath, "bitrate:") + "k";
+            argumentString += " -b:v " + ProbeVideo("bitrate:") + "k";
             argumentString += " -r " + _video.GetFps();
             argumentString += " " + outputPath;
             Debug.Print(argumentString);
@@ -76,13 +76,13 @@ namespace WpfHandGazeDistance.Helpers
         /// bitrate of a given video file.
         /// </summary>
         /// <param name="targetKey">Either "Duration:" or "bitrate:"</param>
-        private static string ProbeVideo(string videoPath, string targetKey)
+        private string ProbeVideo(string targetKey)
         {
             Process process = new Process
             {
                 StartInfo = new ProcessStartInfo(FfprobePath)
                 {
-                    Arguments = videoPath,
+                    Arguments = _videoPath,
                     RedirectStandardError = true,
                     UseShellExecute = false
                 }
