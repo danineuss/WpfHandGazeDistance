@@ -197,13 +197,23 @@ namespace WpfHandGazeDistance.ViewModels
 
         public ICommand NextImageCommand => new RelayCommand(NextImage, true);
 
-        public ICommand AnalyseDataCommand => new RelayCommand(AnalyseData, true);
+        public ICommand AnalyseDataCommand => new RelayCommand(AnalyseRawDistance, true);
 
         public ICommand CutVideoCommand => new RelayCommand(CutVideo, true);
 
         public ICommand LoadHgdCommand => new RelayCommand(LoadHgd, true);
 
         public ICommand SaveHgdCommand => new RelayCommand(SaveHgd, true);
+
+        public ICommand MedianCommand => new RelayCommand(HgdMedian, true);
+
+        public ICommand LongActionsCommand => new RelayCommand(HgdLongActions, true);
+
+        public ICommand StdDevCommand => new RelayCommand(HgdStdDev, true);
+
+        public ICommand ThresholdCommand => new RelayCommand(HgdThreshold, true);
+
+        public ICommand BufferCommand => new RelayCommand(HgdBuffer, true);
 
         #endregion
 
@@ -249,7 +259,7 @@ namespace WpfHandGazeDistance.ViewModels
             Distance = HandDetector.MeasureDistance(InputImage, new PointF(0, 0));
         }
 
-        private void AnalyseData()
+        private void AnalyseRawDistance()
         {
             BeGazeData = new BeGazeData(BeGazePath);
             Video = new Video(VideoPath);
@@ -274,6 +284,31 @@ namespace WpfHandGazeDistance.ViewModels
 
             HgdData.RawDistance = rawDistance;
             SaveData();
+        }
+
+        private void HgdMedian()
+        {
+            HgdData.AnalyseMedian();
+        }
+
+        private void HgdLongActions()
+        {
+            HgdData.AnalyseLongActions();
+        }
+
+        private void HgdStdDev()
+        {
+
+        }
+
+        private void HgdThreshold()
+        {
+
+        }
+
+        private void HgdBuffer()
+        {
+
         }
 
         private void SaveData()

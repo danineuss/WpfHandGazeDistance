@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,8 @@ namespace WpfHandGazeDistance.Models
         private List<List<float>> _dataList;
 
         private char _csvDelimiter = ';';
+
+        private const int _longActionCount = 120;
 
         private List<float> _recordingTime;
 
@@ -92,6 +95,12 @@ namespace WpfHandGazeDistance.Models
         {
             RecordingTime = new List<float>();
             RawDistance = new List<float>();
+            MedianDistance = new List<float>();
+            LongActions = new List<float>();
+            StandardDeviation = new List<float>();
+            RigidActions = new List<float>();
+            UsabilityIssues = new List<float>();
+            BufferedUsabilityIssues = new List<float>();
 
             _headerList = new List<string>()
             {
@@ -139,7 +148,7 @@ namespace WpfHandGazeDistance.Models
                     var values = line.Split(_csvDelimiter);
 
                     for (int i = 0; i < values.Length; i++)
-                        _dataList[i].Add(Single.Parse(values[i]));
+                        _dataList[i].Add(float.Parse(values[i]));
                 }
             }
         }
@@ -169,7 +178,7 @@ namespace WpfHandGazeDistance.Models
                 string line = "";
                 foreach (var list in _dataList)
                 {
-                    if (list != null)
+                    if (list != null && list.Count > 0)
                     {
                         if (line == "")
                             line = $"{list[index]}";
@@ -185,7 +194,23 @@ namespace WpfHandGazeDistance.Models
 
         public void AnalyseData()
         {
+            AnalyseMedian();
+            AnalyseLongActions();
+        }
+
+        public void AnalyseMedian()
+        {
             MedianDistance = MovingMedian(RawDistance);
+        }
+
+        public void AnalyseLongActions()
+        {
+            LongActions = LowPass(MedianDistance);
+        }
+
+        public void AnalyseStdDev()
+        {
+
         }
 
         #endregion
@@ -228,7 +253,7 @@ namespace WpfHandGazeDistance.Models
             for (int i = 0; i < inputValues.Count(); i++)
             {
                 if (i < period - 1)
-                    outputValues.Add(Single.NaN);
+                    outputValues.Add(float.NaN);
                 else
                 {
                     var values = new List<float>();
@@ -247,7 +272,48 @@ namespace WpfHandGazeDistance.Models
             return outputValues;
         }
 
+        /// <summary>
+        /// This function will filter out short 'actions', intervals of HGD which are shorter than the
+        /// minimum value. A temporary list is created and values are appended until a NaN value is hit.
+        /// The length of the temporary list is then checked and added to the main list if its long enough.
+        /// </summary>
+        /// <param name="inputValues">A list of input float values (MedianDistance).</param>
+        /// <param name="longActionsCount">The minimum amount of values required to count (e.g. 120)</param>
+        /// <returns>A list of float with only the long actions.</returns>
+        private static List<float> LowPass(List<float> inputValues, int longActionsCount = _longActionCount)
+        {
+            List<float> outputValues = new List<float>();
+            
+            for (int i = 0; i < inputValues.Count; i++)
+            {
+                List<float> currentWindow = new List<float>();
+                
+                while (!float.IsNaN(inputValues[i]))
+                {
+                    currentWindow.Add(inputValues[i]);
+                    if (float.IsNaN(inputValues[i + 1])) break;
+                    if (i < inputValues.Count) i++;
+                }
 
+                if (currentWindow.Count > longActionsCount)
+                {
+                    outputValues.AddRange(currentWindow);
+                }
+                else if (currentWindow.Count > 0)
+                {
+                    List<float> nanList = Enumerable.Range(0, currentWindow.Count).Select(n => float.NaN).ToList();
+                    outputValues.AddRange(nanList);
+                }
+                else
+                {
+                    outputValues.Add(float.NaN);
+                }
+            }
+
+            return outputValues;
+        }
+
+        
 
         #endregion
     }
