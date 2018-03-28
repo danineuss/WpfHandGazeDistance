@@ -39,7 +39,7 @@
 
         <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding LoadHgdCommand}" Content="Load HGD" HorizontalAlignment="Left" Margin="55,616,0,0" VerticalAlignment="Top" Width="80" Click="Button_Click"/>
         <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding SaveHgdCommand}" Content="Save HGD" HorizontalAlignment="Left" Margin="712,616,0,0" VerticalAlignment="Top" Width="80" Click="Button_Click"/>
-        <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding  }" Content="Median" HorizontalAlignment="Left" Margin="186,616,0,0" VerticalAlignment="Top" Width="80" Click="Button_Click"/>
+        <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding MedianCommand}" Content="Median" HorizontalAlignment="Left" Margin="186,616,0,0" VerticalAlignment="Top" Width="80" Click="Button_Click"/>
         <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding LongActionsCommand}" Content="Long Actions" HorizontalAlignment="Left" Margin="283,616,0,0" VerticalAlignment="Top" Width="80" Click="Button_Click"/>
         <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding StdDevCommand}" Content="Std Dev." HorizontalAlignment="Left" Margin="377,616,0,0" VerticalAlignment="Top" Width="80" Click="Button_Click"/>
         <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding ThresholdCommand}" Content="Threshold" HorizontalAlignment="Left" Margin="472,616,0,0" VerticalAlignment="Top" Width="80" Click="Button_Click"/>

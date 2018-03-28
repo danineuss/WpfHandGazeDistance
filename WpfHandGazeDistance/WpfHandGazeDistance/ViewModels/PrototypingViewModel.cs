@@ -298,12 +298,12 @@ namespace WpfHandGazeDistance.ViewModels
 
         private void HgdStdDev()
         {
-
+            HgdData.AnalyseStdDev();
         }
 
         private void HgdThreshold()
         {
-
+            HgdData.AnalyseRigidActions();
         }
 
         private void HgdBuffer()

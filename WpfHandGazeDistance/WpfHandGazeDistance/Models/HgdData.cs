@@ -19,6 +19,12 @@ namespace WpfHandGazeDistance.Models
 
         private const int _longActionCount = 120;
 
+        private const int _stdDevPeriod = 120;
+
+        private const int _medianPeriod = 10;
+
+        private const int _stdDevThreshold = 60;
+
         private List<float> _recordingTime;
 
         private List<float> _rawDistance;
@@ -148,7 +154,9 @@ namespace WpfHandGazeDistance.Models
                     var values = line.Split(_csvDelimiter);
 
                     for (int i = 0; i < values.Length; i++)
-                        _dataList[i].Add(float.Parse(values[i]));
+                    {
+                        if (values[i] != "") _dataList[i].Add(float.Parse(values[i]));
+                    }
                 }
             }
         }
@@ -210,7 +218,12 @@ namespace WpfHandGazeDistance.Models
 
         public void AnalyseStdDev()
         {
+            StandardDeviation = MovingStdDev(LongActions);
+        }
 
+        public void AnalyseRigidActions()
+        {
+            RigidActions = Threshold(StandardDeviation);
         }
 
         #endregion
@@ -246,7 +259,7 @@ namespace WpfHandGazeDistance.Models
         /// <param name="inputValues">A list of float values which should be filtered.</param>
         /// <param name="period">The size of the rolling median window.</param>
         /// <returns></returns>
-        private static List<float> MovingMedian(List<float> inputValues, int period = 10)
+        private static List<float> MovingMedian(List<float> inputValues, int period = _medianPeriod)
         {
             List<float> outputValues = new List<float>();
 
@@ -292,7 +305,7 @@ namespace WpfHandGazeDistance.Models
                 {
                     currentWindow.Add(inputValues[i]);
                     if (float.IsNaN(inputValues[i + 1])) break;
-                    if (i < inputValues.Count) i++;
+                    if (i + 1 < inputValues.Count) i++;
                 }
 
                 if (currentWindow.Count > longActionsCount)
@@ -313,7 +326,89 @@ namespace WpfHandGazeDistance.Models
             return outputValues;
         }
 
-        
+        /// <summary>
+        /// This function will compute the standard deviation of a set of input values within a moving window.
+        /// The window is advanced along the data set if enough values are available, the standard deviation
+        /// is written at the beginning of said window.
+        /// </summary>
+        /// <param name="inputValues">A set of float values (e.g. LongActions).</param>
+        /// <param name="period">The size of the moving window (e.g. 120).</param>
+        /// <returns>Standard deviation in a list of float.</returns>
+        private static List<float> MovingStdDev(List<float> inputValues, int period = _stdDevPeriod)
+        {
+            List<float> outputValues = new List<float>();
+            
+            for (int i = 0; i < inputValues.Count; i++)
+            {
+                if (float.IsNaN(inputValues[i]))
+                {
+                    outputValues.Add(float.NaN);
+                    continue;
+                }
+
+                List<float> currentWindow = new List<float>();
+                for (int j = 0; j < period; j++)
+                {
+                    currentWindow.Add(inputValues[i + j]);
+                }
+                outputValues.Add(CalculateStdDev(currentWindow));
+
+                // Fill up the remaining values with NaN and jump to the end of the window.
+                if (float.IsNaN(inputValues[i + period]))
+                {
+                    outputValues.AddRange(Enumerable.Range(0, period - 1).Select(n => float.NaN).ToList());
+                    i += period - 1;
+                }
+            }
+
+            return outputValues;
+        }
+
+        /// <summary>
+        /// This function will apply a upper threshold to all values within a list of floats. Any value
+        /// above the threshold is replace with NaN.
+        /// </summary>
+        /// <param name="inputValues">List of floats (e.g. StandardDeviation)</param>
+        /// <param name="threshold">The upper threshold (e.g. 60px)</param>
+        /// <returns>A list of floats.</returns>
+        private static List<float> Threshold(List<float> inputValues, float threshold = _stdDevThreshold)
+        {
+            List<float> outputValues = new List<float>();
+
+            for (int i = 0; i < inputValues.Count; i++)
+            {
+                if (inputValues[i] > threshold)
+                {
+                    outputValues.Add(float.NaN);
+                }
+                else
+                {
+                    outputValues.Add(inputValues[i]);
+                }
+            }
+
+            return outputValues;
+        }
+
+        /// <summary>
+        /// Calculates the standard deviation of a list of floats.
+        /// </summary>
+        /// <param name="inputValues">A list of float values.</param>
+        /// <returns>Standard deviation as a float.</returns>
+        private static float CalculateStdDev(List<float> inputValues)
+        {
+            float variance = 0f;
+            float average = inputValues.Sum() / inputValues.Count;
+
+            for (int i = 0; i < inputValues.Count; i++)
+            {
+                variance += (float)Math.Pow(inputValues[i] - average, 2);
+            }
+
+            variance /= inputValues.Count - 1;
+
+            return (float)Math.Sqrt(variance);
+        }
 
         #endregion
     }
