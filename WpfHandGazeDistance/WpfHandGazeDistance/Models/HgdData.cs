@@ -25,6 +25,8 @@ namespace WpfHandGazeDistance.Models
 
         private const int _stdDevThreshold = 60;
 
+        private const float _buffer = 0.5f;
+
         private List<float> _recordingTime;
 
         private List<float> _rawDistance;
@@ -204,6 +206,8 @@ namespace WpfHandGazeDistance.Models
         {
             AnalyseMedian();
             AnalyseLongActions();
+            AnalyseStdDev();
+            AnalyseRigidActions();
         }
 
         public void AnalyseMedian()
@@ -224,6 +228,11 @@ namespace WpfHandGazeDistance.Models
         public void AnalyseRigidActions()
         {
             RigidActions = Threshold(StandardDeviation);
+        }
+
+        public void BufferRigidActions()
+        {
+
         }
 
         #endregion
@@ -299,8 +308,13 @@ namespace WpfHandGazeDistance.Models
             
             for (int i = 0; i < inputValues.Count; i++)
             {
+                if (float.IsNaN(inputValues[i]))
+                {
+                    outputValues.Add(float.NaN);
+                    continue;
+                }
+
                 List<float> currentWindow = new List<float>();
-                
                 while (!float.IsNaN(inputValues[i]))
                 {
                     currentWindow.Add(inputValues[i]);
@@ -312,14 +326,10 @@ namespace WpfHandGazeDistance.Models
                 {
                     outputValues.AddRange(currentWindow);
                 }
-                else if (currentWindow.Count > 0)
+                else
                 {
                     List<float> nanList = Enumerable.Range(0, currentWindow.Count).Select(n => float.NaN).ToList();
                     outputValues.AddRange(nanList);
-                }
-                else
-                {
-                    outputValues.Add(float.NaN);
                 }
             }
 
@@ -384,6 +394,30 @@ namespace WpfHandGazeDistance.Models
                 else
                 {
                     outputValues.Add(inputValues[i]);
+                }
+            }
+
+            return outputValues;
+        }
+
+        private static List<float> Buffer(List<float> inputValues, float buffer = _buffer)
+        {
+            List<float> outputValues = new List<float>();
+
+            for (int i = 0; i < inputValues.Count; i++)
+            {
+                if (float.IsNaN(inputValues[i]))
+                {
+                    outputValues.Add(float.NaN);
+                    continue;
+                }
+
+                List<float> currentWindow = new List<float>();
+                while (!float.IsNaN(inputValues[i]))
+                {
+                    currentWindow.Add(inputValues[i]);
+                    if (float.IsNaN(inputValues[i + 1])) break;
+                    if (i + 1 < inputValues.Count) i++;
                 }
             }
 
