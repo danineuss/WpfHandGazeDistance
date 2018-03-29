@@ -17,15 +17,17 @@ namespace WpfHandGazeDistance.Models
 
         private char _csvDelimiter = ';';
 
-        private const int _longActionCount = 120;
+        private const int _fps = 60;
 
-        private const int _stdDevPeriod = 120;
+        private const int _longActionCount = (int) 2f * _fps;
+
+        private const int _stdDevPeriod = (int) 2f * _fps;
+
+        private const int _bufferLength = (int) 0.5f * _fps;
 
         private const int _medianPeriod = 10;
 
         private const int _stdDevThreshold = 60;
-
-        private const float _buffer = 0.5f;
 
         private List<float> _recordingTime;
 
@@ -230,9 +232,10 @@ namespace WpfHandGazeDistance.Models
             RigidActions = Threshold(StandardDeviation);
         }
 
-        public void BufferRigidActions()
+        public void AnalyseUsabilityIssues()
         {
-
+            UsabilityIssues = ConvertToBinary(RigidActions);
+            BufferedUsabilityIssues = Buffer(UsabilityIssues);
         }
 
         #endregion
@@ -400,10 +403,40 @@ namespace WpfHandGazeDistance.Models
             return outputValues;
         }
 
-        private static List<float> Buffer(List<float> inputValues, float buffer = _buffer)
+        /// <summary>
+        /// This will replace any values into 1 and keep the NaN for the rest.
+        /// </summary>
+        /// <param name="inputValues">List of floats (e.g. RigidActions</param>
+        /// <returns>List of floats</returns>
+        private static List<float> ConvertToBinary(List<float> inputValues)
         {
             List<float> outputValues = new List<float>();
 
+            foreach (var value in inputValues)
+            {
+                outputValues.Add(float.IsNaN(value) ? float.NaN : 1);
+            }
+
+            return outputValues;
+        }
+
+        /// <summary>
+        /// This will make the length of the standard deviation data longer again, so that it
+        /// more closely matches the actual duration of the original action. This means adding
+        /// a window with the same length as the rolling window of the standard deviation. In addition,
+        /// a buffer is added before and after each action (typically 0.5s each). In both cases, 
+        /// the average value of the data within that action is added in the buffers.
+        /// </summary>
+        /// <param name="inputValues">List of floats (e.g. RigidActions)</param>
+        /// <param name="windowLength">The length of the standard deviation rolling window, 
+        /// used back in MovingStdDev().</param>
+        /// <param name="bufferDuration">The length of the buffer window.</param>
+        /// <returns></returns>
+        private static List<float> Buffer(List<float> inputValues, 
+            int windowLength = _stdDevPeriod, int bufferLength = _bufferLength)
+        {
+            List<float> outputValues = new List<float>();
+            
             for (int i = 0; i < inputValues.Count; i++)
             {
                 if (float.IsNaN(inputValues[i]))
@@ -419,6 +452,16 @@ namespace WpfHandGazeDistance.Models
                     if (float.IsNaN(inputValues[i + 1])) break;
                     if (i + 1 < inputValues.Count) i++;
                 }
+
+                List<float> bufferList = Enumerable.Repeat(currentWindow.Average(), bufferLength).ToList();
+                List<float> stdDevWindow = Enumerable.Repeat(currentWindow.Average(), windowLength).ToList();
+                currentWindow.InsertRange(0, bufferList);
+                currentWindow.InsertRange(currentWindow.Count, stdDevWindow);
+                currentWindow.InsertRange(currentWindow.Count, bufferList);
+
+                outputValues.RemoveRange(outputValues.Count - bufferLength, bufferLength);
+                outputValues.AddRange(currentWindow);
+                i += bufferLength;
             }
 
             return outputValues;
