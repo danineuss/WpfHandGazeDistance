@@ -73,11 +73,11 @@ namespace WpfHandGazeDistance.ViewModels
             }
         }
 
-        public string BeGazePath
-        {
-            get => _beGazePath;
-            set => ChangeAndNotify(value, ref _beGazePath);
-        }
+        //public string BeGazePath
+        //{
+        //    get => _beGazePath;
+        //    set => ChangeAndNotify(value, ref _beGazePath);
+        //}
 
         public string HgdPath
         {
@@ -186,17 +186,17 @@ namespace WpfHandGazeDistance.ViewModels
 
         public ICommand LoadImageCommand => new RelayCommand(LoadImage, true);
 
-        public ICommand LoadVideoCommand => new RelayCommand(LoadVideo, true);
+        //public ICommand LoadVideoCommand => new RelayCommand(LoadVideo, true);
 
-        public ICommand LoadBeGazeCommand => new RelayCommand(LoadBeGaze, true);
+        //public ICommand LoadBeGazeCommand => new RelayCommand(LoadBeGaze, true);
 
-        public ICommand SetSavePathCommand => new RelayCommand(SetSavePath, true);
+        //public ICommand SetSavePathCommand => new RelayCommand(SetSavePath, true);
 
         public ICommand AnalyseImageCommand => new RelayCommand(AnalyseImage, true);
 
         public ICommand NextImageCommand => new RelayCommand(NextImage, true);
 
-        public ICommand AnalyseDataCommand => new RelayCommand(AnalyseRawDistance, true);
+        //public ICommand AnalyseDataCommand => new RelayCommand(AnalyseRawDistance, true);
 
         public ICommand CutVideoCommand => new RelayCommand(CutVideo, true);
 
@@ -211,16 +211,16 @@ namespace WpfHandGazeDistance.ViewModels
             ImagePath = FileDialog.OpenFileDialog();
         }
 
-        private void LoadVideo()
-        {
-            VideoPath = FileDialog.OpenFileDialog();
-        }
+        //private void LoadVideo()
+        //{
+        //    VideoPath = FileDialog.OpenFileDialog();
+        //}
 
-        private void LoadBeGaze()
-        {
-            BeGazePath = FileDialog.OpenFileDialog();
-            BeGazeData = new BeGazeData(BeGazePath);
-        }
+        //private void LoadBeGaze()
+        //{
+        //    BeGazePath = FileDialog.OpenFileDialog();
+        //    BeGazeData = new BeGazeData(BeGazePath);
+        //}
 
         private void SetSavePath()
         {

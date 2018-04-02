@@ -51,8 +51,6 @@ namespace WpfHandGazeDistance.Helpers
             var lengthBeGaze = BeGazeData.RecordingTime.Count;
             var lengthVideo = Video.FrameCount;
 
-            if (lengthVideo != lengthBeGaze) throw new FormatException("Video and BeGaze Data not of same length.");
-
             List<float> rawDistance = new List<float>();
             for (int index = 0; index < Video.FrameCount; index++)
             {
@@ -68,6 +66,8 @@ namespace WpfHandGazeDistance.Helpers
                     int minutes = index / outputStep;
                     Debug.Print(minutes.ToString() + " minutes done.");
                 }
+
+                frame.Dispose();
             }
 
             HgdData.RawDistance = rawDistance;

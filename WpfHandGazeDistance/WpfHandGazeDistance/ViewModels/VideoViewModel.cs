@@ -1,5 +1,6 @@
 ﻿using System.Windows.Input;
 using Microsoft.Win32;
+using WpfHandGazeDistance.Helpers;
 using WpfHandGazeDistance.Models;
 using WpfHandGazeDistance.ViewModels.Base;
 
@@ -13,6 +14,8 @@ namespace WpfHandGazeDistance.ViewModels
 
         private Video _video;
 
+        private VideoEditor _videoEditor;
+
         #endregion
 
         #region Public Properties
@@ -24,14 +27,27 @@ namespace WpfHandGazeDistance.ViewModels
             {
                 ChangeAndNotify(value, ref _videoPath);
                 _video = new Video(value);
+                _videoEditor = new VideoEditor(value);
             }
         }
 
-        public bool ReadyToAnalyse => _video != null;
+        public Video Video
+        {
+            get => _video;
+        }
+
+        public bool ReadyToAnalyse => _videoPath != null;
 
         #endregion
 
-        public ICommand LoadCommand => new RelayCommand(LoadVideo, true);
+        #region Constructor
+
+        public VideoViewModel(string videoPath)
+        {
+            VideoPath = videoPath;
+        }
+
+        #endregion
 
         private void LoadVideo()
         {

@@ -8,13 +8,13 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="694" Width="994">
     <Grid>
-        <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding LoadBeGazeCommand}" Content="Load BeGaze" HorizontalAlignment="Left" Margin="55,22,0,0" VerticalAlignment="Top" Width="95"/>
-        <TextBox DataContext="{Binding PrototypingViewModel}" HorizontalAlignment="Left" Height="23" Margin="187,21,0,0" TextWrapping="Wrap" Text="{Binding BeGazePath}" VerticalAlignment="Top" Width="774"/>
-        <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding LoadVideoCommand}" Content="Load Video" HorizontalAlignment="Left" Margin="55,56,0,0" VerticalAlignment="Top" Width="95"/>
-        <TextBox DataContext="{Binding PrototypingViewModel}" HorizontalAlignment="Left" Height="23" Margin="187,55,0,0" TextWrapping="Wrap" Text="{Binding VideoPath}" VerticalAlignment="Top" Width="774"/>
-        <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding SetSavePathCommand}" Content="Set Save Path" HorizontalAlignment="Left" Margin="55,90,0,0" VerticalAlignment="Top" Width="95"/>
-        <TextBox DataContext="{Binding PrototypingViewModel}" HorizontalAlignment="Left" Height="23" Margin="187,89,0,0" TextWrapping="Wrap" Text="{Binding HgdPath}" VerticalAlignment="Top" Width="774"/>
-        <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding AnalyseDataCommand}" Content="Analyse Data" HorizontalAlignment="Left" Margin="55,132,0,0" VerticalAlignment="Top" Width="95"/>
+        <Button Command="{Binding LoadBeGazeCommand}" Content="Load BeGaze" HorizontalAlignment="Left" Margin="55,22,0,0" VerticalAlignment="Top" Width="95"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="187,21,0,0" TextWrapping="Wrap" Text="{Binding BeGazePath}" VerticalAlignment="Top" Width="774"/>
+        <Button Command="{Binding LoadVideoCommand}" Content="Load Video" HorizontalAlignment="Left" Margin="55,56,0,0" VerticalAlignment="Top" Width="95"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="187,55,0,0" TextWrapping="Wrap" Text="{Binding VideoPath}" VerticalAlignment="Top" Width="774"/>
+        <Button Command="{Binding SetHgdPathCommand}" Content="Set Save Path" HorizontalAlignment="Left" Margin="55,90,0,0" VerticalAlignment="Top" Width="95"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="187,89,0,0" TextWrapping="Wrap" Text="{Binding HgdPath}" VerticalAlignment="Top" Width="774"/>
+        <Button Command="{Binding AnalyseDataCommand}" Content="Analyse Data" HorizontalAlignment="Left" Margin="55,132,0,0" VerticalAlignment="Top" Width="95"/>
 
         <!-- Prototyping Corner starts here -->
         <Image DataContext="{Binding PrototypingViewModel}" Source="{Binding InputBitmap}"  HorizontalAlignment="Left" Height="359" Margin="55,237,0,0" VerticalAlignment="Top" Width="425"/>
@@ -37,7 +37,7 @@
         <TextBox DataContext="{Binding PrototypingViewModel}" Text="Video Duration:" HorizontalAlignment="Left" Height="23" Margin="629,155,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="101"/>
         <TextBox DataContext="{Binding PrototypingViewModel}" Text="{Binding VideoDuration}" HorizontalAlignment="Left" Height="23" Margin="741,154,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="61"/>
 
-        <Button DataContext="{Binding HgdViewModel}" Command="{Binding LoadHgdCommand}" Content="Load HGD" HorizontalAlignment="Left" Margin="55,616,0,0" VerticalAlignment="Top" Width="80"/>
+        <Button Command="{Binding LoadHgdCommand}" Content="Load HGD" HorizontalAlignment="Left" Margin="55,616,0,0" VerticalAlignment="Top" Width="80"/>
         <Button DataContext="{Binding HgdViewModel}" Command="{Binding SaveHgdCommand}" Content="Save HGD" HorizontalAlignment="Left" Margin="712,616,0,0" VerticalAlignment="Top" Width="80"/>
         <Button DataContext="{Binding HgdViewModel}" Command="{Binding MedianCommand}" Content="Median" HorizontalAlignment="Left" Margin="186,616,0,0" VerticalAlignment="Top" Width="80"/>
         <Button DataContext="{Binding HgdViewModel}" Command="{Binding LongActionsCommand}" Content="Long Actions" HorizontalAlignment="Left" Margin="283,616,0,0" VerticalAlignment="Top" Width="80"/>

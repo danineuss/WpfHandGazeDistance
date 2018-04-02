@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Drawing;
+using System.Windows.Input;
 using Microsoft.Win32;
 using WpfHandGazeDistance.Models;
 using WpfHandGazeDistance.ViewModels.Base;
@@ -27,11 +28,25 @@ namespace WpfHandGazeDistance.ViewModels
             }
         }
 
-        #endregion
+        public BeGazeData BeGazeData
+        {
+            get => _beGazeData;
+        }
 
         public bool ReadyToAnalyse => _beGazeData != null;
 
-        public ICommand LoadCommand => new RelayCommand(LoadBeGaze, true);
+        #endregion
+
+        public BeGazeViewModel(string beGazePath)
+        {
+            BeGazePath = beGazePath;
+        }
+
+
+        public PointF GetCoordinatePoint(int index)
+        {
+            return _beGazeData.GetCoordinatePoint(index);
+        }
 
         private void LoadBeGaze()
         {

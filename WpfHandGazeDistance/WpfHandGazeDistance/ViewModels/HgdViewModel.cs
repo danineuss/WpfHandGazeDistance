@@ -34,7 +34,7 @@ namespace WpfHandGazeDistance.ViewModels
 
         public HgdViewModel()
         {
-            
+            HgdData = new HgdData();
         }
 
         public HgdViewModel(BeGazeData beGazeData, Video video)
@@ -59,11 +59,18 @@ namespace WpfHandGazeDistance.ViewModels
 
         public ICommand UsabilityIssuesCommand => new RelayCommand(HgdUsability, true);
 
-        public ICommand LoadHgdCommand => new RelayCommand(LoadHgd, true);
+        //public ICommand LoadHgdCommand => new RelayCommand(LoadHgd, true);
 
         public ICommand SaveHgdCommand => new RelayCommand(SaveHgd, true);
 
-        private void AnalyseData()
+        #endregion
+
+        public void SaveHgdData(string savePath)
+        {
+            HgdData.SaveData(savePath);
+        }
+
+        public void AnalyseData()
         {
             HgdData = _handDetector.MeasureRawHgd();
             HgdData.MedianDistance = MovingMedian(HgdData.RawDistance, _medianPeriod);
@@ -100,18 +107,16 @@ namespace WpfHandGazeDistance.ViewModels
             HgdData.BufferedUsabilityIssues = Buffer(HgdData.UsabilityIssues, _stdDevPeriod, _bufferLength);
         }
 
-        private void LoadHgd()
-        {
-            HgdData = new HgdData();
-            HgdData.LoadData(FileDialog.OpenFileDialog());
-        }
+        //private void LoadHgd()
+        //{
+        //    HgdData = new HgdData();
+        //    HgdData.LoadData(FileDialog.OpenFileDialog());
+        //}
 
         private void SaveHgd()
         {
             HgdData.SaveData(FileDialog.SaveFileDialog());
         }
-
-        #endregion
 
         #region HGD Manipulation
 
