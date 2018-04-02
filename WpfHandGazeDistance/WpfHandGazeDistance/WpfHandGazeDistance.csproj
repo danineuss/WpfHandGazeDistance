@@ -40,13 +40,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Emgu.CV.UI">
-      <HintPath>C:\Emgu\Emgu CV 3.3\bin\Emgu.CV.UI.dll</HintPath>
+      <HintPath>C:\EmguCV 3.3\bin\Emgu.CV.UI.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.UI.GL">
-      <HintPath>C:\Emgu\Emgu CV 3.3\bin\Emgu.CV.UI.GL.dll</HintPath>
+      <HintPath>C:\EmguCV 3.3\bin\Emgu.CV.UI.GL.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.World">
-      <HintPath>C:\Emgu\Emgu CV 3.3\bin\Emgu.CV.World.dll</HintPath>
+      <HintPath>C:\EmguCV 3.3\bin\Emgu.CV.World.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -69,6 +69,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Helpers\FileDialog.cs" />
     <Compile Include="Helpers\HandDetector.cs" />
     <Compile Include="Helpers\VideoEditor.cs" />
     <Compile Include="Models\BgrImage.cs" />

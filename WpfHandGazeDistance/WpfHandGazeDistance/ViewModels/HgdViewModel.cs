@@ -12,17 +12,19 @@ namespace WpfHandGazeDistance.ViewModels
     {
         #region Properties
         
-        private readonly HandDetector _handDetector;
+        private HandDetector _handDetector;
 
-        private readonly int _longActionCount;
+        private static int _fps = 60;
 
-        private readonly int _stdDevPeriod;
+        private int _longActionCount = (int)(2f * _fps);
 
-        private readonly int _bufferLength;
+        private int _stdDevPeriod = (int)(2f * _fps);
 
-        private readonly int _medianPeriod = 10;
+        private int _bufferLength = (int)(0.5f * _fps);
 
-        private readonly int _stdDevThreshold = 60;
+        private int _medianPeriod = 10;
+
+        private int _stdDevThreshold = 60;
 
         public HgdData HgdData { get; set; }
 
@@ -32,17 +34,13 @@ namespace WpfHandGazeDistance.ViewModels
 
         public HgdViewModel()
         {
-
+            
         }
 
         public HgdViewModel(BeGazeData beGazeData, Video video)
         {
             HgdData = new HgdData();
             _handDetector = new HandDetector(beGazeData, video);
-
-            _longActionCount = (int) (2f * _handDetector.Video.Fps);
-            _stdDevPeriod = (int)(2f * _handDetector.Video.Fps);
-            _bufferLength = (int)(0.5f * _handDetector.Video.Fps);
         }
 
         #endregion
@@ -60,6 +58,10 @@ namespace WpfHandGazeDistance.ViewModels
         public ICommand ThresholdCommand => new RelayCommand(HgdThreshold, true);
 
         public ICommand UsabilityIssuesCommand => new RelayCommand(HgdUsability, true);
+
+        public ICommand LoadHgdCommand => new RelayCommand(LoadHgd, true);
+
+        public ICommand SaveHgdCommand => new RelayCommand(SaveHgd, true);
 
         private void AnalyseData()
         {
@@ -96,6 +98,17 @@ namespace WpfHandGazeDistance.ViewModels
         {
             HgdData.UsabilityIssues = ConvertToBinary(HgdData.RigidActions);
             HgdData.BufferedUsabilityIssues = Buffer(HgdData.UsabilityIssues, _stdDevPeriod, _bufferLength);
+        }
+
+        private void LoadHgd()
+        {
+            HgdData = new HgdData();
+            HgdData.LoadData(FileDialog.OpenFileDialog());
+        }
+
+        private void SaveHgd()
+        {
+            HgdData.SaveData(FileDialog.SaveFileDialog());
         }
 
         #endregion
@@ -300,8 +313,18 @@ namespace WpfHandGazeDistance.ViewModels
                 currentWindow.InsertRange(currentWindow.Count, stdDevWindow);
                 currentWindow.InsertRange(currentWindow.Count, bufferList);
 
-                outputValues.RemoveRange(outputValues.Count - bufferLength, bufferLength);
-                outputValues.AddRange(currentWindow);
+                if (outputValues.Count < bufferLength)
+                {
+                    // The first action is at the very start of the video.
+                    currentWindow.RemoveRange(0, bufferLength);
+                    outputValues.AddRange(currentWindow); 
+                }
+                else
+                {
+                    outputValues.RemoveRange(outputValues.Count - bufferLength, bufferLength);
+                    outputValues.AddRange(currentWindow);
+                }
+                    
                 i += bufferLength;
             }
 

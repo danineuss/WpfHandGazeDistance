@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Emgu.CV;
 using Emgu.CV.Structure;
-using Microsoft.Win32;
 using WpfHandGazeDistance.Helpers;
 using WpfHandGazeDistance.Models;
 using WpfHandGazeDistance.ViewModels.Base;
@@ -211,23 +208,23 @@ namespace WpfHandGazeDistance.ViewModels
 
         private void LoadImage()
         {
-            ImagePath = OpenFileDialog();
+            ImagePath = FileDialog.OpenFileDialog();
         }
 
         private void LoadVideo()
         {
-            VideoPath = OpenFileDialog();
+            VideoPath = FileDialog.OpenFileDialog();
         }
 
         private void LoadBeGaze()
         {
-            BeGazePath = OpenFileDialog();
+            BeGazePath = FileDialog.OpenFileDialog();
             BeGazeData = new BeGazeData(BeGazePath);
         }
 
         private void SetSavePath()
         {
-            HgdPath = SaveFileDialog();
+            HgdPath = FileDialog.SaveFileDialog();
         }
 
         private void NextImage()
@@ -253,28 +250,10 @@ namespace WpfHandGazeDistance.ViewModels
 
         private void AnalyseRawDistance()
         {
-            BeGazeData = new BeGazeData(BeGazePath);
-            Video = new Video(VideoPath);
-            HgdData = new HgdData {RecordingTime = BeGazeData.RecordingTime};
+            HandDetector handDetector = new HandDetector(BeGazeData, Video);
 
-            List<float> rawDistance = new List<float>();
-            for (int index = 0; index < Video.FrameCount; index++)
-            {
-                PointF coordinates = BeGazeData.GetCoordinatePoint(index);
-                Image<Bgr, byte> frame = Video.GetImageFrame();
+            HgdData = handDetector.MeasureRawHgd();
 
-                float distance = HandDetector.MeasureHgd(frame, coordinates);
-                rawDistance.Add(distance);
-
-                int outputStep = 3600;
-                if (index % outputStep == 0)
-                {
-                    int minutes = index / outputStep;
-                    Debug.Print(minutes.ToString() + " minutes done.");
-                }
-            }
-
-            HgdData.RawDistance = rawDistance;
             SaveData();
         }
 
@@ -292,29 +271,12 @@ namespace WpfHandGazeDistance.ViewModels
         private void LoadHgd()
         {
             HgdData = new HgdData();
-            HgdData.LoadData(OpenFileDialog());
+            HgdData.LoadData(FileDialog.OpenFileDialog());
         }
 
         private void SaveHgd()
         {
-            HgdData.SaveData(SaveFileDialog());
-        }
-
-        private static string OpenFileDialog()
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            if (openFileDialog.ShowDialog() == true) return openFileDialog.FileName;
-            return null;
-        }
-
-        private static string SaveFileDialog()
-        {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            if (saveFileDialog.ShowDialog() == true)
-            {
-                return saveFileDialog.FileName;
-            }
-            return null;
+            HgdData.SaveData(FileDialog.SaveFileDialog());
         }
     }
 };
