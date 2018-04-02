@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace WpfHandGazeDistance.Models
@@ -139,7 +136,9 @@ namespace WpfHandGazeDistance.Models
         {
             using (var streamReader = new StreamReader(loadPath))
             {
-                string headerLine = streamReader.ReadLine();
+                // Remove top line as it only contains the name of the parameters.
+                streamReader.ReadLine();
+
                 while (!streamReader.EndOfStream)
                 {
                     string line = streamReader.ReadLine();

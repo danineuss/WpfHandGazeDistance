@@ -16,7 +16,14 @@ namespace WpfHandGazeDistance.ViewModels
 
         public PrototypingViewModel PrototypingViewModel { get; }
 
-        public bool ReadyToAnalyse => VideoViewModel.ReadyToAnalyse && BeGazeViewModel.ReadyToAnalyse;
+        public bool ReadyToAnalyse
+        {
+            get => VideoViewModel.ReadyToAnalyse && BeGazeViewModel.ReadyToAnalyse;
+            set
+            {
+
+            }
+        }
 
         #endregion
 

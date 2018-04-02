@@ -10,12 +10,8 @@ namespace WpfHandGazeDistance.ViewModels
 {
     public class HgdViewModel : BaseViewModel
     {
-        #region Private Properties
-
-        private BeGazeData _beGazeData;
-
-        private readonly Video _video;
-
+        #region Properties
+        
         private readonly HandDetector _handDetector;
 
         private readonly int _longActionCount;
@@ -28,23 +24,42 @@ namespace WpfHandGazeDistance.ViewModels
 
         private readonly int _stdDevThreshold = 60;
 
+        public HgdData HgdData { get; set; }
+
         #endregion
 
-        public HgdData HgdData { get; set; }
+        #region Constructors
+
+        public HgdViewModel()
+        {
+
+        }
 
         public HgdViewModel(BeGazeData beGazeData, Video video)
         {
             HgdData = new HgdData();
-            _beGazeData = beGazeData;
-            _video = video;
             _handDetector = new HandDetector(beGazeData, video);
 
-            _longActionCount = (int) (2f * _video.Fps);
-            _stdDevPeriod = (int)(2f * _video.Fps);
-            _bufferLength = (int)(0.5f * _video.Fps);
+            _longActionCount = (int) (2f * _handDetector.Video.Fps);
+            _stdDevPeriod = (int)(2f * _handDetector.Video.Fps);
+            _bufferLength = (int)(0.5f * _handDetector.Video.Fps);
         }
 
+        #endregion
+
+        #region Commands
+
         public ICommand AnalyseCommand => new RelayCommand(AnalyseData, true);
+
+        public ICommand MedianCommand => new RelayCommand(HgdMedian, true);
+
+        public ICommand LongActionsCommand => new RelayCommand(HgdLongActions, true);
+
+        public ICommand StdDevCommand => new RelayCommand(HgdStdDev, true);
+
+        public ICommand ThresholdCommand => new RelayCommand(HgdThreshold, true);
+
+        public ICommand UsabilityIssuesCommand => new RelayCommand(HgdUsability, true);
 
         private void AnalyseData()
         {
@@ -56,6 +71,36 @@ namespace WpfHandGazeDistance.ViewModels
             HgdData.UsabilityIssues = ConvertToBinary(HgdData.RigidActions);
             HgdData.BufferedUsabilityIssues = Buffer(HgdData.UsabilityIssues, _stdDevPeriod, _bufferLength);
         }
+
+        private void HgdMedian()
+        {
+            HgdData.MedianDistance = MovingMedian(HgdData.RawDistance, _medianPeriod);
+        }
+
+        private void HgdLongActions()
+        {
+            HgdData.LongActions = LowPass(HgdData.MedianDistance, _longActionCount);
+        }
+
+        private void HgdStdDev()
+        {
+            HgdData.StandardDeviation = MovingStdDev(HgdData.LongActions, _stdDevPeriod);
+        }
+
+        private void HgdThreshold()
+        {
+            HgdData.RigidActions = Threshold(HgdData.StandardDeviation, _stdDevThreshold);
+        }
+
+        private void HgdUsability()
+        {
+            HgdData.UsabilityIssues = ConvertToBinary(HgdData.RigidActions);
+            HgdData.BufferedUsabilityIssues = Buffer(HgdData.UsabilityIssues, _stdDevPeriod, _bufferLength);
+        }
+
+        #endregion
+
+        #region HGD Manipulation
 
         /// <summary>
         /// This function will take a list of floats and apply a moving median on it. 
@@ -282,5 +327,7 @@ namespace WpfHandGazeDistance.ViewModels
 
             return (float)Math.Sqrt(variance);
         }
+
+        #endregion
     }
 }

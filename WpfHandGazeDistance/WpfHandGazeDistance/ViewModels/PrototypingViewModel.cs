@@ -54,6 +54,8 @@ namespace WpfHandGazeDistance.ViewModels
 
         #region Public Properties
 
+        public HgdViewModel HgdViewModel { get; set; }
+        
         public string ImagePath
         {
             get => _imagePath;
@@ -205,16 +207,6 @@ namespace WpfHandGazeDistance.ViewModels
 
         public ICommand SaveHgdCommand => new RelayCommand(SaveHgd, true);
 
-        public ICommand MedianCommand => new RelayCommand(HgdMedian, true);
-
-        public ICommand LongActionsCommand => new RelayCommand(HgdLongActions, true);
-
-        public ICommand StdDevCommand => new RelayCommand(HgdStdDev, true);
-
-        public ICommand ThresholdCommand => new RelayCommand(HgdThreshold, true);
-
-        public ICommand BufferCommand => new RelayCommand(HgdBuffer, true);
-
         #endregion
 
         private void LoadImage()
@@ -284,31 +276,6 @@ namespace WpfHandGazeDistance.ViewModels
 
             HgdData.RawDistance = rawDistance;
             SaveData();
-        }
-
-        private void HgdMedian()
-        {
-            HgdData.AnalyseMedian();
-        }
-
-        private void HgdLongActions()
-        {
-            HgdData.AnalyseLongActions();
-        }
-
-        private void HgdStdDev()
-        {
-            HgdData.AnalyseStdDev();
-        }
-
-        private void HgdThreshold()
-        {
-            HgdData.AnalyseRigidActions();
-        }
-
-        private void HgdBuffer()
-        {
-
         }
 
         private void SaveData()
