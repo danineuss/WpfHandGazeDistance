@@ -52,6 +52,8 @@ namespace WpfHandGazeDistance.Helpers
             Console.WriteLine("Video cut (" + startTime.ToString() + ")");
         }
 
+        #region Private Members
+        
         /// <summary>
         /// This will concat a string for the FFmpeg arguments, telling it to cut a video snippet.
         /// </summary>
@@ -64,7 +66,7 @@ namespace WpfHandGazeDistance.Helpers
             string argumentString = "-i " + _videoPath + " -ss ";
             argumentString += TimeToString(startTime) + " -t " + TimeToString(endTime - startTime);
             argumentString += " -b:v " + ProbeVideo("bitrate:") + "k";
-            argumentString += " -r " + _video.GetFps();
+            argumentString += " -r " + _video.Fps;
             argumentString += " " + outputPath;
             Debug.Print(argumentString);
 
@@ -124,7 +126,7 @@ namespace WpfHandGazeDistance.Helpers
 
             return timeString;
         }
-        
+
         /// <summary>
         /// This function will take the list of elements within the ffprobe line which contains
         /// Duration, start and bitrate of the following format:
@@ -144,5 +146,8 @@ namespace WpfHandGazeDistance.Helpers
             if (index >= itemsOfData.Count - 1) return null;
             return itemsOfData[index + 1];
         }
+
+        #endregion
+
     }
 }

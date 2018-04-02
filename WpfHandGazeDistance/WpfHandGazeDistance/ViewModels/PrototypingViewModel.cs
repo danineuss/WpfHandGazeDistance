@@ -92,7 +92,7 @@ namespace WpfHandGazeDistance.ViewModels
             set
             {
                 ChangeAndNotify(value, ref _video);
-                MaxFrameCount = Video.NumberOfFrames();
+                MaxFrameCount = Video.FrameCount;
                 InputImage = _video.GetImageFrame();
             }
         }
@@ -256,7 +256,7 @@ namespace WpfHandGazeDistance.ViewModels
             OutputImage = HandDetector.AnalyseImage(InputImage);
             NumberOfHands = HandDetector.FindHands(InputImage).Size;
             OutputImage = HandDetector.AnalyseImage(InputImage);
-            Distance = HandDetector.MeasureDistance(InputImage, new PointF(0, 0));
+            Distance = HandDetector.MeasureHgd(InputImage, new PointF(0, 0));
         }
 
         private void AnalyseRawDistance()
@@ -266,12 +266,12 @@ namespace WpfHandGazeDistance.ViewModels
             HgdData = new HgdData {RecordingTime = BeGazeData.RecordingTime};
 
             List<float> rawDistance = new List<float>();
-            for (int index = 0; index < Video.NumberOfFrames(); index++)
+            for (int index = 0; index < Video.FrameCount; index++)
             {
                 PointF coordinates = BeGazeData.GetCoordinatePoint(index);
                 Image<Bgr, byte> frame = Video.GetImageFrame();
 
-                float distance = HandDetector.MeasureDistance(frame, coordinates);
+                float distance = HandDetector.MeasureHgd(frame, coordinates);
                 rawDistance.Add(distance);
 
                 int outputStep = 3600;

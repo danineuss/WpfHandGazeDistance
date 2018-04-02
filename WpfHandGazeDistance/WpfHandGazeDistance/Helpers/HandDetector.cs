@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using Emgu.CV;
@@ -12,6 +13,14 @@ namespace WpfHandGazeDistance.Helpers
 {
     public class HandDetector
     {
+        #region Private Properties
+
+        private const int _pixelThreshold = 10000;
+
+        private const int _numberOfContours = 2;
+
+        #endregion
+
         #region Public Properties
 
         public BeGazeData BeGazeData { get; }
@@ -32,8 +41,43 @@ namespace WpfHandGazeDistance.Helpers
         }
 
         /// <summary>
+        /// This will measure the distance between the gaze point and the closest hand for each frame in the video.
+        /// For each time step the hands are detected and compared to the (x, y)-coordinates of the gaze. The
+        /// distance between the two is recorded and stored in the HgdData.
+        /// </summary>
+        /// <returns></returns>
+        public HgdData MeasureRawHgd()
+        {
+            var lengthBeGaze = BeGazeData.RecordingTime.Count;
+            var lengthVideo = Video.FrameCount;
+
+            if (lengthVideo != lengthBeGaze) throw new FormatException("Video and BeGaze Data not of same length.");
+
+            List<float> rawDistance = new List<float>();
+            for (int index = 0; index < Video.FrameCount; index++)
+            {
+                PointF coordinates = BeGazeData.GetCoordinatePoint(index);
+                Image<Bgr, byte> frame = Video.GetImageFrame();
+
+                float distance = MeasureHgd(frame, coordinates);
+                rawDistance.Add(distance);
+
+                int outputStep = 60 * (int)Video.Fps;
+                if (index % outputStep == 0)
+                {
+                    int minutes = index / outputStep;
+                    Debug.Print(minutes.ToString() + " minutes done.");
+                }
+            }
+
+            HgdData.RawDistance = rawDistance;
+            return HgdData;
+        }
+
+        /// <summary>
         /// This function will segment, erode and filter a BGR image to find the hands
         /// and then return the hand contours as white contours on a black background.
+        /// This is useful for testing or demonstrating the hand detection algorithm.
         /// </summary>
         /// <param name="inputImage">A standard BGR image.</param>
         /// <returns>A grayscale image with the hands as white.</returns>
@@ -44,6 +88,20 @@ namespace WpfHandGazeDistance.Helpers
             CvInvoke.DrawContours(outputImage, handContours, -1, new MCvScalar(255), -1);
 
             return outputImage;
+        }
+
+        /// <summary>
+        /// This will find the hands and measure the distance from the top-left corner of the image.
+        /// </summary>
+        /// <param name="inputImage">A standard BGR image.</param>
+        /// <param name="point">The distance to the hand is measured from this point. In (x, y) coordinates from the top left.</param>
+        /// <returns>The distance between the top-left corner and the closest hand (in pixels).</returns>
+        public static float MeasureHgd(Image<Bgr, byte> inputImage, PointF point)
+        {
+            VectorOfVectorOfPoint largestContours = FindHands(inputImage);
+            float distance = MeasureDistance(largestContours, point);
+
+            return distance;
         }
 
         /// <summary>
@@ -60,41 +118,6 @@ namespace WpfHandGazeDistance.Helpers
             VectorOfVectorOfPoint handContours = LargestContours(outputImage);
 
             return handContours;
-        }
-
-        /// <summary>
-        /// This will find the hands and measure the distance from the top-left corner of the image.
-        /// </summary>
-        /// <param name="inputImage">A standard BGR image.</param>
-        /// <param name="point">The distance to the hand is measured from this point. In (x, y) coordinates from the top left.</param>
-        /// <returns>The distance between the top-left corner and the closest hand (in pixels).</returns>
-        public static float MeasureDistance(Image<Bgr, byte> inputImage, PointF point)
-        {
-            VectorOfVectorOfPoint largestContours = FindHands(inputImage);
-            float distance = MeasureDistance(largestContours, point);
-
-            return distance;
-        }
-
-        public HgdData AnalyseData()
-        {
-            var lengthBeGaze = BeGazeData.RecordingTime.Count;
-            var lengthVideo = Video.NumberOfFrames();
-
-            if (lengthVideo != lengthBeGaze) throw new FormatException("Video and BeGaze Data not of same length.");
-
-            throw new NotImplementedException();
-
-            for (var i = 0; i < lengthBeGaze; i++)
-            {
-                VectorOfVectorOfPoint handContours = FindHands(Video.GetImageFrame());
-                PointF gazeCoordinates = new PointF(BeGazeData.XGaze[i], BeGazeData.YGaze[i]);
-
-                float distance = MeasureDistance(handContours, gazeCoordinates);
-                HgdData.RawDistance.Add(distance);
-            }
-
-            return HgdData;
         }
 
         #endregion
@@ -203,7 +226,8 @@ namespace WpfHandGazeDistance.Helpers
         /// <param name="pixelThreshold">Number of pixels required to be counted as a hand.</param>
         /// <param name="numberOfContours">The n largest contours which will be picked from the list.</param>
         /// <returns>Vector of contours</returns>
-        public static VectorOfVectorOfPoint LargestContours(Image<Gray, byte> inputImage, int pixelThreshold = 10000, int numberOfContours = 2)
+        public static VectorOfVectorOfPoint LargestContours(Image<Gray, byte> inputImage, 
+            int pixelThreshold = _pixelThreshold, int numberOfContours = _numberOfContours)
         {
             VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
             VectorOfVectorOfPoint sortedContours = new VectorOfVectorOfPoint();

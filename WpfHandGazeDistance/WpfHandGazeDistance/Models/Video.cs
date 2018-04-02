@@ -8,7 +8,7 @@ using WpfHandGazeDistance.Helpers;
 namespace WpfHandGazeDistance.Models
 {
     /// <summary>
-    /// Contains a string with the file path of the video source as well as a Emgu VideoCapture class
+    /// Contains a string with the file path of the video sowurce as well as a Emgu VideoCapture class
     /// to contain the video.
     /// </summary>
     public class Video
@@ -16,6 +16,14 @@ namespace WpfHandGazeDistance.Models
         #region Private Properties
         
         private VideoCapture _capture;
+
+        #endregion
+
+        #region Public Properties
+
+        public double Fps => _capture.GetCaptureProperty(CapProp.Fps);
+
+        public int FrameCount => (int)Math.Floor(_capture.GetCaptureProperty(CapProp.FrameCount));
 
         #endregion
 
@@ -47,25 +55,10 @@ namespace WpfHandGazeDistance.Models
             return frameMat.ToImage<Bgr, byte>();
         }
 
-        /// <summary>
-        /// Queries the first image of the video and returns it as a BitmapSource which can be displayed
-        /// in the View.
-        /// </summary>
-        /// <returns></returns>
         public BitmapSource GetBitmapFrame()
         {
             Mat frame = GetMatFrame();
             return BitMapConverter.ToBitmapSource(frame);
-        }
-
-        public int NumberOfFrames()
-        {
-            return (int)Math.Floor(_capture.GetCaptureProperty(CapProp.FrameCount));
-        }
-
-        public double GetFps()
-        {
-            return _capture.GetCaptureProperty(CapProp.Fps);
         }
 
         #endregion
