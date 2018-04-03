@@ -48,14 +48,5 @@ namespace WpfHandGazeDistance.ViewModels
         }
 
         #endregion
-
-        private void LoadVideo()
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            if (openFileDialog.ShowDialog() == true)
-            {
-                VideoPath = openFileDialog.FileName;
-            }
-        }
     }
 }

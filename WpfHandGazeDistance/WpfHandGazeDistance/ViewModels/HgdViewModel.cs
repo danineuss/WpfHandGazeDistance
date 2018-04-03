@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
 using WpfHandGazeDistance.Helpers;
@@ -65,7 +67,22 @@ namespace WpfHandGazeDistance.ViewModels
 
         #endregion
 
-        public void SaveHgdData(string savePath)
+        #region Public Members
+
+        public void LoadHgd()
+        {
+            HgdData = new HgdData();
+            string loadPath = FileDialog.OpenFileDialog();
+            if(loadPath != null) HgdData.LoadData(loadPath);
+        }
+
+        public void SaveHgd()
+        {
+            string savePath = FileDialog.SaveFileDialog();
+            if (savePath != null) HgdData.SaveData(savePath);
+        }
+
+        public void SaveHgd(string savePath)
         {
             HgdData.SaveData(savePath);
         }
@@ -73,6 +90,7 @@ namespace WpfHandGazeDistance.ViewModels
         public void AnalyseData()
         {
             HgdData = _handDetector.MeasureRawHgd();
+            HgdData.RawDistance = PruneValues(HgdData.RawDistance);
             HgdData.MedianDistance = MovingMedian(HgdData.RawDistance, _medianPeriod);
             HgdData.LongActions = LowPass(HgdData.MedianDistance, _longActionCount);
             HgdData.StandardDeviation = MovingStdDev(HgdData.LongActions, _stdDevPeriod);
@@ -81,8 +99,13 @@ namespace WpfHandGazeDistance.ViewModels
             HgdData.BufferedUsabilityIssues = Buffer(HgdData.UsabilityIssues, _stdDevPeriod, _bufferLength);
         }
 
+        #endregion
+
+        #region Private Members
+
         private void HgdMedian()
         {
+            HgdData.RawDistance = PruneValues(HgdData.RawDistance);
             HgdData.MedianDistance = MovingMedian(HgdData.RawDistance, _medianPeriod);
         }
 
@@ -107,18 +130,19 @@ namespace WpfHandGazeDistance.ViewModels
             HgdData.BufferedUsabilityIssues = Buffer(HgdData.UsabilityIssues, _stdDevPeriod, _bufferLength);
         }
 
-        //private void LoadHgd()
-        //{
-        //    HgdData = new HgdData();
-        //    HgdData.LoadData(FileDialog.OpenFileDialog());
-        //}
-
-        private void SaveHgd()
-        {
-            HgdData.SaveData(FileDialog.SaveFileDialog());
-        }
-
         #region HGD Manipulation
+
+        private static List<float> PruneValues(List<float> inputValues)
+        {
+            List<float> outputValues = new List<float>();
+
+            for (int i = 0; i < inputValues.Count; i++)
+            {
+                outputValues.Add(Math.Abs(inputValues[i] - (-1f)) < 0.0001f ? float.NaN : inputValues[i]);
+            }
+
+            return outputValues;
+        }
 
         /// <summary>
         /// This function will take a list of floats and apply a moving median on it. 
@@ -135,7 +159,7 @@ namespace WpfHandGazeDistance.ViewModels
         {
             List<float> outputValues = new List<float>();
 
-            for (int i = 0; i < inputValues.Count(); i++)
+            for (int i = 0; i < inputValues.Count; i++)
             {
                 if (i < period - 1)
                     outputValues.Add(Single.NaN);
@@ -154,6 +178,7 @@ namespace WpfHandGazeDistance.ViewModels
                     outputValues.Add(median);
                 }
             }
+
             return outputValues;
         }
 
@@ -177,13 +202,7 @@ namespace WpfHandGazeDistance.ViewModels
                     continue;
                 }
 
-                List<float> currentWindow = new List<float>();
-                while (!Single.IsNaN(inputValues[i]))
-                {
-                    currentWindow.Add(inputValues[i]);
-                    if (Single.IsNaN(inputValues[i + 1])) break;
-                    if (i + 1 < inputValues.Count) i++;
-                }
+                List<float> currentWindow = ValueWindow(inputValues, i);
 
                 if (currentWindow.Count > longActionsCount)
                 {
@@ -194,6 +213,8 @@ namespace WpfHandGazeDistance.ViewModels
                     List<float> nanList = Enumerable.Range(0, currentWindow.Count).Select(n => Single.NaN).ToList();
                     outputValues.AddRange(nanList);
                 }
+
+                i += currentWindow.Count - 1;
             }
 
             return outputValues;
@@ -211,7 +232,7 @@ namespace WpfHandGazeDistance.ViewModels
         {
             List<float> outputValues = new List<float>();
 
-            for (int i = 0; i < inputValues.Count; i++)
+            for (int i = 0; i < inputValues.Count - period; i++)
             {
                 if (Single.IsNaN(inputValues[i]))
                 {
@@ -225,14 +246,8 @@ namespace WpfHandGazeDistance.ViewModels
                     currentWindow.Add(inputValues[i + j]);
                 }
                 outputValues.Add(CalculateStdDev(currentWindow));
-
-                // Fill up the remaining values with NaN and jump to the end of the window.
-                if (Single.IsNaN(inputValues[i + period]))
-                {
-                    outputValues.AddRange(Enumerable.Range(0, period - 1).Select(n => Single.NaN).ToList());
-                    i += period - 1;
-                }
             }
+            outputValues.AddRange(Enumerable.Range(0, period).Select(n => Single.NaN).ToList());
 
             return outputValues;
         }
@@ -296,6 +311,7 @@ namespace WpfHandGazeDistance.ViewModels
         {
             List<float> outputValues = new List<float>();
 
+            int count = 0;
             for (int i = 0; i < inputValues.Count; i++)
             {
                 if (Single.IsNaN(inputValues[i]))
@@ -304,33 +320,38 @@ namespace WpfHandGazeDistance.ViewModels
                     continue;
                 }
 
-                List<float> currentWindow = new List<float>();
-                while (!Single.IsNaN(inputValues[i]))
-                {
-                    currentWindow.Add(inputValues[i]);
-                    if (Single.IsNaN(inputValues[i + 1])) break;
-                    if (i + 1 < inputValues.Count) i++;
-                }
-
+                List<float> currentWindow = ValueWindow(inputValues, i);
                 List<float> bufferList = Enumerable.Repeat(currentWindow.Average(), bufferLength).ToList();
                 List<float> stdDevWindow = Enumerable.Repeat(currentWindow.Average(), windowLength).ToList();
-                currentWindow.InsertRange(0, bufferList);
-                currentWindow.InsertRange(currentWindow.Count, stdDevWindow);
-                currentWindow.InsertRange(currentWindow.Count, bufferList);
+                count++;
 
-                if (outputValues.Count < bufferLength)
+                // The first action is at the very start of the video and the output is not
+                // far enough to contain more values than bufferLength
+                if (outputValues.Count > bufferLength)
                 {
-                    // The first action is at the very start of the video.
-                    currentWindow.RemoveRange(0, bufferLength);
-                    outputValues.AddRange(currentWindow); 
+                    outputValues.RemoveRange(outputValues.Count - bufferLength, bufferLength);
+                    outputValues.AddRange(bufferList);
+                }
+
+                outputValues.AddRange(currentWindow);
+                i += currentWindow.Count - 1;
+
+                if (inputValues.Count > outputValues.Count + windowLength + bufferLength)
+                {
+                    outputValues.AddRange(stdDevWindow);
+                    outputValues.AddRange(bufferList);
+                    i += windowLength + bufferLength;
                 }
                 else
                 {
-                    outputValues.RemoveRange(outputValues.Count - bufferLength, bufferLength);
-                    outputValues.AddRange(currentWindow);
+                    if (inputValues.Count > outputValues.Count + windowLength)
+                    {
+                        outputValues.AddRange(stdDevWindow);
+                    }
+                    List<float> fillerList = Enumerable.Repeat(currentWindow.Average(), inputValues.Count - outputValues.Count).ToList();
+                    outputValues.AddRange(fillerList);
+                    break;
                 }
-                    
-                i += bufferLength;
             }
 
             return outputValues;
@@ -355,6 +376,28 @@ namespace WpfHandGazeDistance.ViewModels
 
             return (float)Math.Sqrt(variance);
         }
+
+        private static List<float> ValueWindow(List<float> inputValues, int index)
+        {
+            List<float> currentWindow = new List<float>();
+            while (!Single.IsNaN(inputValues[index]))
+            {
+                currentWindow.Add(inputValues[index]);
+                if (index + 1 < inputValues.Count)
+                {
+                    if (Single.IsNaN(inputValues[index + 1])) break;
+                    index++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return currentWindow;
+        }
+
+        #endregion
 
         #endregion
     }

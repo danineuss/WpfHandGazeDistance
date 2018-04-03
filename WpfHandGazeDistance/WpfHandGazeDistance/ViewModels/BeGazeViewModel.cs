@@ -37,11 +37,14 @@ namespace WpfHandGazeDistance.ViewModels
 
         #endregion
 
+        #region Constructor
+
         public BeGazeViewModel(string beGazePath)
         {
             BeGazePath = beGazePath;
         }
 
+        #endregion
 
         public PointF GetCoordinatePoint(int index)
         {

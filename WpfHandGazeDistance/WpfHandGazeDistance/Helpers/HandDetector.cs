@@ -48,9 +48,6 @@ namespace WpfHandGazeDistance.Helpers
         /// <returns></returns>
         public HgdData MeasureRawHgd()
         {
-            var lengthBeGaze = BeGazeData.RecordingTime.Count;
-            var lengthVideo = Video.FrameCount;
-
             List<float> rawDistance = new List<float>();
             for (int index = 0; index < Video.FrameCount; index++)
             {
@@ -87,6 +84,7 @@ namespace WpfHandGazeDistance.Helpers
             VectorOfVectorOfPoint handContours = FindHands(inputImage);
             CvInvoke.DrawContours(outputImage, handContours, -1, new MCvScalar(255), -1);
 
+            handContours.Dispose();
             return outputImage;
         }
 
@@ -101,6 +99,7 @@ namespace WpfHandGazeDistance.Helpers
             VectorOfVectorOfPoint largestContours = FindHands(inputImage);
             float distance = MeasureDistance(largestContours, point);
 
+            largestContours.Dispose();
             return distance;
         }
 
@@ -117,6 +116,8 @@ namespace WpfHandGazeDistance.Helpers
             Image<Gray, byte> outputImage = Erode(segmentedImage);
             VectorOfVectorOfPoint handContours = LargestContours(outputImage);
 
+            segmentedImage.Dispose();
+            outputImage.Dispose();
             return handContours;
         }
 
@@ -137,6 +138,8 @@ namespace WpfHandGazeDistance.Helpers
             Image<Gray, byte> segmentedImage = new Image<Gray, byte>(inputImage.Size);
             CvInvoke.BitwiseAnd(minimumSegment, hsvSegment, segmentedImage);
 
+            minimumSegment.Dispose();
+            hsvSegment.Dispose();
             return segmentedImage;
         }
 
@@ -161,6 +164,8 @@ namespace WpfHandGazeDistance.Helpers
             CvInvoke.Min(deltaOne, deltaTwo, mixedMat);
             Image<Gray, byte> outputImage = mixedMat.ToImage<Gray, byte>().InRange(new Gray(10), new Gray(200));
 
+            bgrChannels.Dispose();
+            mixedMat.Dispose();
             return outputImage;
         }
 
@@ -184,6 +189,9 @@ namespace WpfHandGazeDistance.Helpers
             Image<Gray, byte> upperThreshold = hsvImage.InRange(hsvThresholdThree, hsvThresholdFour);
             CvInvoke.BitwiseOr(lowerThreshold, upperThreshold, outputImage);
 
+            hsvImage.Dispose();
+            lowerThreshold.Dispose();
+            upperThreshold.Dispose();
             return outputImage;
         }
 
@@ -200,6 +208,7 @@ namespace WpfHandGazeDistance.Helpers
             Mat kernelMat = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(-1, -1));
             CvInvoke.Erode(inputImage, erodedImage, kernelMat, new Point(-1, -1), iterations, BorderType.Default, CvInvoke.MorphologyDefaultBorderValue);
 
+            kernelMat.Dispose();
             return erodedImage;
         }
 
@@ -215,6 +224,7 @@ namespace WpfHandGazeDistance.Helpers
             Mat kernelMat = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(-1, -1));
             CvInvoke.Dilate(inputImage, dilatedImage, kernelMat, new Point(-1, -1), iterations, BorderType.Default, CvInvoke.MorphologyDefaultBorderValue);
 
+            kernelMat.Dispose();
             return dilatedImage;
         }
 
@@ -249,6 +259,8 @@ namespace WpfHandGazeDistance.Helpers
                 foreach (var contour in orderedDict) sortedContours.Push(contour.Key);
             }
 
+            hierarchyMat.Dispose();
+            contours.Dispose();
             return sortedContours;
         }
 

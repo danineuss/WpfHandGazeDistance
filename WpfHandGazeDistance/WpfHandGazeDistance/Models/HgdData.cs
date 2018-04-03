@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -171,7 +172,7 @@ namespace WpfHandGazeDistance.Models
             }
 
             stringBuilder.AppendLine(headerLine);
-
+            
             for (int index = 0; index < RecordingTime.Count; index++)
             {
                 string line = "";

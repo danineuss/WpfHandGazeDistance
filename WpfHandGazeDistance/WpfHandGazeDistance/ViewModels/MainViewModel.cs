@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using WpfHandGazeDistance.Helpers;
 using WpfHandGazeDistance.ViewModels.Base;
 
@@ -34,6 +33,7 @@ namespace WpfHandGazeDistance.ViewModels
             {
                 ChangeAndNotify(value, ref _videoPath);
                 VideoViewModel = new VideoViewModel(value);
+                PrototypingViewModel.VideoPath = value;
             }
         }
 
@@ -66,8 +66,11 @@ namespace WpfHandGazeDistance.ViewModels
 
         public MainViewModel()
         {
+            HgdViewModel = new HgdViewModel();
             PrototypingViewModel = new PrototypingViewModel();
         }
+
+        #region Commands
 
         public ICommand LoadVideoCommand => new RelayCommand(LoadVideo, true);
 
@@ -79,6 +82,8 @@ namespace WpfHandGazeDistance.ViewModels
 
         public ICommand AnalyseDataCommand => new RelayCommand(AnalyseData, true);
 
+        #endregion
+
         private void LoadVideo()
         {
             VideoPath = FileDialog.OpenFileDialog();
@@ -89,21 +94,20 @@ namespace WpfHandGazeDistance.ViewModels
             BeGazePath = FileDialog.OpenFileDialog();
         }
 
+        private void LoadHgd()
+        {
+            HgdViewModel.HgdData.LoadData(FileDialog.OpenFileDialog());
+        }
+
         private void SetHgdPath()
         {
             HgdPath = FileDialog.SaveFileDialog();
         }
 
-        private void LoadHgd()
-        {
-            HgdViewModel = new HgdViewModel();
-            HgdViewModel.HgdData.LoadData(FileDialog.OpenFileDialog());
-        }
-
         private void AnalyseData()
         {
             HgdViewModel.AnalyseData();
-            HgdViewModel.SaveHgdData(HgdPath);
+            HgdViewModel.SaveHgd(HgdPath);
         }
     }
 }
