@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Diagnostics;
+using System.Windows.Input;
 using Microsoft.Office.Core;
 using WpfHandGazeDistance.Helpers;
 using WpfHandGazeDistance.ViewModels.Base;
@@ -14,6 +15,10 @@ namespace WpfHandGazeDistance.ViewModels
         private string _beGazePath;
 
         private string _hgdPath;
+
+        private string _snippetsPath;
+
+        private VideoEditor _videoEditor;
 
         #endregion
 
@@ -35,6 +40,7 @@ namespace WpfHandGazeDistance.ViewModels
                 ChangeAndNotify(value, ref _videoPath);
                 VideoViewModel = new VideoViewModel(value);
                 PrototypingViewModel.VideoPath = value;
+                _videoEditor = new VideoEditor(value);
             }
         }
 
@@ -56,6 +62,12 @@ namespace WpfHandGazeDistance.ViewModels
                 ChangeAndNotify(value, ref _hgdPath);
                 HgdViewModel = new HgdViewModel(BeGazeViewModel.BeGazeData, VideoViewModel.Video);
             }
+        }
+
+        public string SnippetsPath
+        {
+            get => _snippetsPath;
+            set => ChangeAndNotify(value, ref _snippetsPath);
         }
 
         //public bool ReadyToAnalyse
@@ -81,7 +93,11 @@ namespace WpfHandGazeDistance.ViewModels
 
         public ICommand SetHgdPathCommand => new RelayCommand(SetHgdPath, true);
 
+        public ICommand SetSnippetsPathCommand => new RelayCommand(SetSnippetsPath, true);
+
         public ICommand AnalyseDataCommand => new RelayCommand(AnalyseData, true);
+
+        public ICommand CutSnippetsCommand => new RelayCommand(CutSnippets, true);
 
         #endregion
 
@@ -109,10 +125,25 @@ namespace WpfHandGazeDistance.ViewModels
             if (savePath != null && savePath.EndsWith(".csv")) HgdPath = savePath;
         }
 
+        private void SetSnippetsPath()
+        {
+            string folderPath = FileManager.SelectFolderDialog();
+            SnippetsPath = folderPath + "\\";
+        }
+
         private void AnalyseData()
         {
             HgdViewModel.AnalyseData();
             HgdViewModel.SaveHgd(HgdPath);
+            CutSnippets();
+        }
+
+        private void CutSnippets()
+        {
+            if (SnippetsPath != null && HgdViewModel.HgdData != null)
+            {
+                _videoEditor.CutSnippets(SnippetsPath, HgdViewModel.HgdData);
+            }
         }
     }
 }

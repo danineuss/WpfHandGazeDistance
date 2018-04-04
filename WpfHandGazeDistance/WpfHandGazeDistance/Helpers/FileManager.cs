@@ -1,4 +1,6 @@
-﻿using Microsoft.Win32;
+﻿using Microsoft.WindowsAPICodePack.Dialogs;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
+using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 
 namespace WpfHandGazeDistance.Helpers
 {
@@ -19,6 +21,13 @@ namespace WpfHandGazeDistance.Helpers
                 return saveFileDialog.FileName;
             }
             return null;
+        }
+
+        public static string SelectFolderDialog()
+        {
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog {IsFolderPicker = true};
+
+            return dialog.ShowDialog() == CommonFileDialogResult.Ok ? dialog.FileName : null;
         }
     }
 }

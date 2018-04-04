@@ -52,6 +52,27 @@ namespace WpfHandGazeDistance.Helpers
             Console.WriteLine("Video cut (" + startTime.ToString() + ")");
         }
 
+        public void CutSnippets(string outputFolder, HgdData hgdData)
+        {
+            for (int index = 0; index < hgdData.BufferedUsabilityIssues.Count; index++)
+            {
+                if (float.IsNaN(hgdData.BufferedUsabilityIssues[index])) continue;
+
+                string videoPath = outputFolder;
+                if (!videoPath.EndsWith("\\")) videoPath += "\\";
+
+                float startTime = index / _video.Fps;
+                while (!float.IsNaN(hgdData.BufferedUsabilityIssues[index])) index++;
+                float endTime = index / _video.Fps;
+
+                videoPath += ShortTimeToString(startTime);
+                videoPath += "_";
+                videoPath += ShortTimeToString(endTime);
+                videoPath += ".avi";
+                CutVideo(videoPath, startTime, endTime);
+            }
+        }
+
         #region Private Members
         
         /// <summary>
@@ -114,16 +135,26 @@ namespace WpfHandGazeDistance.Helpers
         /// </summary>
         /// <param name="inputSeconds">Number of seconds, including decimal points</param>
         /// <returns>Time as string of format "hh:mm:ss.d"</returns>
-        private static string TimeToString(float inputSeconds)
+        private static string TimeToString(float inputSeconds, bool decimalDesired = true)
         {
             TimeSpan timeSpan = TimeSpan.FromSeconds(inputSeconds);
             string timeString = timeSpan.ToString(@"hh\:mm\:ss");
 
-            string decimalValue = (inputSeconds - Math.Floor(inputSeconds)).ToString();
-            decimalValue = decimalValue.Remove(0, 1);
-            if (decimalValue.Length > 2) decimalValue = decimalValue.Remove(2, decimalValue.Length - 2);
-            timeString += decimalValue;
+            if (decimalDesired)
+            {
+                string decimalValue = (inputSeconds - Math.Floor(inputSeconds)).ToString();
+                decimalValue = decimalValue.Remove(0, 1);
+                if (decimalValue.Length > 2) decimalValue = decimalValue.Remove(2, decimalValue.Length - 2);
+                timeString += decimalValue;
+            }
 
+            return timeString;
+        }
+
+        private static string ShortTimeToString(float inputSeconds)
+        {
+            TimeSpan timeSpan = TimeSpan.FromSeconds(inputSeconds);
+            string timeString = timeSpan.ToString(@"hhmmss");
             return timeString;
         }
 
