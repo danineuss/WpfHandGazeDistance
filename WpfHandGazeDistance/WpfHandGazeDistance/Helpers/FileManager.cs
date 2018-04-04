@@ -2,7 +2,7 @@
 
 namespace WpfHandGazeDistance.Helpers
 {
-    public class FileDialog
+    public class FileManager
     {
         public static string OpenFileDialog()
         {

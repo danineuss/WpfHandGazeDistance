@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using Microsoft.Office.Core;
 using WpfHandGazeDistance.Helpers;
 using WpfHandGazeDistance.ViewModels.Base;
 
@@ -86,22 +87,26 @@ namespace WpfHandGazeDistance.ViewModels
 
         private void LoadVideo()
         {
-            VideoPath = FileDialog.OpenFileDialog();
+            string loadPath = FileManager.OpenFileDialog();
+            if (loadPath != null && loadPath.EndsWith(".avi")) VideoPath = loadPath;
         }
 
         private void LoadBeGaze()
         {
-            BeGazePath = FileDialog.OpenFileDialog();
+            string loadPath = FileManager.OpenFileDialog();
+            if (loadPath != null && loadPath.EndsWith(".txt")) BeGazePath = loadPath;
         }
 
         private void LoadHgd()
         {
-            HgdViewModel.HgdData.LoadData(FileDialog.OpenFileDialog());
+            string loadPath = FileManager.OpenFileDialog();
+            if (loadPath != null && loadPath.EndsWith(".csv")) HgdViewModel.LoadHgd(loadPath);
         }
 
         private void SetHgdPath()
         {
-            HgdPath = FileDialog.SaveFileDialog();
+            string savePath = FileManager.SaveFileDialog();
+            if (savePath != null && savePath.EndsWith(".csv")) HgdPath = savePath;
         }
 
         private void AnalyseData()

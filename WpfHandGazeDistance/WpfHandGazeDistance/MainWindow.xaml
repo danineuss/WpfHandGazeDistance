@@ -44,5 +44,7 @@
         <Button DataContext="{Binding HgdViewModel}" Command="{Binding StdDevCommand}" Content="Std Dev." HorizontalAlignment="Left" Margin="377,616,0,0" VerticalAlignment="Top" Width="80"/>
         <Button DataContext="{Binding HgdViewModel}" Command="{Binding ThresholdCommand}" Content="Threshold" HorizontalAlignment="Left" Margin="472,616,0,0" VerticalAlignment="Top" Width="80"/>
         <Button DataContext="{Binding HgdViewModel}" Command="{Binding UsabilityIssuesCommand}" Content="Buffer" HorizontalAlignment="Left" Margin="565,616,0,0" VerticalAlignment="Top" Width="80"/>
+        <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding SetCutVideoPathCommand}"  Content="Set  Save Path" HorizontalAlignment="Left" Margin="513,117,0,0" VerticalAlignment="Top" Width="95"/>
+        <TextBox DataContext="{Binding PrototypingViewModel}" HorizontalAlignment="Left" Height="23" Margin="629,118,0,0" TextWrapping="Wrap" Text="{Binding CutVideoPath}" VerticalAlignment="Top" Width="332"/>
     </Grid>
 </Window>

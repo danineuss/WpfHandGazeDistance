@@ -17,7 +17,9 @@ namespace WpfHandGazeDistance.ViewModels
 
         private string _videoPath;
 
-        private string _beGazePath;
+        private string _cutVideoPath;
+
+        //private string _beGazePath;
 
         private string _hgdPath;
 
@@ -78,6 +80,12 @@ namespace WpfHandGazeDistance.ViewModels
         //    get => _beGazePath;
         //    set => ChangeAndNotify(value, ref _beGazePath);
         //}
+
+        public string CutVideoPath
+        {
+            get => _cutVideoPath;
+            set => ChangeAndNotify(value, ref _cutVideoPath);
+        }
 
         public string HgdPath
         {
@@ -192,6 +200,8 @@ namespace WpfHandGazeDistance.ViewModels
 
         //public ICommand SetSavePathCommand => new RelayCommand(SetSavePath, true);
 
+        public ICommand SetCutVideoPathCommand => new RelayCommand(SetCutVideoPath, true);
+
         public ICommand AnalyseImageCommand => new RelayCommand(AnalyseImage, true);
 
         public ICommand NextImageCommand => new RelayCommand(NextImage, true);
@@ -208,23 +218,29 @@ namespace WpfHandGazeDistance.ViewModels
 
         private void LoadImage()
         {
-            ImagePath = FileDialog.OpenFileDialog();
+            ImagePath = FileManager.OpenFileDialog();
         }
 
         //private void LoadVideo()
         //{
-        //    VideoPath = FileDialog.OpenFileDialog();
+        //    VideoPath = FileManager.OpenFileDialog();
         //}
 
         //private void LoadBeGaze()
         //{
-        //    BeGazePath = FileDialog.OpenFileDialog();
+        //    BeGazePath = FileManager.OpenFileDialog();
         //    BeGazeData = new BeGazeData(BeGazePath);
         //}
 
-        private void SetSavePath()
+        //private void SetSavePath()
+        //{
+        //    HgdPath = FileManager.SaveFileDialog();
+        //}
+
+        private void SetCutVideoPath()
         {
-            HgdPath = FileDialog.SaveFileDialog();
+            string savePath = FileManager.SaveFileDialog();
+            if (savePath != null) CutVideoPath = savePath;
         }
 
         private void NextImage()
@@ -248,35 +264,35 @@ namespace WpfHandGazeDistance.ViewModels
             Distance = HandDetector.MeasureHgd(InputImage, new PointF(0, 0));
         }
 
-        private void AnalyseRawDistance()
-        {
-            HandDetector handDetector = new HandDetector(BeGazeData, Video);
+        //private void AnalyseRawDistance()
+        //{
+        //    HandDetector handDetector = new HandDetector(BeGazeData, Video);
 
-            HgdData = handDetector.MeasureRawHgd();
+        //    HgdData = handDetector.MeasureRawHgd();
 
-            SaveData();
-        }
+        //    SaveData();
+        //}
 
-        private void SaveData()
-        {
-            HgdData.SaveData(HgdPath);
-        }
+        //private void SaveData()
+        //{
+        //    HgdData.SaveData(HgdPath);
+        //}
 
         private void CutVideo()
         {
             VideoEditor videoEditor = new VideoEditor(VideoPath);
-            videoEditor.CutVideo(HgdPath, 0f, VideoDuration);
+            videoEditor.CutVideo(CutVideoPath, 0f, VideoDuration);
         }
 
         private void LoadHgd()
         {
             HgdData = new HgdData();
-            HgdData.LoadData(FileDialog.OpenFileDialog());
+            HgdData.LoadData(FileManager.OpenFileDialog());
         }
 
         private void SaveHgd()
         {
-            HgdData.SaveData(FileDialog.SaveFileDialog());
+            HgdData.SaveData(FileManager.SaveFileDialog());
         }
     }
 };

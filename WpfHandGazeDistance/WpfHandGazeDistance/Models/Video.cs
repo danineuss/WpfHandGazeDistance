@@ -21,7 +21,7 @@ namespace WpfHandGazeDistance.Models
 
         #region Public Properties
 
-        public double Fps => _capture.GetCaptureProperty(CapProp.Fps);
+        public float Fps => (float)_capture.GetCaptureProperty(CapProp.Fps);
 
         public int FrameCount => (int)Math.Floor(_capture.GetCaptureProperty(CapProp.FrameCount));
 
@@ -52,13 +52,13 @@ namespace WpfHandGazeDistance.Models
         public Image<Bgr, byte> GetImageFrame()
         {
             Mat frameMat = GetMatFrame();
-            return frameMat.ToImage<Bgr, byte>();
+            return frameMat?.ToImage<Bgr, byte>();
         }
 
         public BitmapSource GetBitmapFrame()
         {
-            Mat frame = GetMatFrame();
-            return BitMapConverter.ToBitmapSource(frame);
+            Mat frameMat = GetMatFrame();
+            return frameMat != null ? BitMapConverter.ToBitmapSource(frameMat) : null;
         }
 
         #endregion

@@ -49,22 +49,29 @@ namespace WpfHandGazeDistance.Helpers
         public HgdData MeasureRawHgd()
         {
             List<float> rawDistance = new List<float>();
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
             for (int index = 0; index < Video.FrameCount; index++)
             {
                 PointF coordinates = BeGazeData.GetCoordinatePoint(index);
                 Image<Bgr, byte> frame = Video.GetImageFrame();
 
-                float distance = MeasureHgd(frame, coordinates);
-                rawDistance.Add(distance);
-
-                int outputStep = 60 * (int)Video.Fps;
-                if (index % outputStep == 0)
+                float distance = float.NaN;
+                if (frame != null)
                 {
-                    int minutes = index / outputStep;
-                    Debug.Print(minutes.ToString() + " minutes done.");
+                    distance = MeasureHgd(frame, coordinates);
+                    frame.Dispose();
                 }
 
-                frame.Dispose();
+                rawDistance.Add(distance);
+                
+                int outputStep = 1000;
+                if (index % outputStep == 0)
+                {
+                    Debug.Print(index.ToString() + " frames done.");
+                }
             }
 
             HgdData.RawDistance = rawDistance;

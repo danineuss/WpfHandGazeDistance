@@ -69,7 +69,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Helpers\FileDialog.cs" />
+    <Compile Include="Helpers\FileManager.cs" />
     <Compile Include="Helpers\HandDetector.cs" />
     <Compile Include="Helpers\VideoEditor.cs" />
     <Compile Include="Models\BgrImage.cs" />

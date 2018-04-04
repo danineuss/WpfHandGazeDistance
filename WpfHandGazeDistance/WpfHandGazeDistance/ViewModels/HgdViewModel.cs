@@ -16,7 +16,7 @@ namespace WpfHandGazeDistance.ViewModels
         
         private HandDetector _handDetector;
 
-        private static int _fps = 60;
+        private static float _fps = 60;
 
         private int _longActionCount = (int)(2f * _fps);
 
@@ -68,17 +68,20 @@ namespace WpfHandGazeDistance.ViewModels
         #endregion
 
         #region Public Members
-
-        public void LoadHgd()
+        
+        public void LoadHgd(string loadPath)
         {
             HgdData = new HgdData();
-            string loadPath = FileDialog.OpenFileDialog();
-            if(loadPath != null) HgdData.LoadData(loadPath);
+            if (loadPath != null)
+            {
+                HgdData.LoadData(loadPath);
+                HgdData.RecordingTime = RecordingTimeFromConstant(HgdData.RecordingTime.Count);
+            }
         }
 
         public void SaveHgd()
         {
-            string savePath = FileDialog.SaveFileDialog();
+            string savePath = FileManager.SaveFileDialog();
             if (savePath != null) HgdData.SaveData(savePath);
         }
 
@@ -90,6 +93,7 @@ namespace WpfHandGazeDistance.ViewModels
         public void AnalyseData()
         {
             HgdData = _handDetector.MeasureRawHgd();
+            HgdData.RecordingTime = RecordingTimeFromVideo();
             HgdData.RawDistance = PruneValues(HgdData.RawDistance);
             HgdData.MedianDistance = MovingMedian(HgdData.RawDistance, _medianPeriod);
             HgdData.LongActions = LowPass(HgdData.MedianDistance, _longActionCount);
@@ -131,6 +135,35 @@ namespace WpfHandGazeDistance.ViewModels
         }
 
         #region HGD Manipulation
+
+        private List<float> RecordingTimeFromVideo()
+        {
+            List<float> recordingTime = new List<float>();
+            
+            if (_handDetector != null)
+            {
+                float frameStep = 1000 / _handDetector.Video.Fps;
+                for (int i = 0; i < _handDetector.Video.FrameCount; i++)
+                {
+                    recordingTime.Add(frameStep * i);
+                }
+            }
+            
+            return recordingTime;
+        }
+
+        private List<float> RecordingTimeFromConstant(int length)
+        {
+            List<float> recordingTime = new List<float>();
+
+            float frameStep = 1000 / _fps;
+            for (int i = 0; i < length; i++)
+            {
+                recordingTime.Add(frameStep * i);
+            }
+
+            return recordingTime;
+        }
 
         private static List<float> PruneValues(List<float> inputValues)
         {

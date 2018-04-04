@@ -175,6 +175,10 @@ namespace WpfHandGazeDistance.Models
             
             for (int index = 0; index < RecordingTime.Count; index++)
             {
+                if (index == RecordingTime.Count)
+                {
+                    Debug.Print("HgdData Index out of range.");
+                }
                 string line = "";
                 foreach (var list in _dataList)
                 {
@@ -213,7 +217,7 @@ namespace WpfHandGazeDistance.Models
                 BufferedUsabilityIssues
             };
         }
-        
+
         #endregion
     }
 }
