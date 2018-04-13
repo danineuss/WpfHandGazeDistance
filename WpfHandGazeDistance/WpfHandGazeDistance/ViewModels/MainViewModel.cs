@@ -39,7 +39,6 @@ namespace WpfHandGazeDistance.ViewModels
             {
                 ChangeAndNotify(value, ref _videoPath);
                 VideoViewModel = new VideoViewModel(value);
-                PrototypingViewModel.VideoPath = value;
                 _videoEditor = new VideoEditor(value);
             }
         }

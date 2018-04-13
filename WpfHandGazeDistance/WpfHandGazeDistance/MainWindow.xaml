@@ -16,38 +16,37 @@
         <TextBox HorizontalAlignment="Left" Height="23" Margin="187,106,0,0" TextWrapping="Wrap" Text="{Binding HgdPath}" VerticalAlignment="Top" Width="774"/>
         <Button Command="{Binding SetSnippetsPathCommand}" Content="Set Snippets Path" HorizontalAlignment="Left" Margin="55,140,0,0" VerticalAlignment="Top" Width="95"/>
         <TextBox HorizontalAlignment="Left" Height="23" Margin="187,139,0,0" TextWrapping="Wrap" Text="{Binding SnippetsPath}" VerticalAlignment="Top" Width="774"/>
-        <Button Command="{Binding AnalyseDataCommand}" Content="Analyse Data" HorizontalAlignment="Left" Margin="55,217,0,0" VerticalAlignment="Top" Width="95"/>
-        <Button Command="{Binding CutSnippetsCommand}" Content="Cut Snippets" HorizontalAlignment="Left" Margin="174,217,0,0" VerticalAlignment="Top" Width="95"/>
+        <Button Command="{Binding AnalyseDataCommand}" Content="Analyse Data" HorizontalAlignment="Left" Margin="55,184,0,0" VerticalAlignment="Top" Width="95"/>
+        <DataGrid HorizontalAlignment="Left" Height="100" Margin="55,256,0,0" VerticalAlignment="Top" Width="906"/>
 
         <!-- Prototyping Corner starts here -->
-        <Image DataContext="{Binding PrototypingViewModel}" Source="{Binding InputBitmap}"  HorizontalAlignment="Left" Height="359" Margin="55,322,0,0" VerticalAlignment="Top" Width="425"/>
-        <Image DataContext="{Binding PrototypingViewModel}" Source="{Binding OutputBitmap}" HorizontalAlignment="Left" Height="359" Margin="513,322,0,0" VerticalAlignment="Top" Width="457"/>
-        <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding LoadImageCommand}" Content="Load Image" HorizontalAlignment="Left" Margin="55,272,0,0" VerticalAlignment="Top" Width="95"/>
-        <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding AnalyseImageCommand}" Content="Process Image" HorizontalAlignment="Left" Margin="444,271,0,0" VerticalAlignment="Top" Width="95" RenderTransformOrigin="2.558,0.636"/>
-        <TextBox DataContext="{Binding PrototypingViewModel}" Text="{Binding NumberOfHands, StringFormat=Number of Hands: \{0\}}" HorizontalAlignment="Left" Height="23" Margin="560,271,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="127"/>
-        <TextBox DataContext="{Binding PrototypingViewModel}" Text="{Binding Distance, StringFormat=Distance to Hands: \{0\}}" HorizontalAlignment="Left" Height="21" Margin="717,271,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="166"/>
-        <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding NextImageCommand}" Content="Skip one Second" HorizontalAlignment="Left" Margin="291,272,0,0" VerticalAlignment="Top" Width="108"/>
-        <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding LoadVideoCommand}" Content="Load Video" HorizontalAlignment="Left" Margin="174,272,0,0" VerticalAlignment="Top" Width="95"/>
-        <TextBlock DataContext="{Binding PrototypingViewModel}" HorizontalAlignment="Left" Height="23" Margin="174,244,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="214">
-            <TextBlock.Text>
-                <MultiBinding StringFormat="{}Frame {0} / {1}">
-                    <Binding Path="CurrentFrameCount"/>
-                    <Binding Path="MaxFrameCount"/>
-                </MultiBinding>
-            </TextBlock.Text>
-        </TextBlock>
-        <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding CutVideoCommand}" Content="Cut Video" HorizontalAlignment="Left" Margin="444,242,0,0" VerticalAlignment="Top" Width="108"/>
-        <TextBox DataContext="{Binding PrototypingViewModel}" Text="Video Duration:" HorizontalAlignment="Left" Height="23" Margin="560,239,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="101"/>
-        <TextBox DataContext="{Binding PrototypingViewModel}" Text="{Binding VideoDuration}" HorizontalAlignment="Left" Height="23" Margin="672,238,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="61"/>
 
-        <Button Command="{Binding LoadHgdCommand}" Content="Load HGD" HorizontalAlignment="Left" Margin="55,701,0,0" VerticalAlignment="Top" Width="80"/>
-        <Button DataContext="{Binding HgdViewModel}" Command="{Binding SaveHgdCommand}" Content="Save HGD" HorizontalAlignment="Left" Margin="712,701,0,0" VerticalAlignment="Top" Width="80"/>
-        <Button DataContext="{Binding HgdViewModel}" Command="{Binding MedianCommand}" Content="Median" HorizontalAlignment="Left" Margin="186,701,0,0" VerticalAlignment="Top" Width="80"/>
-        <Button DataContext="{Binding HgdViewModel}" Command="{Binding LongActionsCommand}" Content="Long Actions" HorizontalAlignment="Left" Margin="283,701,0,0" VerticalAlignment="Top" Width="80"/>
-        <Button DataContext="{Binding HgdViewModel}" Command="{Binding StdDevCommand}" Content="Std Dev." HorizontalAlignment="Left" Margin="377,701,0,0" VerticalAlignment="Top" Width="80"/>
-        <Button DataContext="{Binding HgdViewModel}" Command="{Binding ThresholdCommand}" Content="Threshold" HorizontalAlignment="Left" Margin="472,701,0,0" VerticalAlignment="Top" Width="80"/>
-        <Button DataContext="{Binding HgdViewModel}" Command="{Binding UsabilityIssuesCommand}" Content="Buffer" HorizontalAlignment="Left" Margin="565,701,0,0" VerticalAlignment="Top" Width="80"/>
-        <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding SetCutVideoPathCommand}"  Content="Cut Video Path" HorizontalAlignment="Left" Margin="444,201,0,0" VerticalAlignment="Top" Width="95"/>
-        <TextBox DataContext="{Binding PrototypingViewModel}" HorizontalAlignment="Left" Height="23" Margin="551,203,0,0" TextWrapping="Wrap" Text="{Binding CutVideoPath}" VerticalAlignment="Top" Width="410"/>
+        <!--<DataGrid DataContext="{Binding PrototypingViewModel}" AutoGenerateColumns="False" Name="DataGridTest" MouseDoubleClick="{Binding DataGridTest_MouseDown}" CanUserAddRows="True" ItemsSource="{Binding DataGridTest}" Margin="55,383,25,110" FontSize="14" >
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Video File" IsReadOnly="True" Binding="{Binding Path=Test1}" Width="160"></DataGridTextColumn>
+                <DataGridTextColumn Header="BeGaze File" IsReadOnly="True"  Binding="{Binding Path=Test2}" Width="160"></DataGridTextColumn>
+                <DataGridTextColumn Header="Output Data Folder" IsReadOnly="True"  Binding="{Binding Path=Test3}" Width="160"></DataGridTextColumn>
+                <DataGridTextColumn Header="BeGaze Flags" IsReadOnly="True"  Binding="{Binding Path=Test4}" Width="100"></DataGridTextColumn>
+                <DataGridTextColumn Header="Progress" IsReadOnly="True"  Binding="{Binding Path=Test5}" Width="250"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button DataContext="{Binding PrototypingViewModel}" Content="Add new row" HorizontalAlignment="Left" Margin="55,664,0,0" VerticalAlignment="Top" Width="75" Click="{Binding Button_Click_1}"/>-->
+
+
+    <DataGrid DataContext="{Binding PrototypingViewModel}" ItemsSource="{Binding MyList}" AutoGenerateColumns="False" Margin="498,20,25,528">
+            <DataGrid.InputBindings>
+                <MouseBinding Gesture="LeftDoubleClick" Command="{Binding TestCommand}" CommandParameter="{Binding ElementName=UsersDataGrid, Path=SelectedItem}" />
+            </DataGrid.InputBindings>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding MyID}"/>
+            <DataGridTemplateColumn Header="Buttons">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                            <Button Content="{Binding MyString}"/>
+                        </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+        </DataGrid.Columns>
+    </DataGrid>
     </Grid>
 </Window>
