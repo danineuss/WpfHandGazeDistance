@@ -10,14 +10,13 @@
     <Grid>
         <Button Command="{Binding LoadBeGazeCommand}" Content="Load BeGaze" HorizontalAlignment="Left" Margin="55,22,0,0" VerticalAlignment="Top" Width="95"/>
         <TextBox HorizontalAlignment="Left" Height="23" Margin="187,21,0,0" TextWrapping="Wrap" Text="{Binding BeGazePath}" VerticalAlignment="Top" Width="774"/>
-        <Button Command="{Binding LoadVideoCommand}" Content="Load Video" HorizontalAlignment="Left" Margin="55,56,0,0" VerticalAlignment="Top" Width="95"/>
+        <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding LoadVideoCommand}" Content="Load Video" HorizontalAlignment="Left" Margin="55,56,0,0" VerticalAlignment="Top" Width="95"/>
         <TextBox HorizontalAlignment="Left" Height="23" Margin="187,55,0,0" TextWrapping="Wrap" Text="{Binding VideoPath}" VerticalAlignment="Top" Width="774"/>
         <Button Command="{Binding SetHgdPathCommand}" Content="Set HGD Path" HorizontalAlignment="Left" Margin="55,107,0,0" VerticalAlignment="Top" Width="95"/>
         <TextBox HorizontalAlignment="Left" Height="23" Margin="187,106,0,0" TextWrapping="Wrap" Text="{Binding HgdPath}" VerticalAlignment="Top" Width="774"/>
         <Button Command="{Binding SetSnippetsPathCommand}" Content="Set Snippets Path" HorizontalAlignment="Left" Margin="55,140,0,0" VerticalAlignment="Top" Width="95"/>
         <TextBox HorizontalAlignment="Left" Height="23" Margin="187,139,0,0" TextWrapping="Wrap" Text="{Binding SnippetsPath}" VerticalAlignment="Top" Width="774"/>
         <Button Command="{Binding AnalyseDataCommand}" Content="Analyse Data" HorizontalAlignment="Left" Margin="55,184,0,0" VerticalAlignment="Top" Width="95"/>
-        <DataGrid HorizontalAlignment="Left" Height="100" Margin="55,256,0,0" VerticalAlignment="Top" Width="906"/>
 
         <!-- Prototyping Corner starts here -->
 
@@ -33,19 +32,28 @@
         <Button DataContext="{Binding PrototypingViewModel}" Content="Add new row" HorizontalAlignment="Left" Margin="55,664,0,0" VerticalAlignment="Top" Width="75" Click="{Binding Button_Click_1}"/>-->
 
 
-        <DataGrid DataContext="{Binding PrototypingViewModel}" ItemsSource="{Binding MyList}" AutoGenerateColumns="False" Margin="498,20,25,528">
+        <DataGrid DataContext="{Binding PrototypingViewModel}" ItemsSource="{Binding MyList}" 
+                  AutoGenerateColumns="False" Margin="55,242,26.2,190.2" GridLinesVisibility="None">
             <DataGrid.InputBindings>
                 <MouseBinding Gesture="LeftDoubleClick" Command="{Binding TestCommand}" CommandParameter="{Binding ElementName=UsersDataGrid, Path=SelectedItem}" />
             </DataGrid.InputBindings>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding MyID}"/>
-                <DataGridTemplateColumn Header="Buttons">
+                <DataGridTemplateColumn Header="Image" Width="SizeToCells" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="{Binding MyString}"/>
+                            <Image Source="{Binding Image}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Buttons">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="{Binding Name}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridCheckBoxColumn Header="HGD Flags" Binding="{Binding HgdFlags}">   
+                </DataGridCheckBoxColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

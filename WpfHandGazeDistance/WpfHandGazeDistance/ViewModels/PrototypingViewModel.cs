@@ -3,18 +3,38 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
+using WpfHandGazeDistance.Helpers;
+using WpfHandGazeDistance.Models;
 using WpfHandGazeDistance.ViewModels.Base;
 
 namespace WpfHandGazeDistance.ViewModels
 {
     public class PrototypingViewModel : BaseViewModel
     {
+        private string _videoPath;
+        private MyObject _object;
+
+        public string VideoPath
+        {
+            get => _videoPath;
+            set => ChangeAndNotify(value, ref _videoPath);
+        }
+
         public ObservableCollection<MyObject> MyList { get; set; }
 
-        public class MyObject
+        public class MyObject : BaseViewModel
         {
-            public int MyID { get; set; }
-            public string MyString { get; set; }
+            private BitmapSource _image;
+
+            public Video Video { get; set; }
+            public BitmapSource Image
+            {
+                get => _image;
+                set => ChangeAndNotify(value, ref _image);
+            }
+            public string Name { get; set; }
+            public bool HgdFlags { get; set; }
         }
 
         #region Constructor
@@ -22,13 +42,11 @@ namespace WpfHandGazeDistance.ViewModels
         public PrototypingViewModel()
         {
             InitializeMyList();
-            TestCommand = new RelayCommand(Print, true);
         }
 
         #endregion
 
-        public ICommand TestCommand { get; set; }
-        
+        public ICommand LoadVideoCommand => new RelayCommand(LoadVideo, true);
 
         public void InitializeMyList()
         {
@@ -41,10 +59,20 @@ namespace WpfHandGazeDistance.ViewModels
 
         public MyObject InitializeMyObject(int i)
         {
-            MyObject theObject = new MyObject();
-            theObject.MyID = i;
-            theObject.MyString = "The object " + i;
-            return theObject;
+            _object = new MyObject
+            {
+                Name = "The object " + i,
+                HgdFlags = false
+            };
+
+            return _object;
+        }
+
+        private void LoadVideo()
+        {
+            VideoPath = FileManager.OpenFileDialog();
+            _object.Video = new Video(VideoPath);
+            _object.Image = _object.Video.GetBitmapFrame();
         }
 
         private void Print()
@@ -52,33 +80,33 @@ namespace WpfHandGazeDistance.ViewModels
             Debug.Print("Juhuu");
         }
 
-        private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            Debug.Print("Clicked.");
-        }
+        //private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        //{
+        //    Debug.Print("Clicked.");
+        //}
 
-        private void ShowWindow(int i)
-        {
-            // Just as an exammple, here I just show a MessageBox
-            MessageBox.Show("You clicked on object " + i + "!!!");
-        }
+        //private void ShowWindow(int i)
+        //{
+        //    // Just as an exammple, here I just show a MessageBox
+        //    MessageBox.Show("You clicked on object " + i + "!!!");
+        //}
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            var data = new Test { Test1 = "Test1", Test2 = "Test2" };
+        //private void Button_Click_1(object sender, RoutedEventArgs e)
+        //{
+        //    var data = new Test { Test1 = "Test1", Test2 = "Test2" };
 
-            //DataGridTest.Items.Add(data);
-        }
+        //    //DataGridTest.Items.Add(data);
+        //}
 
-        private void DataGridTest_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            Debug.Print("MouseDown");
-        }
+        //private void DataGridTest_MouseDown(object sender, MouseButtonEventArgs e)
+        //{
+        //    Debug.Print("MouseDown");
+        //}
         
-        public class Test
-        {
-            public string Test1 { get; set; }
-            public string Test2 { get; set; }
-        }
+        //public class Test
+        //{
+        //    public string Test1 { get; set; }
+        //    public string Test2 { get; set; }
+        //}
     }
 };
