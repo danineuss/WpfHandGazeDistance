@@ -78,9 +78,9 @@
     </ApplicationDefinition>
     <Compile Include="Helpers\FileManager.cs" />
     <Compile Include="Helpers\HandDetector.cs" />
+    <Compile Include="Helpers\ImageConverter.cs" />
     <Compile Include="Helpers\RowDoubleClickHandler.cs" />
     <Compile Include="Helpers\VideoEditor.cs" />
-    <Compile Include="Models\BgrImage.cs" />
     <Compile Include="Helpers\BitMapConverter.cs" />
     <Compile Include="Models\BeGazeData.cs" />
     <Compile Include="Models\HgdData.cs" />

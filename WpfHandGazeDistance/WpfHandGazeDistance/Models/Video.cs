@@ -49,7 +49,13 @@ namespace WpfHandGazeDistance.Models
             return _capture.QueryFrame();
         }
 
-        public Image<Bgr, byte> GetImageFrame()
+        public Image GetImageFrame()
+        {
+            Mat frameMat = GetMatFrame();
+            return frameMat != null ? new Image(frameMat) : null;
+        }
+
+        public Image<Bgr, byte> GetBgrImageFrame()
         {
             Mat frameMat = GetMatFrame();
             return frameMat?.ToImage<Bgr, byte>();

@@ -56,7 +56,7 @@ namespace WpfHandGazeDistance.Helpers
             for (int index = 0; index < Video.FrameCount; index++)
             {
                 PointF coordinates = BeGazeData.GetCoordinatePoint(index);
-                Image<Bgr, byte> frame = Video.GetImageFrame();
+                Image<Bgr, byte> frame = Video.GetBgrImageFrame();
 
                 float distance = float.NaN;
                 if (frame != null)

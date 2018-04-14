@@ -5,8 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfHandGazeDistance"
         xmlns:viewModels="clr-namespace:WpfHandGazeDistance.ViewModels"
+        xmlns:helpers="clr-namespace:WpfHandGazeDistance.Helpers"
         mc:Ignorable="d"
         Title="MainWindow" Height="785" Width="994">
+    <Window.Resources>
+        <helpers:ImageConverter x:Key="ImageConverter" />
+    </Window.Resources>
+
     <Grid>
         <Button Command="{Binding LoadBeGazeCommand}" Content="Load BeGaze" HorizontalAlignment="Left" Margin="55,22,0,0" VerticalAlignment="Top" Width="95"/>
         <TextBox HorizontalAlignment="Left" Height="23" Margin="187,21,0,0" TextWrapping="Wrap" Text="{Binding BeGazePath}" VerticalAlignment="Top" Width="774"/>
@@ -33,7 +38,7 @@
 
 
         <DataGrid DataContext="{Binding PrototypingViewModel}" ItemsSource="{Binding MyList}" 
-                  AutoGenerateColumns="False" Margin="55,242,26.2,190.2" GridLinesVisibility="None">
+                  AutoGenerateColumns="False" Margin="55,242,495.2,190.2" GridLinesVisibility="None">
             <DataGrid.InputBindings>
                 <MouseBinding Gesture="LeftDoubleClick" Command="{Binding TestCommand}" CommandParameter="{Binding ElementName=UsersDataGrid, Path=SelectedItem}" />
             </DataGrid.InputBindings>
@@ -41,7 +46,7 @@
                 <DataGridTemplateColumn Header="Image" Width="SizeToCells" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Image Source="{Binding Image}" />
+                            <Image Source="{Binding protoImage}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -52,9 +57,10 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridCheckBoxColumn Header="HGD Flags" Binding="{Binding HgdFlags}">   
+                <DataGridCheckBoxColumn Header="HGD Flags" Binding="{Binding HgdFlags}">
                 </DataGridCheckBoxColumn>
             </DataGrid.Columns>
         </DataGrid>
+        <Image Source="{Binding UriString, Converter={StaticResource ImageConverter}}" HorizontalAlignment="Left" Height="323" Margin="541,242,0,0" VerticalAlignment="Top" Width="390"/>
     </Grid>
 </Window>

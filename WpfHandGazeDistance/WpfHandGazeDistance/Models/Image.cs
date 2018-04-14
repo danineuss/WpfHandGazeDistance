@@ -1,5 +1,6 @@
 ﻿using System.Windows.Media.Imaging;
 using Emgu.CV;
+using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using WpfHandGazeDistance.Helpers;
 
@@ -18,8 +19,16 @@ namespace WpfHandGazeDistance.Models
 
         public Image(IImage inputImage)
         {
-            
-            BitMapImage = BitMapConverter.ToBitmapSource()
+            BgrImage = new Image<Bgr, byte>(inputImage.Bitmap);
+            GrayImage = new Image<Gray, byte>(inputImage.Bitmap);
+            BitMapImage = BitMapConverter.ToBitmapSource(inputImage);
+        }
+
+        public void Resize(double scale)
+        {
+            BgrImage.Resize(scale, Inter.Linear);
+            GrayImage.Resize(scale, Inter.Linear);
+            BitMapImage = BitMapConverter.ToBitmapSource(BgrImage);
         }
     }
 }

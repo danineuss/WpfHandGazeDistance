@@ -25,15 +25,40 @@ namespace WpfHandGazeDistance.ViewModels
 
         public class MyObject : BaseViewModel
         {
-            private BitmapSource _image;
+            private Image _image;
 
-            public Video Video { get; set; }
-            public BitmapSource Image
+            private BitmapSource _bitmapImage;
+
+            private Uri _uriString;
+
+            public Image Image
             {
                 get => _image;
-                set => ChangeAndNotify(value, ref _image);
+                set
+                {
+                    ChangeAndNotify(value, ref _image);
+                    _image.Resize(0.1);
+                    BitmapImage = _image.BitMapImage;
+                    //UriString = new Uri(Image.BgrImage.ToString());
+                }
             }
+
+            public BitmapSource BitmapImage
+            {
+                get => _bitmapImage;
+                set => ChangeAndNotify(value, ref _bitmapImage);
+            }
+
+            public Uri UriString
+            {
+                get => _uriString;
+                set => ChangeAndNotify(value, ref _uriString);
+            }
+
+            public Video Video { get; set; }
+            
             public string Name { get; set; }
+
             public bool HgdFlags { get; set; }
         }
 
@@ -72,7 +97,7 @@ namespace WpfHandGazeDistance.ViewModels
         {
             VideoPath = FileManager.OpenFileDialog();
             _object.Video = new Video(VideoPath);
-            _object.Image = _object.Video.GetBitmapFrame();
+            _object.Image = _object.Video.GetImageFrame();
         }
 
         private void Print()
