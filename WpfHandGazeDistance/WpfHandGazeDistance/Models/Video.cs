@@ -21,6 +21,8 @@ namespace WpfHandGazeDistance.Models
 
         #region Public Properties
 
+        public Image ThumbnailImage { get; set; }
+
         public float Fps => (float)_capture.GetCaptureProperty(CapProp.Fps);
 
         public int FrameCount => (int)Math.Floor(_capture.GetCaptureProperty(CapProp.FrameCount));
@@ -38,6 +40,7 @@ namespace WpfHandGazeDistance.Models
             if (videoPath == null) return;
 
             _capture = new VideoCapture(videoPath);
+            ThumbnailImage = GetImageFrame();
         }
 
         #endregion

@@ -26,8 +26,8 @@ namespace WpfHandGazeDistance.Models
 
         public void Resize(double scale)
         {
-            BgrImage.Resize(scale, Inter.Linear);
-            GrayImage.Resize(scale, Inter.Linear);
+            BgrImage = BgrImage.Resize(scale, Inter.Linear);
+            GrayImage = GrayImage.Resize(scale, Inter.Linear);
             BitMapImage = BitMapConverter.ToBitmapSource(BgrImage);
         }
     }

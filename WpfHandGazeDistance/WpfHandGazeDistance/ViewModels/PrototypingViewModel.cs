@@ -12,8 +12,9 @@ namespace WpfHandGazeDistance.ViewModels
 {
     public class PrototypingViewModel : BaseViewModel
     {
+        private BitmapSource _publicImage;
         private string _videoPath;
-        private MyObject _object;
+        private HgdExperiment _hgdExperiment;
 
         public string VideoPath
         {
@@ -21,7 +22,41 @@ namespace WpfHandGazeDistance.ViewModels
             set => ChangeAndNotify(value, ref _videoPath);
         }
 
-        public ObservableCollection<MyObject> MyList { get; set; }
+        public BitmapSource PublicImage
+        {
+            get => _publicImage;
+            set => ChangeAndNotify(value, ref _publicImage);
+        }
+
+        public ObservableCollection<HgdExperiment> HgdExperiments { get; set; }
+
+        public class HgdExperiment : BaseViewModel
+        {
+            private BitmapSource _thumbnail;
+
+            public BitmapSource Thumbnail
+            {
+                get => _thumbnail;
+                set => ChangeAndNotify(value, ref _thumbnail);
+            }
+
+            public Video Video { get; set; }
+
+            public string VideoPath { get; set; }
+
+            public string BeGazePath { get; set; }
+
+            public string OutputPath { get; set; }
+
+            public bool HgdFlags { get; set; }
+
+            public ICommand LoadVideoCommand => new RelayCommand(LoadVideo, true);
+
+            public void LoadVideo()
+            {
+                VideoPath = FileManager.OpenFileDialog();
+            }
+        }
 
         public class MyObject : BaseViewModel
         {
@@ -71,33 +106,40 @@ namespace WpfHandGazeDistance.ViewModels
 
         #endregion
 
-        public ICommand LoadVideoCommand => new RelayCommand(LoadVideo, true);
+        public ICommand LoadPublicVideoCommand => new RelayCommand(LoadVideo, true);
 
         public void InitializeMyList()
         {
-            MyList = new ObservableCollection<MyObject>();
+            HgdExperiments = new ObservableCollection<HgdExperiment>();
             for (int i = 0; i < 5; i++)
             {
-                MyList.Add(InitializeMyObject(i));
+                HgdExperiments.Add(InitializeMyObject(i));
             }
         }
 
-        public MyObject InitializeMyObject(int i)
+        public HgdExperiment InitializeMyObject(int i)
         {
-            _object = new MyObject
+            _hgdExperiment = new HgdExperiment
             {
-                Name = "The object " + i,
-                HgdFlags = false
+                VideoPath = i.ToString()
             };
 
-            return _object;
+            return _hgdExperiment;
         }
 
         private void LoadVideo()
         {
             VideoPath = FileManager.OpenFileDialog();
-            _object.Video = new Video(VideoPath);
-            _object.Image = _object.Video.GetImageFrame();
+            _hgdExperiment.VideoPath = VideoPath;
+            _hgdExperiment.Video = new Video(VideoPath);
+            _hgdExperiment.Video.ThumbnailImage.Resize(0.1);
+            _hgdExperiment.Thumbnail = _hgdExperiment.Video.ThumbnailImage.BitMapImage;
+            PublicImage = _hgdExperiment.Thumbnail;
+
+            foreach (HgdExperiment hgdExperiment in HgdExperiments)
+            {
+                hgdExperiment.Thumbnail = PublicImage;
+            }
         }
 
         private void Print()

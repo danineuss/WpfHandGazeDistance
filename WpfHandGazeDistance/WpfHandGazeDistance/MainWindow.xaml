@@ -8,14 +8,14 @@
         xmlns:helpers="clr-namespace:WpfHandGazeDistance.Helpers"
         mc:Ignorable="d"
         Title="MainWindow" Height="785" Width="994">
-    <Window.Resources>
-        <helpers:ImageConverter x:Key="ImageConverter" />
-    </Window.Resources>
+    <!--<Window.Resources>-->
+        <!--<helpers:ImageConverter x:Key="ImageConverter" />
+    </Window.Resources>-->
 
     <Grid>
         <Button Command="{Binding LoadBeGazeCommand}" Content="Load BeGaze" HorizontalAlignment="Left" Margin="55,22,0,0" VerticalAlignment="Top" Width="95"/>
         <TextBox HorizontalAlignment="Left" Height="23" Margin="187,21,0,0" TextWrapping="Wrap" Text="{Binding BeGazePath}" VerticalAlignment="Top" Width="774"/>
-        <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding LoadVideoCommand}" Content="Load Video" HorizontalAlignment="Left" Margin="55,56,0,0" VerticalAlignment="Top" Width="95"/>
+        <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding LoadPublicVideoCommand}" Content="Load Video" HorizontalAlignment="Left" Margin="55,56,0,0" VerticalAlignment="Top" Width="95"/>
         <TextBox HorizontalAlignment="Left" Height="23" Margin="187,55,0,0" TextWrapping="Wrap" Text="{Binding VideoPath}" VerticalAlignment="Top" Width="774"/>
         <Button Command="{Binding SetHgdPathCommand}" Content="Set HGD Path" HorizontalAlignment="Left" Margin="55,107,0,0" VerticalAlignment="Top" Width="95"/>
         <TextBox HorizontalAlignment="Left" Height="23" Margin="187,106,0,0" TextWrapping="Wrap" Text="{Binding HgdPath}" VerticalAlignment="Top" Width="774"/>
@@ -37,23 +37,23 @@
         <Button DataContext="{Binding PrototypingViewModel}" Content="Add new row" HorizontalAlignment="Left" Margin="55,664,0,0" VerticalAlignment="Top" Width="75" Click="{Binding Button_Click_1}"/>-->
 
 
-        <DataGrid DataContext="{Binding PrototypingViewModel}" ItemsSource="{Binding MyList}" 
+        <DataGrid DataContext="{Binding PrototypingViewModel}" ItemsSource="{Binding HgdExperiments}" 
                   AutoGenerateColumns="False" Margin="55,242,495.2,190.2" GridLinesVisibility="None">
-            <DataGrid.InputBindings>
+            <!--<DataGrid.InputBindings>
                 <MouseBinding Gesture="LeftDoubleClick" Command="{Binding TestCommand}" CommandParameter="{Binding ElementName=UsersDataGrid, Path=SelectedItem}" />
-            </DataGrid.InputBindings>
+            </DataGrid.InputBindings>-->
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Image" Width="SizeToCells" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Image Source="{Binding protoImage}" />
+                            <Image Source="{Binding Thumbnail}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="Buttons">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="{Binding Name}"/>
+                            <Button Command="{Binding LoadVideoCommand}"  Content="{Binding VideoPath}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -61,6 +61,6 @@
                 </DataGridCheckBoxColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <Image Source="{Binding UriString, Converter={StaticResource ImageConverter}}" HorizontalAlignment="Left" Height="323" Margin="541,242,0,0" VerticalAlignment="Top" Width="390"/>
+        <Image DataContext="{Binding PrototypingViewModel}" Source="{Binding PublicImage}" HorizontalAlignment="Left" Height="323" Margin="541,242,0,0" VerticalAlignment="Top" Width="390"/>
     </Grid>
 </Window>
