@@ -55,6 +55,9 @@ namespace WpfHandGazeDistance.ViewModels
             public void LoadVideo()
             {
                 VideoPath = FileManager.OpenFileDialog();
+                Video = new Video(VideoPath);
+                Video.ThumbnailImage.Resize(0.1);
+                Thumbnail = Video.ThumbnailImage.BitMapImage;
             }
         }
 
