@@ -59,8 +59,18 @@
                 </DataGridTemplateColumn>
                 <DataGridCheckBoxColumn Header="HGD Flags" Binding="{Binding HgdFlags}">
                 </DataGridCheckBoxColumn>
+                <DataGridTemplateColumn Header="Remove">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding Path=DataContext.RemoveExperimentCommand,RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                Content="Remove"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
         <Image DataContext="{Binding PrototypingViewModel}" Source="{Binding PublicImage}" HorizontalAlignment="Left" Height="323" Margin="541,242,0,0" VerticalAlignment="Top" Width="390"/>
+        <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding AddExperimentCommand}" 
+                Content="Add Experiment" HorizontalAlignment="Left" Margin="303,184,0,0" VerticalAlignment="Top" Width="75"/>
     </Grid>
 </Window>

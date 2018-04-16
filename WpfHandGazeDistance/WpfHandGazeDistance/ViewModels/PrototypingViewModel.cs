@@ -61,45 +61,6 @@ namespace WpfHandGazeDistance.ViewModels
             }
         }
 
-        public class MyObject : BaseViewModel
-        {
-            private Image _image;
-
-            private BitmapSource _bitmapImage;
-
-            private Uri _uriString;
-
-            public Image Image
-            {
-                get => _image;
-                set
-                {
-                    ChangeAndNotify(value, ref _image);
-                    _image.Resize(0.1);
-                    BitmapImage = _image.BitMapImage;
-                    //UriString = new Uri(Image.BgrImage.ToString());
-                }
-            }
-
-            public BitmapSource BitmapImage
-            {
-                get => _bitmapImage;
-                set => ChangeAndNotify(value, ref _bitmapImage);
-            }
-
-            public Uri UriString
-            {
-                get => _uriString;
-                set => ChangeAndNotify(value, ref _uriString);
-            }
-
-            public Video Video { get; set; }
-            
-            public string Name { get; set; }
-
-            public bool HgdFlags { get; set; }
-        }
-
         #region Constructor
 
         public PrototypingViewModel()
@@ -110,6 +71,8 @@ namespace WpfHandGazeDistance.ViewModels
         #endregion
 
         public ICommand LoadPublicVideoCommand => new RelayCommand(LoadVideo, true);
+
+        public ICommand AddExperimentCommand => new RelayCommand(AddExperiment, true);
 
         public void InitializeMyList()
         {
@@ -145,38 +108,14 @@ namespace WpfHandGazeDistance.ViewModels
             }
         }
 
-        private void Print()
+        private void AddExperiment()
         {
-            Debug.Print("Juhuu");
+            HgdExperiments.Add(InitializeMyObject(HgdExperiments.Count));
         }
 
-        //private void DataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        //{
-        //    Debug.Print("Clicked.");
-        //}
-
-        //private void ShowWindow(int i)
-        //{
-        //    // Just as an exammple, here I just show a MessageBox
-        //    MessageBox.Show("You clicked on object " + i + "!!!");
-        //}
-
-        //private void Button_Click_1(object sender, RoutedEventArgs e)
-        //{
-        //    var data = new Test { Test1 = "Test1", Test2 = "Test2" };
-
-        //    //DataGridTest.Items.Add(data);
-        //}
-
-        //private void DataGridTest_MouseDown(object sender, MouseButtonEventArgs e)
-        //{
-        //    Debug.Print("MouseDown");
-        //}
-        
-        //public class Test
-        //{
-        //    public string Test1 { get; set; }
-        //    public string Test2 { get; set; }
-        //}
+        private void RemoveExperiment(HgdExperiment hgdExperiment)
+        {
+            HgdExperiments.Remove(hgdExperiment);
+        }
     }
 };
