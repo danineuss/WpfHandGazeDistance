@@ -31,14 +31,18 @@ namespace WpfHandGazeDistance.Helpers
 
         #endregion
 
-        #region Public Members
+        #region Constructor
 
         public HandDetector(BeGazeData beGazeData, Video video)
         {
             BeGazeData = beGazeData;
             Video = video;
-            HgdData = new HgdData();
+            HgdData = new HgdData();            
         }
+
+        #endregion
+
+        #region Public Members
 
         /// <summary>
         /// This will measure the distance between the gaze point and the closest hand for each frame in the video.
@@ -139,8 +143,8 @@ namespace WpfHandGazeDistance.Helpers
         /// <returns>A grayscale image with skin being white pixels.</returns>
         private static Image<Gray, byte> ColorSegment(Image<Bgr, byte> inputImage)
         {
-            var minimumSegment = MinimumSegment(inputImage);
-            var hsvSegment = HsvSegment(inputImage);
+            Image<Gray, byte> minimumSegment = MinimumSegment(inputImage);
+            Image<Gray, byte> hsvSegment = HsvSegment(inputImage);
 
             Image<Gray, byte> segmentedImage = new Image<Gray, byte>(inputImage.Size);
             CvInvoke.BitwiseAnd(minimumSegment, hsvSegment, segmentedImage);

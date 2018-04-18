@@ -117,5 +117,15 @@ namespace WpfHandGazeDistance.ViewModels
         {
             HgdExperiments.Remove(hgdExperiment);
         }
+
+
+        private void TestFunction()
+        {
+            BeGazeData begazeData = new BeGazeData("testString");
+            
+            HgdData hgdData = new HgdData();
+            
+            
+        }
     }
 };

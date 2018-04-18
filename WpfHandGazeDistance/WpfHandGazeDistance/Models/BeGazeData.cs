@@ -17,7 +17,7 @@ namespace WpfHandGazeDistance.Models
         #endregion
 
         #region Public Properties
-
+        
         public List<float> RecordingTime { get; }
 
         public List<float> XGaze { get; }
@@ -47,7 +47,7 @@ namespace WpfHandGazeDistance.Models
         #endregion
 
         #region Public Members
-
+        
         public PointF GetCoordinatePoint(int index)
         {
             if (index > XGaze.Count - 1)

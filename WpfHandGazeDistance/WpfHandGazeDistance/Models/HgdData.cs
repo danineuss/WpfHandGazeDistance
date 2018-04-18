@@ -38,7 +38,7 @@ namespace WpfHandGazeDistance.Models
         public List<float> RecordingTime
         {
             get => _recordingTime;
-            set { _recordingTime = value; UpdateDataList(); } 
+            set { _recordingTime = value; UpdateDataList(); }
         }
 
         public List<float> RawDistance
@@ -108,7 +108,7 @@ namespace WpfHandGazeDistance.Models
                 "RigidActions [px]",
                 "UsabilityIssues [-]",
                 "BufferedUsabilityIssues [-]"
-        };
+            };
 
             _dataList = new List<List<float>>()
             {
