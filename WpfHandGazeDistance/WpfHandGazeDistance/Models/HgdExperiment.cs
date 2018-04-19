@@ -65,6 +65,10 @@ namespace WpfHandGazeDistance.Models
 
         public ICommand SetOutputPathCommand => new RelayCommand(SetOutputPath, true);
 
+        public ICommand AnalyseCommand => new RelayCommand(Analyse, true);
+
+        public ICommand StopCommand => new RelayCommand(Stop, true);
+
         #endregion
 
         #region Private Members
@@ -98,6 +102,16 @@ namespace WpfHandGazeDistance.Models
             {
                 ShortOutputPath = ShortenPath(OutputPath) + @"\";
             }
+        }
+
+        private void Analyse()
+        {
+
+        }
+
+        private void Stop()
+        {
+
         }
 
         private string ShortenPath(string inputPath)
