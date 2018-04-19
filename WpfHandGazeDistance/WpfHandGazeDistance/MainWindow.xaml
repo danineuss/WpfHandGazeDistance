@@ -8,9 +8,6 @@
         xmlns:helpers="clr-namespace:WpfHandGazeDistance.Helpers"
         mc:Ignorable="d"
         Title="MainWindow" Height="785" Width="994">
-    <!--<Window.Resources>-->
-        <!--<helpers:ImageConverter x:Key="ImageConverter" />
-    </Window.Resources>-->
 
     <Grid>
         <Button Command="{Binding LoadBeGazeCommand}" Content="Load BeGaze" HorizontalAlignment="Left" Margin="55,22,0,0" VerticalAlignment="Top" Width="95"/>
@@ -23,8 +20,6 @@
         <TextBox HorizontalAlignment="Left" Height="23" Margin="187,139,0,0" TextWrapping="Wrap" Text="{Binding SnippetsPath}" VerticalAlignment="Top" Width="774"/>
         <Button Command="{Binding AnalyseDataCommand}" Content="Analyse Data" HorizontalAlignment="Left" Margin="55,184,0,0" VerticalAlignment="Top" Width="95"/>
 
-        <!-- Prototyping Corner starts here -->
-
         <!--<DataGrid DataContext="{Binding PrototypingViewModel}" AutoGenerateColumns="False" Name="DataGridTest" MouseDoubleClick="{Binding DataGridTest_MouseDown}" CanUserAddRows="True" ItemsSource="{Binding DataGridTest}" Margin="55,383,25,110" FontSize="14" >
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Video File" IsReadOnly="True" Binding="{Binding Path=Test1}" Width="160"></DataGridTextColumn>
@@ -36,9 +31,8 @@
         </DataGrid>
         <Button DataContext="{Binding PrototypingViewModel}" Content="Add new row" HorizontalAlignment="Left" Margin="55,664,0,0" VerticalAlignment="Top" Width="75" Click="{Binding Button_Click_1}"/>-->
 
-
         <DataGrid DataContext="{Binding PrototypingViewModel}" ItemsSource="{Binding HgdExperiments}" 
-                  AutoGenerateColumns="False" Margin="55,242,495.2,190.2" GridLinesVisibility="None">
+                  AutoGenerateColumns="False" Margin="55,242,56.2,190.2" GridLinesVisibility="None">
             <!--<DataGrid.InputBindings>
                 <MouseBinding Gesture="LeftDoubleClick" Command="{Binding TestCommand}" CommandParameter="{Binding ElementName=UsersDataGrid, Path=SelectedItem}" />
             </DataGrid.InputBindings>-->
@@ -50,10 +44,24 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Buttons">
+                <DataGridTemplateColumn Header="Video File">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Command="{Binding LoadVideoCommand}"  Content="{Binding VideoPath}"/>
+                            <Button Command="{Binding LoadVideoCommand}"  Content="{Binding ShortVideoPath}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="BeGaze File">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding LoadBeGazeCommand}"  Content="{Binding ShortBeGazePath}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Output Folder">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding SetOutputPathCommand}"  Content="{Binding ShortOutputPath}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

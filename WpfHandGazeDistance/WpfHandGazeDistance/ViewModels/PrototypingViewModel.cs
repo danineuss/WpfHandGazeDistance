@@ -30,36 +30,36 @@ namespace WpfHandGazeDistance.ViewModels
 
         public ObservableCollection<HgdExperiment> HgdExperiments { get; set; }
 
-        public class HgdExperiment : BaseViewModel
-        {
-            private BitmapSource _thumbnail;
+        //public class HgdExperiment : BaseViewModel
+        //{
+        //    private BitmapSource _thumbnail;
 
-            public BitmapSource Thumbnail
-            {
-                get => _thumbnail;
-                set => ChangeAndNotify(value, ref _thumbnail);
-            }
+        //    public BitmapSource Thumbnail
+        //    {
+        //        get => _thumbnail;
+        //        set => ChangeAndNotify(value, ref _thumbnail);
+        //    }
 
-            public Video Video { get; set; }
+        //    public Video Video { get; set; }
 
-            public string VideoPath { get; set; }
+        //    public string VideoPath { get; set; }
 
-            public string BeGazePath { get; set; }
+        //    public string BeGazePath { get; set; }
 
-            public string OutputPath { get; set; }
+        //    public string OutputPath { get; set; }
 
-            public bool HgdFlags { get; set; }
+        //    public bool HgdFlags { get; set; }
 
-            public ICommand LoadVideoCommand => new RelayCommand(LoadVideo, true);
+        //    public ICommand LoadVideoCommand => new RelayCommand(LoadVideo, true);
 
-            public void LoadVideo()
-            {
-                VideoPath = FileManager.OpenFileDialog();
-                Video = new Video(VideoPath);
-                Video.ThumbnailImage.Resize(0.1);
-                Thumbnail = Video.ThumbnailImage.BitMapImage;
-            }
-        }
+        //    public void LoadVideo()
+        //    {
+        //        VideoPath = FileManager.OpenFileDialog();
+        //        Video = new Video(VideoPath);
+        //        Video.ThumbnailImage.Resize(0.1);
+        //        Thumbnail = Video.ThumbnailImage.BitMapImage;
+        //    }
+        //}
 
         #region Constructor
 
@@ -77,21 +77,18 @@ namespace WpfHandGazeDistance.ViewModels
         public void InitializeMyList()
         {
             HgdExperiments = new ObservableCollection<HgdExperiment>();
-            for (int i = 0; i < 5; i++)
-            {
-                HgdExperiments.Add(InitializeMyObject(i));
-            }
+            HgdExperiments.Add(new HgdExperiment());
         }
 
-        public HgdExperiment InitializeMyObject(int i)
-        {
-            _hgdExperiment = new HgdExperiment
-            {
-                VideoPath = i.ToString()
-            };
+        //public HgdExperiment InitializeMyObject(int i)
+        //{
+        //    _hgdExperiment = new HgdExperiment
+        //    {
+        //        //VideoPath = i.ToString()
+        //    };
 
-            return _hgdExperiment;
-        }
+        //    return _hgdExperiment;
+        //}
 
         private void LoadVideo()
         {
@@ -110,7 +107,7 @@ namespace WpfHandGazeDistance.ViewModels
 
         private void AddExperiment()
         {
-            HgdExperiments.Add(InitializeMyObject(HgdExperiments.Count));
+            HgdExperiments.Add(new HgdExperiment());
         }
 
         private void RemoveExperiment(HgdExperiment hgdExperiment)
