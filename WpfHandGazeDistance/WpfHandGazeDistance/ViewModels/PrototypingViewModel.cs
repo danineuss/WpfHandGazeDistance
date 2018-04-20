@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
@@ -16,6 +17,10 @@ namespace WpfHandGazeDistance.ViewModels
         private string _videoPath;
         private HgdExperiment _hgdExperiment;
 
+        private readonly BackgroundWorker _backgroundWorker;
+        private readonly ICommand instigateWorkCommand;
+        private int _currentProgress;
+
         public string VideoPath
         {
             get => _videoPath;
@@ -30,45 +35,41 @@ namespace WpfHandGazeDistance.ViewModels
 
         public ObservableCollection<HgdExperiment> HgdExperiments { get; set; }
 
-        //public class HgdExperiment : BaseViewModel
-        //{
-        //    private BitmapSource _thumbnail;
-
-        //    public BitmapSource Thumbnail
-        //    {
-        //        get => _thumbnail;
-        //        set => ChangeAndNotify(value, ref _thumbnail);
-        //    }
-
-        //    public Video Video { get; set; }
-
-        //    public string VideoPath { get; set; }
-
-        //    public string BeGazePath { get; set; }
-
-        //    public string OutputPath { get; set; }
-
-        //    public bool HgdFlags { get; set; }
-
-        //    public ICommand LoadVideoCommand => new RelayCommand(LoadVideo, true);
-
-        //    public void LoadVideo()
-        //    {
-        //        VideoPath = FileManager.OpenFileDialog();
-        //        Video = new Video(VideoPath);
-        //        Video.ThumbnailImage.Resize(0.1);
-        //        Thumbnail = Video.ThumbnailImage.BitMapImage;
-        //    }
-        //}
-
         #region Constructor
 
         public PrototypingViewModel()
         {
+            instigateWorkCommand =
+                new DelegateCommand(o => _backgroundWorker.RunWorkerAsync(), o => !_backgroundWorker.IsBusy);
+            _backgroundWorker = new BackgroundWorker();
+            _backgroundWorker.DoWork += DoWork;
+            _backgroundWorker.ProgressChanged += ProgressChanged;
+
             InitializeMyList();
         }
 
         #endregion
+
+        public ICommand InstigateWorkCommand => this.instigateWorkCommand;
+
+        public int CurrentProgress
+        {
+            get => _currentProgress;
+            private set => ChangeAndNotify(value, ref _currentProgress);
+        }
+
+        private void DoWork(object sender, DoWorkEventArgs e)
+        {
+            // do time-consuming work here, calling ReportProgress as and when you can
+        }
+
+        private void ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            CurrentProgress = e.ProgressPercentage;
+        }
+
+
+
 
         public ICommand LoadPublicVideoCommand => new RelayCommand(LoadVideo, true);
 
@@ -77,19 +78,10 @@ namespace WpfHandGazeDistance.ViewModels
         public void InitializeMyList()
         {
             HgdExperiments = new ObservableCollection<HgdExperiment>();
+            HgdExperiments.Clear();
             HgdExperiments.Add(new HgdExperiment());
         }
-
-        //public HgdExperiment InitializeMyObject(int i)
-        //{
-        //    _hgdExperiment = new HgdExperiment
-        //    {
-        //        //VideoPath = i.ToString()
-        //    };
-
-        //    return _hgdExperiment;
-        //}
-
+        
         private void LoadVideo()
         {
             VideoPath = FileManager.OpenFileDialog();
@@ -110,19 +102,6 @@ namespace WpfHandGazeDistance.ViewModels
             HgdExperiments.Add(new HgdExperiment());
         }
 
-        private void RemoveExperiment(HgdExperiment hgdExperiment)
-        {
-            HgdExperiments.Remove(hgdExperiment);
-        }
-
-
-        private void TestFunction()
-        {
-            BeGazeData begazeData = new BeGazeData("testString");
-            
-            HgdData hgdData = new HgdData();
-            
-            
-        }
+        
     }
 };

@@ -11,11 +11,11 @@ namespace WpfHandGazeDistance.Models
 
         private BitmapSource _thumbnail;
 
-        private string _shortVideoPath;
+        private string _shortVideoPath = "Select";
 
-        private string _shortBeGazePath;
+        private string _shortBeGazePath = "Select";
 
-        private string _shortOutputPath;
+        private string _shortOutputPath = "Select";
 
         #endregion
 
@@ -29,6 +29,10 @@ namespace WpfHandGazeDistance.Models
 
         public Video Video { get; set; }
 
+        public HgdData HgdData;
+
+        public BeGazeData BeGazeData;
+        
         public string VideoPath;
 
         public string BeGazePath;
@@ -52,6 +56,8 @@ namespace WpfHandGazeDistance.Models
             get => _shortOutputPath;
             set => ChangeAndNotify(value, ref _shortOutputPath);
         }
+
+        public int Progress { get; set; }
 
         public bool HgdFlags { get; set; }
 
@@ -91,6 +97,8 @@ namespace WpfHandGazeDistance.Models
             BeGazePath = FileManager.OpenFileDialog(".txt");
             if (BeGazePath != null)
             {
+                BeGazeData = new BeGazeData(BeGazePath);
+
                 ShortBeGazePath = ShortenPath(BeGazePath);
             }
         }

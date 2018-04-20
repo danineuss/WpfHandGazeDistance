@@ -25,13 +25,8 @@
         <TextBox HorizontalAlignment="Left" Height="23" Margin="187,139,0,0" TextWrapping="Wrap" Text="{Binding SnippetsPath}" VerticalAlignment="Top" Width="774"/>
         <Button Command="{Binding AnalyseDataCommand}" Content="Analyse Data" HorizontalAlignment="Left" Margin="55,184,0,0" VerticalAlignment="Top" Width="95"/>
 
-        
-
         <DataGrid DataContext="{Binding PrototypingViewModel}" ItemsSource="{Binding HgdExperiments}" 
                   AutoGenerateColumns="False" Margin="55,242,56.2,190.2" GridLinesVisibility="None">
-            <!--<DataGrid.InputBindings>
-                <MouseBinding Gesture="LeftDoubleClick" Command="{Binding TestCommand}" CommandParameter="{Binding ElementName=UsersDataGrid, Path=SelectedItem}" />
-            </DataGrid.InputBindings>-->
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Image" Width="SizeToCells" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
@@ -43,31 +38,39 @@
                 <DataGridTemplateColumn Header="Video File">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Command="{Binding LoadVideoCommand}"  Content="{Binding ShortVideoPath}"/>
+                            <Button Command="{Binding LoadVideoCommand}"  Content="{Binding ShortVideoPath}"
+                                    Height="25"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="BeGaze File">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Command="{Binding LoadBeGazeCommand}"  Content="{Binding ShortBeGazePath}"/>
+                            <Button Command="{Binding LoadBeGazeCommand}"  Content="{Binding ShortBeGazePath}"
+                                    Height="25"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="Output Folder">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Command="{Binding SetOutputPathCommand}"  Content="{Binding ShortOutputPath}" Background="White"/>
+                            <Button Command="{Binding SetOutputPathCommand}"  Content="{Binding ShortOutputPath}"
+                                    Height="25"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridCheckBoxColumn Header="HGD Flags" Binding="{Binding HgdFlags}">
-                </DataGridCheckBoxColumn>
+                <DataGridTemplateColumn Header="HgdFlags" Width="auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding HgdFlags}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="Analyse">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button Command="{Binding AnalyseCommand}"  Content="{StaticResource PlayButton2}"
-                                    Height="30" Width="30"  Background="White"/>
+                                    Height="30" Width="30"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -75,7 +78,15 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button Command="{Binding StopCommand}"  Content="{StaticResource StopButton}"
-                                    Height="30" Width="30"  Background="White"/>
+                                    Height="25" Width="30"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Progress">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ProgressBar Value="{Binding Progress, Mode=OneWay}" Width="120" Height="25"/>
+                                         <!--Visibility="{Binding ProgressVisibility}"-->
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
