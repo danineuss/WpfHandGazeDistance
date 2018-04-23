@@ -15,6 +15,12 @@ namespace WpfHandGazeDistance.ViewModels
 {
     public class PrototypingViewModel : BaseViewModel
     {
+        private VideoEditor _videoEditor;
+
+        private string _cutVideoPath;
+        private float _startTime = 660f;
+        private float _duration = 0f;
+
         private BitmapSource _publicImage;
         private string _videoPath;
         private HgdExperiment _hgdExperiment;
@@ -23,10 +29,28 @@ namespace WpfHandGazeDistance.ViewModels
         private readonly ICommand instigateWorkCommand;
         private int _currentProgress;
 
+        public float StartTime
+        {
+            get => _startTime;
+            set => ChangeAndNotify(value, ref _startTime);
+        }
+
+        public float Duration
+        {
+            get => _duration;
+            set => ChangeAndNotify(value, ref _duration);
+        }
+
         public string VideoPath
         {
             get => _videoPath;
             set => ChangeAndNotify(value, ref _videoPath);
+        }
+
+        public string CutVideoPath
+        {
+            get => _cutVideoPath;
+            set => ChangeAndNotify(value, ref _cutVideoPath);
         }
 
         public BitmapSource PublicImage
@@ -79,6 +103,10 @@ namespace WpfHandGazeDistance.ViewModels
 
         public ICommand AddExperimentCommand => new RelayCommand(AddExperiment, true);
 
+        public ICommand CutVideoCommand => new RelayCommand(CutVideo, true);
+
+        public ICommand LoadVideoCommand => new RelayCommand(LoadCutVideo, true);
+
         public void InitializeMyList()
         {
             HgdExperiments = new ObservableCollection<HgdExperiment>();
@@ -117,6 +145,18 @@ namespace WpfHandGazeDistance.ViewModels
         private void Stop()
         {
 
+        }
+
+        private void LoadCutVideo()
+        {
+            CutVideoPath = FileManager.OpenFileDialog(".avi");
+        }
+
+        private void CutVideo()
+        {
+            string outputVideoPath = @"C:\Users\dsinger.D\Desktop\ET_Data\dremel05_1100_1200.avi";
+            _videoEditor = new VideoEditor(CutVideoPath);
+            _videoEditor.CutVideo(outputVideoPath, StartTime, StartTime + Duration);
         }
     }
 };
