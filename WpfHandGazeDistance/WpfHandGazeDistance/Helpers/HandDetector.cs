@@ -71,7 +71,7 @@ namespace WpfHandGazeDistance.Helpers
 
                 rawDistance.Add(distance);
                 
-                int outputStep = 1000;
+                int outputStep = 100;
                 if (index % outputStep == 0)
                 {
                     Debug.Print(index.ToString() + " frames done.");

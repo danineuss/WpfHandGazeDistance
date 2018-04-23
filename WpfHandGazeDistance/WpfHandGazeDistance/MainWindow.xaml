@@ -7,15 +7,19 @@
         xmlns:viewModels="clr-namespace:WpfHandGazeDistance.ViewModels"
         xmlns:helpers="clr-namespace:WpfHandGazeDistance.Helpers"
         mc:Ignorable="d"
-        Title="MainWindow" Height="785" Width="994">
+        Title="MainWindow" Height="649" Width="1380.575">
     <Window.Resources>
         <Image x:Key="PlayButton" Source="Resources/playButton.png" x:Shared="False"/>
         <Image x:Key="PlayButton2" Source="Resources/playButton2.png" x:Shared="False"/>
         <Image x:Key="StopButton" Source="Resources/stopButton.png" x:Shared="False"/>
+        <Image x:Key="AddButton" Source="Resources/plus.png" x:Shared="False"/>
+        <Image x:Key="RemoveButton" Source="Resources/minus.png" x:Shared="False"/>
     </Window.Resources>
 
+
+
     <Grid>
-        <Button Command="{Binding LoadBeGazeCommand}" Content="Load BeGaze" HorizontalAlignment="Left" Margin="55,22,0,0" VerticalAlignment="Top" Width="95"/>
+        <!--<Button Command="{Binding LoadBeGazeCommand}" Content="Load BeGaze" HorizontalAlignment="Left" Margin="55,22,0,0" VerticalAlignment="Top" Width="95"/>
         <TextBox HorizontalAlignment="Left" Height="23" Margin="187,21,0,0" TextWrapping="Wrap" Text="{Binding BeGazePath}" VerticalAlignment="Top" Width="774"/>
         <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding LoadPublicVideoCommand}" Content="Load Video" HorizontalAlignment="Left" Margin="55,56,0,0" VerticalAlignment="Top" Width="95"/>
         <TextBox HorizontalAlignment="Left" Height="23" Margin="187,55,0,0" TextWrapping="Wrap" Text="{Binding VideoPath}" VerticalAlignment="Top" Width="774"/>
@@ -23,19 +27,19 @@
         <TextBox HorizontalAlignment="Left" Height="23" Margin="187,106,0,0" TextWrapping="Wrap" Text="{Binding HgdPath}" VerticalAlignment="Top" Width="774"/>
         <Button Command="{Binding SetSnippetsPathCommand}" Content="Set Snippets Path" HorizontalAlignment="Left" Margin="55,140,0,0" VerticalAlignment="Top" Width="95"/>
         <TextBox HorizontalAlignment="Left" Height="23" Margin="187,139,0,0" TextWrapping="Wrap" Text="{Binding SnippetsPath}" VerticalAlignment="Top" Width="774"/>
-        <Button Command="{Binding AnalyseDataCommand}" Content="Analyse Data" HorizontalAlignment="Left" Margin="55,184,0,0" VerticalAlignment="Top" Width="95"/>
+        <Button Command="{Binding AnalyseDataCommand}" Content="Analyse Data" HorizontalAlignment="Left" Margin="55,184,0,0" VerticalAlignment="Top" Width="95"/>-->
 
         <DataGrid DataContext="{Binding PrototypingViewModel}" ItemsSource="{Binding HgdExperiments}" 
-                  AutoGenerateColumns="False" Margin="55,242,56.2,190.2" GridLinesVisibility="None">
+                  AutoGenerateColumns="False" Margin="65,42,110,54" GridLinesVisibility="None">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Image" Width="SizeToCells" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Image Source="{Binding Thumbnail}" />
+                            <Image Source="{Binding Thumbnail}" Width="150"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Video File">
+                <DataGridTemplateColumn Header="Video File" Width="220">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button Command="{Binding LoadVideoCommand}"  Content="{Binding ShortVideoPath}"
@@ -43,7 +47,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="BeGaze File">
+                <DataGridTemplateColumn Header="BeGaze File"  Width="220">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button Command="{Binding LoadBeGazeCommand}"  Content="{Binding ShortBeGazePath}"
@@ -51,10 +55,10 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Output Folder">
+                <DataGridTemplateColumn Header="Output Folder"  Width="220">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Command="{Binding SetOutputPathCommand}"  Content="{Binding ShortOutputPath}"
+                            <Button Command="{Binding SetFolderPathCommand}"  Content="{Binding ShortFolderPath}"
                                     Height="25"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -86,7 +90,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <ProgressBar Value="{Binding Progress, Mode=OneWay}" Width="120" Height="25"/>
-                                         <!--Visibility="{Binding ProgressVisibility}"-->
+                            <!--Visibility="{Binding ProgressVisibility}"-->
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -94,16 +98,25 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button Command="{Binding Path=DataContext.RemoveExperimentCommand,RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-                                Content="Remove"/>
+                                Content="{StaticResource RemoveButton}" Height="25"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
 
-        <Image DataContext="{Binding PrototypingViewModel}" Source="{Binding PublicImage}" HorizontalAlignment="Left" Height="323" Margin="541,242,0,0" VerticalAlignment="Top" Width="390"/>
-        <Button DataContext="{Binding PrototypingViewModel}" Command="{Binding AddExperimentCommand}" 
-                Content="Add Experiment" HorizontalAlignment="Left" Margin="303,184,0,0" VerticalAlignment="Top" Width="75"/>
-        <Button Content="{StaticResource PlayButton}"  HorizontalAlignment="Left" Margin="511,184,0,0" VerticalAlignment="Top" Width="41" Height="39" Background="White"/>
+        <!--<Image DataContext="{Binding PrototypingViewModel}" Source="{Binding PublicImage}" HorizontalAlignment="Left" Height="323" Margin="541,242,0,0" VerticalAlignment="Top" Width="390"/>-->
+        <Button DataContext="{Binding PrototypingViewModel}" 
+                Command="{Binding AddExperimentCommand}" 
+                Content="{StaticResource AddButton}" 
+                HorizontalAlignment="Left" Margin="1298,525,0,0" VerticalAlignment="Top" Width="41" Background="White"/>
+        <Button DataContext="{Binding PrototypingViewModel}" 
+                Command="{Binding AnalyseAllDataCommand}" 
+                Content="{StaticResource PlayButton2}"  
+                HorizontalAlignment="Left" Margin="1298,42,0,0" VerticalAlignment="Top" Width="41" Height="39" Background="White"/>
+        <Button DataContext="{Binding PrototypingViewModel}" 
+                Command="{Binding StopCommand}" 
+                Content="{StaticResource StopButton}"    
+                HorizontalAlignment="Left" Margin="1298,86,0,0" VerticalAlignment="Top" Width="41" Height="39" Background="White"/>
     </Grid>
 </Window>

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -69,7 +71,9 @@ namespace WpfHandGazeDistance.ViewModels
         }
 
 
+        public ICommand AnalyseAllDataCommand => new RelayCommand(AnalyseAllData, true);
 
+        public ICommand StopCommand => new RelayCommand(Stop, true);
 
         public ICommand LoadPublicVideoCommand => new RelayCommand(LoadVideo, true);
 
@@ -102,6 +106,17 @@ namespace WpfHandGazeDistance.ViewModels
             HgdExperiments.Add(new HgdExperiment());
         }
 
-        
+        private void AnalyseAllData()
+        {
+            foreach(HgdExperiment hgdExperiment in HgdExperiments)
+            {
+                hgdExperiment.Analyse();
+            }
+        }
+
+        private void Stop()
+        {
+
+        }
     }
 };
