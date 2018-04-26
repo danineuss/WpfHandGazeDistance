@@ -32,6 +32,8 @@ namespace WpfHandGazeDistance.ViewModels
 
         public PrototypingViewModel PrototypingViewModel { get; }
 
+        public ParametersViewModel ParametersViewModel { get; set; }
+
         public string VideoPath
         {
             get => _videoPath;
@@ -80,6 +82,7 @@ namespace WpfHandGazeDistance.ViewModels
         {
             HgdViewModel = new HgdViewModel();
             PrototypingViewModel = new PrototypingViewModel();
+            ParametersViewModel = new ParametersViewModel();
         }
 
         #region Commands

@@ -30,6 +30,14 @@ namespace WpfHandGazeDistance.ViewModels
         private readonly ICommand instigateWorkCommand;
         private int _currentProgress;
 
+        private int _pixelThreshold = 10000;
+
+        public int PixelThreshold
+        {
+            get => _pixelThreshold;
+            set => ChangeAndNotify(value, ref _pixelThreshold);
+        }
+
         public float StartTime
         {
             get => _startTime;
@@ -61,6 +69,8 @@ namespace WpfHandGazeDistance.ViewModels
         }
 
         public ObservableCollection<HgdExperiment> HgdExperiments { get; set; }
+
+        public ObservableCollection<Parameter> ParameterCollection { get; set; }
 
         #region Constructor
 

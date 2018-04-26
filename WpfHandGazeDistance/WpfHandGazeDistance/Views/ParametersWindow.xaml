@@ -5,11 +5,36 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfHandGazeDistance.Views"
         mc:Ignorable="d"
-        Title="Parameters" Height="450" Width="547.751">
-    <Grid>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="46,56,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="59"/>
-        <Slider HorizontalAlignment="Left" Margin="205,59,0,0" VerticalAlignment="Top" Width="207"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="434,56,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="59"/>
+        Title="ParameterList" Height="450" Width="547.751">
+    <!--<Grid>
+
+        <TextBlock Text="Pixel Threshold" HorizontalAlignment="Left" Margin="99,59,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <Slider Value="{Binding PixelThreshold}" 
+                Minimum="0" Maximum="100000"
+                HorizontalAlignment="Left" Margin="205,59,0,0" VerticalAlignment="Top" Width="207"/>
+        <TextBox Text="{Binding PixelThreshold}"
+            HorizontalAlignment="Left" Height="23" Margin="434,56,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59"/>
         <Button Command="{Binding GoCommand}" Content="Button" HorizontalAlignment="Left" Margin="271,164,0,0" VerticalAlignment="Top" Width="75"/>
-    </Grid>
+        
+    </Grid>-->
+
+    <DataGrid DataContext="{Binding ParametersViewModel}" ItemsSource="{Binding ParameterCollection}" 
+            AutoGenerateColumns="False" Margin="65,42,110.4,52.2" GridLinesVisibility="None">
+        <DataGrid.Columns>
+            <DataGridTemplateColumn Header="Parameter Name" Width="SizeToCells" IsReadOnly="True">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="Juii"></TextBlock>
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTemplateColumn Header="Value" Width="SizeToCells" IsReadOnly="True">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <TextBox Text="{Binding Value}"></TextBox>
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+        </DataGrid.Columns>
+    </DataGrid>
 </Window>

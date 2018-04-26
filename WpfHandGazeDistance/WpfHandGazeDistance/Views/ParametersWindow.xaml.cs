@@ -11,7 +11,7 @@ namespace WpfHandGazeDistance.Views
         public ParametersWindow()
         {
             InitializeComponent();
-            DataContext = new PrototypingViewModel();
+            DataContext = new ParametersViewModel();
         }
     }
 }
