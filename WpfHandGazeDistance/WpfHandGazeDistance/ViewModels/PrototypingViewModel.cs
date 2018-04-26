@@ -10,6 +10,7 @@ using System.Windows.Media.Imaging;
 using WpfHandGazeDistance.Helpers;
 using WpfHandGazeDistance.Models;
 using WpfHandGazeDistance.ViewModels.Base;
+using WpfHandGazeDistance.Views;
 
 namespace WpfHandGazeDistance.ViewModels
 {
@@ -107,6 +108,8 @@ namespace WpfHandGazeDistance.ViewModels
 
         public ICommand LoadVideoCommand => new RelayCommand(LoadCutVideo, true);
 
+        public ICommand OpenParametersCommand => new RelayCommand(OpenParameters, true);
+
         public void InitializeMyList()
         {
             HgdExperiments = new ObservableCollection<HgdExperiment>();
@@ -157,6 +160,12 @@ namespace WpfHandGazeDistance.ViewModels
             string outputVideoPath = @"C:\Users\dsinger.D\Desktop\ET_Data\dremel05_1100_1200.avi";
             _videoEditor = new VideoEditor(CutVideoPath);
             _videoEditor.CutVideo(outputVideoPath, StartTime, StartTime + Duration);
+        }
+
+        private void OpenParameters()
+        {
+            ParametersWindow parametersWindow = new ParametersWindow();
+            parametersWindow.Show();
         }
     }
 };

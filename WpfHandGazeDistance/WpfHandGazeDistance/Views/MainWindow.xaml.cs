@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
+﻿using System.Windows;
 using WpfHandGazeDistance.ViewModels;
 
-namespace WpfHandGazeDistance
+namespace WpfHandGazeDistance.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -16,7 +11,7 @@ namespace WpfHandGazeDistance
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = new MainViewModel();
+            DataContext = new MainViewModel();
         }
     }
 }
