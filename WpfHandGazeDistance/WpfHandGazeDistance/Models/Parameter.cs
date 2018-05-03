@@ -1,29 +1,29 @@
-﻿using WpfHandGazeDistance.ViewModels.Base;
+﻿using System;
+using WpfHandGazeDistance.ViewModels.Base;
 
 namespace WpfHandGazeDistance.Models
 {
-    public class Parameter : BaseViewModel
+    public class Parameter
     {
-        private string _name;
+        public string Name;
 
-        private object _value;
+        public object Value;
 
-        public string Name
+        public object Minimum;
+
+        public object Maximum;
+
+        public Parameter()
         {
-            get => _name;
-            set => ChangeAndNotify(value, ref _name);
+
         }
 
-        public object Value
-        {
-            get => _value;
-            set => ChangeAndNotify(value, ref _value);
-        }
-
-        public Parameter(string name, object value)
+        public Parameter(string name, object value, object minimum, object maximum)
         {
             Name = name;
             Value = value;
+            Minimum = minimum;
+            Maximum = maximum;
         }
     }
 }

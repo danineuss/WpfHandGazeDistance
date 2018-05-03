@@ -5,21 +5,96 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfHandGazeDistance.Views"
         mc:Ignorable="d"
-        Title="ParameterList" Height="450" Width="547.751">
-    <!--<Grid>
+        Title="ParameterList" Height="270.8" Width="618.151">
 
-        <TextBlock Text="Pixel Threshold" HorizontalAlignment="Left" Margin="99,59,0,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+    <Grid>
+        <TextBlock Text="Long Action Duration [s]" HorizontalAlignment="Left" Margin="51,53,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="167"/>
+        <Slider Value="{Binding LongActionDuration}" 
+                Minimum="0" Maximum="10"
+                HorizontalAlignment="Left" Margin="283,52,0,0" VerticalAlignment="Top" Width="207"/>
+        <TextBox Text="{Binding LongActionDuration}"
+            HorizontalAlignment="Left" Height="23" Margin="510,49,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59" RenderTransformOrigin="0.603,5.557"/>
+
+        <TextBlock Text="Standard Deviation Window Duration [s]" HorizontalAlignment="Left" Margin="51,82,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="227"/>
+        <Slider Value="{Binding StdDevWindowDuration}" 
+            Minimum="0" Maximum="10"
+            HorizontalAlignment="Left" Margin="283,81,0,0" VerticalAlignment="Top" Width="207"/>
+        <TextBox Text="{Binding StdDevWindowDuration}"
+            HorizontalAlignment="Left" Height="23" Margin="510,77,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59"/>
+
+        <TextBlock Text="Buffer Duration [s]" HorizontalAlignment="Left" Margin="51,110,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="141"/>
+        <Slider Value="{Binding BufferDuration}" 
+            Minimum="0" Maximum="2"
+            HorizontalAlignment="Left" Margin="283,109,0,0" VerticalAlignment="Top" Width="207"/>
+        <TextBox Text="{Binding BufferDuration}"
+            HorizontalAlignment="Left" Height="23" Margin="510,105,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59"/>
+
+        <TextBlock Text="Median Window Length [frames]" HorizontalAlignment="Left" Margin="51,138,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="227"/>
+        <Slider Value="{Binding MedianWindowLength}" 
+            Minimum="0" Maximum="20"
+            HorizontalAlignment="Left" Margin="283,137,0,0" VerticalAlignment="Top" Width="207"/>
+        <TextBox Text="{Binding MedianWindowLength}"
+            HorizontalAlignment="Left" Height="23" Margin="510,133,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59"/>
+
+        <!--<TextBlock Text="Hand Pixel Threshold [px]" HorizontalAlignment="Left" Margin="51,192,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="167"/>
         <Slider Value="{Binding PixelThreshold}" 
-                Minimum="0" Maximum="100000"
-                HorizontalAlignment="Left" Margin="205,59,0,0" VerticalAlignment="Top" Width="207"/>
+            Minimum="0" Maximum="100000"
+            HorizontalAlignment="Left" Margin="283,191,0,0" VerticalAlignment="Top" Width="207"/>
         <TextBox Text="{Binding PixelThreshold}"
-            HorizontalAlignment="Left" Height="23" Margin="434,56,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59"/>
-        <Button Command="{Binding GoCommand}" Content="Button" HorizontalAlignment="Left" Margin="271,164,0,0" VerticalAlignment="Top" Width="75"/>
-        
-    </Grid>-->
+            HorizontalAlignment="Left" Height="23" Margin="510,188,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59" RenderTransformOrigin="0.603,5.557"/>
 
-    <DataGrid DataContext="{Binding ParametersViewModel}" ItemsSource="{Binding ParameterCollection}" 
-            AutoGenerateColumns="False" Margin="65,42,110.4,52.2" GridLinesVisibility="None">
+        <TextBlock Text="Hue Threshold 1 [-]" HorizontalAlignment="Left" Margin="51,221,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="227"/>
+        <Slider Value="{Binding HueThreshold1}" 
+            Minimum="0" Maximum="180"
+            HorizontalAlignment="Left" Margin="283,220,0,0" VerticalAlignment="Top" Width="207"/>
+        <TextBox Text="{Binding HueThreshold1}"
+            HorizontalAlignment="Left" Height="23" Margin="510,216,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59"/>
+
+        <TextBlock Text="Hue Threshold 2 [-]" HorizontalAlignment="Left" Margin="51,250,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="141"/>
+        <Slider Value="{Binding HueThreshold2}" 
+            Minimum="0" Maximum="180"
+            HorizontalAlignment="Left" Margin="283,248,0,0" VerticalAlignment="Top" Width="207"/>
+        <TextBox Text="{Binding HueThreshold2}"
+            HorizontalAlignment="Left" Height="23" Margin="510,244,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59"/>
+
+        <TextBlock Text="Hue Threshold 3 [-]" HorizontalAlignment="Left" Margin="51,277,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="141"/>
+        <Slider Value="{Binding HueThreshold3}" 
+            Minimum="0" Maximum="180"
+            HorizontalAlignment="Left" Margin="283,276,0,0" VerticalAlignment="Top" Width="207"/>
+        <TextBox Text="{Binding HueThreshold3}"
+            HorizontalAlignment="Left" Height="23" Margin="510,272,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59"/>
+
+        <TextBlock Text="Hue Threshold 4 [-]" HorizontalAlignment="Left" Margin="51,306,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="167"/>
+        <Slider Value="{Binding HueThreshold4}" 
+            Minimum="0" Maximum="180"
+            HorizontalAlignment="Left" Margin="283,305,0,0" VerticalAlignment="Top" Width="207"/>
+        <TextBox Text="{Binding HueThreshold4}"
+            HorizontalAlignment="Left" Height="23" Margin="510,302,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59" RenderTransformOrigin="0.603,5.557"/>
+
+        <TextBlock Text="Erosion Size [px]" HorizontalAlignment="Left" Margin="51,335,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="227"/>
+        <Slider Value="{Binding ErosionSize}" 
+            Minimum="0" Maximum="10"
+            HorizontalAlignment="Left" Margin="283,334,0,0" VerticalAlignment="Top" Width="207"/>
+        <TextBox Text="{Binding ErosionSize}"
+            HorizontalAlignment="Left" Height="23" Margin="510,330,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59"/>
+
+        <TextBlock Text="Erosion Iterations [-]" HorizontalAlignment="Left" Margin="51,364,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="141"/>
+        <Slider Value="{Binding ErosionIterations}" 
+            Minimum="0" Maximum="10"
+            HorizontalAlignment="Left" Margin="283,362,0,0" VerticalAlignment="Top" Width="207"/>
+        <TextBox Text="{Binding ErosionIterations}"
+            HorizontalAlignment="Left" Height="23" Margin="510,358,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59"/>-->
+
+        <Button Command="{Binding LoadParametersCommand}" 
+                Content="Load Parameters" HorizontalAlignment="Left" Margin="51,192,0,0" VerticalAlignment="Top" Width="114"/>
+        <Button Command="{Binding SaveParametersCommand}" 
+                Content="Save Parameters" HorizontalAlignment="Left" Margin="181,192,0,0" VerticalAlignment="Top" Width="114"/>
+        <Button Command="{Binding ResetParametersCommand}" 
+            Content="Reset Default Parameters" HorizontalAlignment="Left" Margin="412,192,0,0" VerticalAlignment="Top" Width="157"/>
+    </Grid>
+
+    <!--<DataGrid DataContext="{Binding ParametersViewModel}" ItemsSource="{Binding ParameterCollection}" 
+            AutoGenerateColumns="False" Margin="65,160,110.6,52" GridLinesVisibility="None">
         <DataGrid.Columns>
             <DataGridTemplateColumn Header="Parameter Name" Width="SizeToCells" IsReadOnly="True">
                 <DataGridTemplateColumn.CellTemplate>
@@ -36,5 +111,5 @@
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
         </DataGrid.Columns>
-    </DataGrid>
+    </DataGrid>-->
 </Window>

@@ -31,11 +31,19 @@ namespace WpfHandGazeDistance.ViewModels
         private int _currentProgress;
 
         private int _pixelThreshold = 10000;
+        private int _pixelThresholdMin = 0;
+        private int _pixelThresholdMax = 100000;
 
         public int PixelThreshold
         {
             get => _pixelThreshold;
-            set => ChangeAndNotify(value, ref _pixelThreshold);
+            set
+            {
+                if (value < _pixelThresholdMin) value = _pixelThresholdMin;
+                if (value > _pixelThresholdMax) value = _pixelThresholdMax;
+
+                ChangeAndNotify(value, ref _pixelThreshold);
+            } 
         }
 
         public float StartTime
@@ -76,34 +84,34 @@ namespace WpfHandGazeDistance.ViewModels
 
         public PrototypingViewModel()
         {
-            instigateWorkCommand =
-                new DelegateCommand(o => _backgroundWorker.RunWorkerAsync(), o => !_backgroundWorker.IsBusy);
-            _backgroundWorker = new BackgroundWorker();
-            _backgroundWorker.DoWork += DoWork;
-            _backgroundWorker.ProgressChanged += ProgressChanged;
+            //instigateWorkCommand =
+            //    new DelegateCommand(o => _backgroundWorker.RunWorkerAsync(), o => !_backgroundWorker.IsBusy);
+            //_backgroundWorker = new BackgroundWorker();
+            //_backgroundWorker.DoWork += DoWork;
+            //_backgroundWorker.ProgressChanged += ProgressChanged;
 
             InitializeMyList();
         }
 
         #endregion
 
-        public ICommand InstigateWorkCommand => this.instigateWorkCommand;
+        //public ICommand InstigateWorkCommand => this.instigateWorkCommand;
 
-        public int CurrentProgress
-        {
-            get => _currentProgress;
-            private set => ChangeAndNotify(value, ref _currentProgress);
-        }
+        //public int CurrentProgress
+        //{
+        //    get => _currentProgress;
+        //    private set => ChangeAndNotify(value, ref _currentProgress);
+        //}
 
-        private void DoWork(object sender, DoWorkEventArgs e)
-        {
-            // do time-consuming work here, calling ReportProgress as and when you can
-        }
+        //private void DoWork(object sender, DoWorkEventArgs e)
+        //{
+        //    // do time-consuming work here, calling ReportProgress as and when you can
+        //}
 
-        private void ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            CurrentProgress = e.ProgressPercentage;
-        }
+        //private void ProgressChanged(object sender, ProgressChangedEventArgs e)
+        //{
+        //    CurrentProgress = e.ProgressPercentage;
+        //}
 
 
         public ICommand AnalyseAllDataCommand => new RelayCommand(AnalyseAllData, true);
@@ -119,6 +127,8 @@ namespace WpfHandGazeDistance.ViewModels
         public ICommand LoadVideoCommand => new RelayCommand(LoadCutVideo, true);
 
         public ICommand OpenParametersCommand => new RelayCommand(OpenParameters, true);
+
+        public ICommand GoCommand => new RelayCommand(Go, true);
 
         public void InitializeMyList()
         {
@@ -176,6 +186,11 @@ namespace WpfHandGazeDistance.ViewModels
         {
             ParametersWindow parametersWindow = new ParametersWindow();
             parametersWindow.Show();
+        }
+
+        private void Go()
+        {
+            Debug.Print("Goooo!");
         }
     }
 };

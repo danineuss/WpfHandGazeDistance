@@ -86,6 +86,7 @@
     <Compile Include="Models\HgdExperiment.cs" />
     <Compile Include="Models\Image.cs" />
     <Compile Include="Models\Parameter.cs" />
+    <Compile Include="Models\StandardParameters.cs" />
     <Compile Include="Models\Video.cs" />
     <Compile Include="ViewModels\Base\BaseViewModel.cs" />
     <Compile Include="ViewModels\Base\RelayCommand.cs" />
