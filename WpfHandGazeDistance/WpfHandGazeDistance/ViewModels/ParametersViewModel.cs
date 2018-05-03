@@ -16,6 +16,8 @@ namespace WpfHandGazeDistance.ViewModels
     {
         #region Private Properties
 
+        private Parameters _parameters;
+
         private Parameter _longActionDuration;
 
         private Parameter _stdDevWindowDuration;
@@ -60,14 +62,15 @@ namespace WpfHandGazeDistance.ViewModels
 
         public float LongActionDuration
         {
-            get => (float)ParameterList[0].Value;
+            get => _parameters.ParameterList.LongActionsDuration.Value;
             set
             {
-                if (value < (float)ParameterList[0].Minimum) value = (float)ParameterList[0].Minimum;
-                if (value > (float)ParameterList[0].Maximum) value = (float)ParameterList[0].Maximum;
+                if (value < _parameters.ParameterList.LongActionsDuration.Minimum)
+                    value = _parameters.ParameterList.LongActionsDuration.Minimum;
+                if (value > _parameters.ParameterList.LongActionsDuration.Maximum)
+                    value = _parameters.ParameterList.LongActionsDuration.Maximum;
 
-                ChangeAndNotify(value, ref _longActionDuration.Value);
-                UpdateParameterList();
+                ChangeAndNotify(value, ref _parameters.ParameterList.LongActionsDuration.Value);
             }
         }
 
@@ -109,102 +112,13 @@ namespace WpfHandGazeDistance.ViewModels
                 UpdateParameterList();
             }
         }
-
-        //public int PixelThreshold
-        //{
-        //    get => (int)ParameterList[4].Value;
-        //    set
-        //    {
-        //        if (value < (int)ParameterList[4].Minimum) value = (int)ParameterList[4].Minimum;
-        //        if (value > (int)ParameterList[4].Maximum) value = (int)ParameterList[4].Maximum;
-
-        //        ChangeAndNotify(value, ref ParameterList[4].Value);
-        //        UpdateParameterList();
-        //    }
-        //}
-
-        //public int HueThreshold1
-        //{
-        //    get => (int)ParameterList[5].Value;
-        //    set
-        //    {
-        //        if (value < (int)ParameterList[5].Minimum) value = (int)ParameterList[5].Minimum;
-        //        if (value > (int)ParameterList[5].Maximum) value = (int)ParameterList[5].Maximum;
-
-        //        ChangeAndNotify(value, ref ParameterList[5].Value);
-        //        UpdateParameterList();
-        //    }
-        //}
-
-        //public int HueThreshold2
-        //{
-        //    get => (int)ParameterList[6].Value;
-        //    set
-        //    {
-        //        if (value < (int)ParameterList[6].Minimum) value = (int)ParameterList[6].Minimum;
-        //        if (value > (int)ParameterList[6].Maximum) value = (int)ParameterList[6].Maximum;
-
-        //        ChangeAndNotify(value, ref ParameterList[6].Value);
-        //        UpdateParameterList();
-        //    }
-        //}
-
-        //public int HueThreshold3
-        //{
-        //    get => (int)ParameterList[7].Value;
-        //    set
-        //    {
-        //        if (value < (int)ParameterList[7].Minimum) value = (int)ParameterList[7].Minimum;
-        //        if (value > (int)ParameterList[7].Maximum) value = (int)ParameterList[7].Maximum;
-
-        //        ChangeAndNotify(value, ref ParameterList[7].Value);
-        //        UpdateParameterList();
-        //    }
-        //}
-
-        //public int HueThreshold4
-        //{
-        //    get => (int)ParameterList[8].Value;
-        //    set
-        //    {
-        //        if (value < (int)ParameterList[8].Minimum) value = (int)ParameterList[8].Minimum;
-        //        if (value > (int)ParameterList[8].Maximum) value = (int)ParameterList[8].Maximum;
-
-        //        ChangeAndNotify(value, ref ParameterList[8].Value);
-        //        UpdateParameterList();
-        //    }
-        //}
-
-        //public int ErosionSize
-        //{
-        //    get => (int)ParameterList[9].Value;
-        //    set
-        //    {
-        //        if (value < (int)ParameterList[9].Minimum) value = (int)ParameterList[9].Minimum;
-        //        if (value > (int)ParameterList[9].Maximum) value = (int)ParameterList[9].Maximum;
-
-        //        ChangeAndNotify(value, ref ParameterList[9].Value);
-        //        UpdateParameterList();
-        //    }
-        //}
-
-        //public int ErosionIterations
-        //{
-        //    get => (int)ParameterList[10].Value;
-        //    set
-        //    {
-        //        if (value < (int)ParameterList[10].Minimum) value = (int)ParameterList[10].Minimum;
-        //        if (value > (int)ParameterList[10].Maximum) value = (int)ParameterList[10].Maximum;
-
-        //        ChangeAndNotify(value, ref ParameterList[10].Value);
-        //        UpdateParameterList();
-        //    }
-        //}
+        
 
         #endregion
 
         public ParametersViewModel()
         {
+            _parameters = new Parameters();
             LoadDefaultParameters();
         }
 
@@ -276,6 +190,7 @@ namespace WpfHandGazeDistance.ViewModels
         {
             ParameterList = StandardParameters.GetParameters();
             UpdateProperties();
+            Parameters parameters = new Parameters();
         }
 
         private void UpdateParameterList()

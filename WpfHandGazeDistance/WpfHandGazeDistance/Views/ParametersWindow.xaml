@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfHandGazeDistance.Views"
         mc:Ignorable="d"
-        Title="ParameterList" Height="270.8" Width="618.151">
+        Title="ParameterList" Height="267.4" Width="618.151">
 
     <Grid>
         <TextBlock Text="Long Action Duration [s]" HorizontalAlignment="Left" Margin="51,53,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="167"/>
@@ -35,55 +35,6 @@
             HorizontalAlignment="Left" Margin="283,137,0,0" VerticalAlignment="Top" Width="207"/>
         <TextBox Text="{Binding MedianWindowLength}"
             HorizontalAlignment="Left" Height="23" Margin="510,133,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59"/>
-
-        <!--<TextBlock Text="Hand Pixel Threshold [px]" HorizontalAlignment="Left" Margin="51,192,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="167"/>
-        <Slider Value="{Binding PixelThreshold}" 
-            Minimum="0" Maximum="100000"
-            HorizontalAlignment="Left" Margin="283,191,0,0" VerticalAlignment="Top" Width="207"/>
-        <TextBox Text="{Binding PixelThreshold}"
-            HorizontalAlignment="Left" Height="23" Margin="510,188,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59" RenderTransformOrigin="0.603,5.557"/>
-
-        <TextBlock Text="Hue Threshold 1 [-]" HorizontalAlignment="Left" Margin="51,221,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="227"/>
-        <Slider Value="{Binding HueThreshold1}" 
-            Minimum="0" Maximum="180"
-            HorizontalAlignment="Left" Margin="283,220,0,0" VerticalAlignment="Top" Width="207"/>
-        <TextBox Text="{Binding HueThreshold1}"
-            HorizontalAlignment="Left" Height="23" Margin="510,216,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59"/>
-
-        <TextBlock Text="Hue Threshold 2 [-]" HorizontalAlignment="Left" Margin="51,250,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="141"/>
-        <Slider Value="{Binding HueThreshold2}" 
-            Minimum="0" Maximum="180"
-            HorizontalAlignment="Left" Margin="283,248,0,0" VerticalAlignment="Top" Width="207"/>
-        <TextBox Text="{Binding HueThreshold2}"
-            HorizontalAlignment="Left" Height="23" Margin="510,244,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59"/>
-
-        <TextBlock Text="Hue Threshold 3 [-]" HorizontalAlignment="Left" Margin="51,277,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="141"/>
-        <Slider Value="{Binding HueThreshold3}" 
-            Minimum="0" Maximum="180"
-            HorizontalAlignment="Left" Margin="283,276,0,0" VerticalAlignment="Top" Width="207"/>
-        <TextBox Text="{Binding HueThreshold3}"
-            HorizontalAlignment="Left" Height="23" Margin="510,272,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59"/>
-
-        <TextBlock Text="Hue Threshold 4 [-]" HorizontalAlignment="Left" Margin="51,306,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="167"/>
-        <Slider Value="{Binding HueThreshold4}" 
-            Minimum="0" Maximum="180"
-            HorizontalAlignment="Left" Margin="283,305,0,0" VerticalAlignment="Top" Width="207"/>
-        <TextBox Text="{Binding HueThreshold4}"
-            HorizontalAlignment="Left" Height="23" Margin="510,302,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59" RenderTransformOrigin="0.603,5.557"/>
-
-        <TextBlock Text="Erosion Size [px]" HorizontalAlignment="Left" Margin="51,335,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="227"/>
-        <Slider Value="{Binding ErosionSize}" 
-            Minimum="0" Maximum="10"
-            HorizontalAlignment="Left" Margin="283,334,0,0" VerticalAlignment="Top" Width="207"/>
-        <TextBox Text="{Binding ErosionSize}"
-            HorizontalAlignment="Left" Height="23" Margin="510,330,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59"/>
-
-        <TextBlock Text="Erosion Iterations [-]" HorizontalAlignment="Left" Margin="51,364,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="141"/>
-        <Slider Value="{Binding ErosionIterations}" 
-            Minimum="0" Maximum="10"
-            HorizontalAlignment="Left" Margin="283,362,0,0" VerticalAlignment="Top" Width="207"/>
-        <TextBox Text="{Binding ErosionIterations}"
-            HorizontalAlignment="Left" Height="23" Margin="510,358,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59"/>-->
 
         <Button Command="{Binding LoadParametersCommand}" 
                 Content="Load Parameters" HorizontalAlignment="Left" Margin="51,192,0,0" VerticalAlignment="Top" Width="114"/>
