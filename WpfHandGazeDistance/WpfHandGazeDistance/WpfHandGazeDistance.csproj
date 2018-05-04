@@ -85,7 +85,6 @@
     <Compile Include="Models\HgdData.cs" />
     <Compile Include="Models\HgdExperiment.cs" />
     <Compile Include="Models\Image.cs" />
-    <Compile Include="Models\Parameter.cs" />
     <Compile Include="Models\Parameters.cs" />
     <Compile Include="Models\StandardParameters.cs" />
     <Compile Include="Models\Video.cs" />

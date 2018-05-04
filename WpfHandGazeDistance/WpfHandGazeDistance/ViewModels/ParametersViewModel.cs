@@ -18,30 +18,6 @@ namespace WpfHandGazeDistance.ViewModels
 
         private Parameters _parameters;
 
-        private Parameter _longActionDuration;
-
-        private Parameter _stdDevWindowDuration;
-
-        private Parameter _bufferDuration;
-
-        private Parameter _medianWindowLength;
-
-        private Parameter _pixelThreshold;
-
-        private Parameter _hueThreshold1;
-
-        private Parameter _hueThreshold2;
-
-        private Parameter _hueThreshold3;
-
-        private Parameter _hueThreshold4;
-
-        private Parameter _erosionSize;
-
-        private Parameter _erosionIterations;
-
-        //private string parameterPath = @"C:\Users\mouseburglar\Desktop\Parameters.csv";
-
         private readonly char _csvDelimiter = ',';
 
         private readonly List<string> _headerList = new List<string>()
@@ -56,60 +32,59 @@ namespace WpfHandGazeDistance.ViewModels
 
         #region Public Properties
 
-        public List<Parameter> ParameterList;
-
-        public ObservableCollection<Parameter> ParameterCollection;
-
         public float LongActionDuration
         {
-            get => _parameters.ParameterList.LongActionsDuration.Value;
+            get => _parameters.LongActionsDuration.Value;
             set
             {
-                if (value < _parameters.ParameterList.LongActionsDuration.Minimum)
-                    value = _parameters.ParameterList.LongActionsDuration.Minimum;
-                if (value > _parameters.ParameterList.LongActionsDuration.Maximum)
-                    value = _parameters.ParameterList.LongActionsDuration.Maximum;
+                if (value < _parameters.LongActionsDuration.Minimum)
+                    value = _parameters.LongActionsDuration.Minimum;
+                if (value > _parameters.LongActionsDuration.Maximum)
+                    value = _parameters.LongActionsDuration.Maximum;
 
-                ChangeAndNotify(value, ref _parameters.ParameterList.LongActionsDuration.Value);
+                ChangeAndNotify(value, ref _parameters.LongActionsDuration.Value);
             }
         }
 
         public float StdDevWindowDuration
         {
-            get => (float)ParameterList[1].Value;
+            get => _parameters.StdDevWindowDuration.Value;
             set
             {
-                if (value < (float)ParameterList[1].Minimum) value = (float)ParameterList[1].Minimum;
-                if (value > (float)ParameterList[1].Maximum) value = (float)ParameterList[1].Maximum;
+                if (value < _parameters.StdDevWindowDuration.Minimum)
+                    value = _parameters.StdDevWindowDuration.Minimum;
+                if (value > _parameters.StdDevWindowDuration.Maximum)
+                    value = _parameters.StdDevWindowDuration.Maximum;
 
-                ChangeAndNotify(value, ref _stdDevWindowDuration.Value);
-                UpdateParameterList();
+                ChangeAndNotify(value, ref _parameters.StdDevWindowDuration.Value);
             }
         }
 
         public float BufferDuration
         {
-            get => (float)ParameterList[2].Value;
+            get => _parameters.BufferDuration.Value;
             set
             {
-                if (value < (float)ParameterList[2].Minimum) value = (float)ParameterList[2].Minimum;
-                if (value > (float)ParameterList[2].Maximum) value = (float)ParameterList[2].Maximum;
+                if (value < _parameters.BufferDuration.Minimum)
+                    value = _parameters.BufferDuration.Minimum;
+                if (value > _parameters.BufferDuration.Maximum)
+                    value = _parameters.BufferDuration.Maximum;
 
-                ChangeAndNotify(value, ref _bufferDuration.Value);
-                UpdateParameterList();
+                ChangeAndNotify(value, ref _parameters.BufferDuration.Value);
             }
         }
 
         public int MedianWindowLength
         {
-            get => (int)ParameterList[3].Value;
+            get => _parameters.MedianWindowLength.Value;
             set
             {
-                if (value < (int)ParameterList[3].Minimum) value = (int)ParameterList[3].Minimum;
-                if (value > (int)ParameterList[3].Maximum) value = (int)ParameterList[3].Maximum;
+                if (value < _parameters.MedianWindowLength.Minimum)
+                    value = _parameters.MedianWindowLength.Minimum;
+                if (value > _parameters.MedianWindowLength.Maximum)
+                    value = _parameters.MedianWindowLength.Maximum;
 
-                ChangeAndNotify(value, ref _medianWindowLength.Value);
-                UpdateParameterList();
+                ChangeAndNotify(value, ref _parameters.MedianWindowLength.Value);
             }
         }
         
@@ -134,8 +109,6 @@ namespace WpfHandGazeDistance.ViewModels
 
             if (inputPath != null)
             {
-                ParameterList.Clear();
-
                 using (var streamReader = new StreamReader(inputPath))
                 {
                     string headerLine = streamReader.ReadLine();
@@ -144,13 +117,10 @@ namespace WpfHandGazeDistance.ViewModels
                         string line = streamReader.ReadLine();
                         var values = line.Split(_csvDelimiter);
 
-                        Parameter parameter = new Parameter(values[0], values[1], values[2], values[3]);
+                        //Parameter parameter = new Parameter(values[0], values[1], values[2], values[3]);
 
-                        ParameterList.Add(parameter);
                     }
                 }
-
-                UpdateProperties();
             }
         }
 
@@ -173,14 +143,14 @@ namespace WpfHandGazeDistance.ViewModels
                 stringBuilder.AppendLine(headerLine);
 
 
-                foreach (Parameter parameter in ParameterList)
-                {
-                    string line = $"{parameter.Name}";
-                    line += _csvDelimiter + $"{parameter.Value}" + 
-                            _csvDelimiter + $"{parameter.Minimum}" + 
-                            _csvDelimiter + $"{parameter.Maximum}";
-                    stringBuilder.AppendLine(line);
-                }
+                //foreach (Parameter parameter in ParameterList)
+                //{
+                //    string line = $"{parameter.Name}";
+                //    line += _csvDelimiter + $"{parameter.Value}" + 
+                //            _csvDelimiter + $"{parameter.Minimum}" + 
+                //            _csvDelimiter + $"{parameter.Maximum}";
+                //    stringBuilder.AppendLine(line);
+                //}
 
                 File.WriteAllText(savePath, stringBuilder.ToString());
             }
@@ -188,47 +158,14 @@ namespace WpfHandGazeDistance.ViewModels
 
         private void LoadDefaultParameters()
         {
-            ParameterList = StandardParameters.GetParameters();
-            UpdateProperties();
+            //ParameterList = StandardParameters.GetParameters();
+            //UpdateProperties();
             Parameters parameters = new Parameters();
         }
 
-        private void UpdateParameterList()
+        private void CheckMinMax(object value, object parameter)
         {
-            ParameterList = new List<Parameter>()
-            {
-                _longActionDuration,
-                _stdDevWindowDuration,
-                _bufferDuration,
-                _medianWindowLength,
-                //_pixelThreshold, 
-                //_hueThreshold1,
-                //_hueThreshold2,
-                //_hueThreshold3,
-                //_hueThreshold4,
-                //_erosionSize,
-                //_erosionIterations
-            };
-        }
 
-        private void UpdateProperties()
-        {
-            _longActionDuration = ParameterList[0];
-            _stdDevWindowDuration = ParameterList[1];
-            _bufferDuration = ParameterList[2];
-            _medianWindowLength = ParameterList[3];
-
-            LongActionDuration = (float)ParameterList[0].Value;
-            StdDevWindowDuration = (float)ParameterList[1].Value;
-            BufferDuration = (float)ParameterList[2].Value;
-            MedianWindowLength = (int)ParameterList[3].Value;
-            //PixelThreshold = (int)ParameterList[4].Value;
-            //HueThreshold1 = (int)ParameterList[5].Value;
-            //HueThreshold2 = (int)ParameterList[6].Value;
-            //HueThreshold3 = (int)ParameterList[7].Value;
-            //HueThreshold4 = (int)ParameterList[8].Value;
-            //ErosionSize = (int)ParameterList[9].Value;
-            //ErosionIterations = (int)ParameterList[10].Value;
         }
     }
 }
