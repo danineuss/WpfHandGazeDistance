@@ -11,6 +11,8 @@ namespace WpfHandGazeDistance.Models
 {
     public class HgdExperiment : BaseViewModel
     {
+        #region Private Properties
+        
         private static float _fps = 60;
 
         private static int _longActionCount = (int)(2f * _fps);
@@ -22,9 +24,6 @@ namespace WpfHandGazeDistance.Models
         private static int _medianPeriod = 10;
 
         private static int _stdDevThreshold = 60;
-
-
-        #region Private Properties
 
         private HandDetector _handDetector;
 

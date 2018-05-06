@@ -7,8 +7,8 @@
         mc:Ignorable="d"
         Title="ParameterList" Height="267.4" Width="618.151">
 
-    <Grid>
-        <TextBlock Text="Long Action Duration [s]" HorizontalAlignment="Left" Margin="51,53,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="167"/>
+    <Grid >
+        <!--<TextBlock Text="Long Action Duration [s]" HorizontalAlignment="Left" Margin="51,53,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="167"/>
         <Slider Value="{Binding LongActionDuration}" 
                 Minimum="0" Maximum="10"
                 HorizontalAlignment="Left" Margin="283,52,0,0" VerticalAlignment="Top" Width="207"/>
@@ -34,7 +34,35 @@
             Minimum="0" Maximum="20"
             HorizontalAlignment="Left" Margin="283,137,0,0" VerticalAlignment="Top" Width="207"/>
         <TextBox Text="{Binding MedianWindowLength}"
-            HorizontalAlignment="Left" Height="23" Margin="510,133,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59"/>
+            HorizontalAlignment="Left" Height="23" Margin="510,133,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59"/>-->
+
+        <DataGrid ItemsSource="{Binding ParameterList}" 
+            AutoGenerateColumns="False" Margin="51,25,43,62.6" GridLinesVisibility="None">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Parameter Name" Width="SizeToCells" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}"></TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header ="Slider" Width="160" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Slider Value="{Binding Path=Value, UpdateSourceTrigger=PropertyChanged}" 
+                                    Minimum="{Binding Path=Minimum}" Maximum="{Binding Path=Maximum}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Value" Width="120" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBox Text="{Binding Path=Value, UpdateSourceTrigger=LostFocus}"></TextBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid> 
 
         <Button Command="{Binding LoadParametersCommand}" 
                 Content="Load Parameters" HorizontalAlignment="Left" Margin="51,192,0,0" VerticalAlignment="Top" Width="114"/>
@@ -43,6 +71,8 @@
         <Button Command="{Binding ResetParametersCommand}" 
             Content="Reset Default Parameters" HorizontalAlignment="Left" Margin="412,192,0,0" VerticalAlignment="Top" Width="157"/>
     </Grid>
+    
+
 
     <!--<DataGrid DataContext="{Binding ParametersViewModel}" ItemsSource="{Binding ParameterCollection}" 
             AutoGenerateColumns="False" Margin="65,160,110.6,52" GridLinesVisibility="None">

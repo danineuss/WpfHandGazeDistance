@@ -16,84 +16,31 @@ namespace WpfHandGazeDistance.ViewModels
     {
         #region Private Properties
 
-        private Parameters _parameters;
-
         private readonly char _csvDelimiter = ',';
+
+        private readonly string _defaultParameterPath = @"C:\Users\mouseburglar\Desktop\ET_Data\HgdDefaultParameters.csv";
 
         private readonly List<string> _headerList = new List<string>()
         {
             "Parameter Name",
             "Value",
             "Minimum",
-            "Maximum"
+            "Maximum",
+            "Type"
         };
 
         #endregion
 
         #region Public Properties
 
-        public float LongActionDuration
-        {
-            get => _parameters.LongActionsDuration.Value;
-            set
-            {
-                if (value < _parameters.LongActionsDuration.Minimum)
-                    value = _parameters.LongActionsDuration.Minimum;
-                if (value > _parameters.LongActionsDuration.Maximum)
-                    value = _parameters.LongActionsDuration.Maximum;
-
-                ChangeAndNotify(value, ref _parameters.LongActionsDuration.Value);
-            }
-        }
-
-        public float StdDevWindowDuration
-        {
-            get => _parameters.StdDevWindowDuration.Value;
-            set
-            {
-                if (value < _parameters.StdDevWindowDuration.Minimum)
-                    value = _parameters.StdDevWindowDuration.Minimum;
-                if (value > _parameters.StdDevWindowDuration.Maximum)
-                    value = _parameters.StdDevWindowDuration.Maximum;
-
-                ChangeAndNotify(value, ref _parameters.StdDevWindowDuration.Value);
-            }
-        }
-
-        public float BufferDuration
-        {
-            get => _parameters.BufferDuration.Value;
-            set
-            {
-                if (value < _parameters.BufferDuration.Minimum)
-                    value = _parameters.BufferDuration.Minimum;
-                if (value > _parameters.BufferDuration.Maximum)
-                    value = _parameters.BufferDuration.Maximum;
-
-                ChangeAndNotify(value, ref _parameters.BufferDuration.Value);
-            }
-        }
-
-        public int MedianWindowLength
-        {
-            get => _parameters.MedianWindowLength.Value;
-            set
-            {
-                if (value < _parameters.MedianWindowLength.Minimum)
-                    value = _parameters.MedianWindowLength.Minimum;
-                if (value > _parameters.MedianWindowLength.Maximum)
-                    value = _parameters.MedianWindowLength.Maximum;
-
-                ChangeAndNotify(value, ref _parameters.MedianWindowLength.Value);
-            }
-        }
-        
+        public ObservableCollection<Parameter> ParameterList { get; set; }
 
         #endregion
 
         public ParametersViewModel()
         {
-            _parameters = new Parameters();
+            ParameterList = new ObservableCollection<Parameter>();
+            ParameterList.Clear();
             LoadDefaultParameters();
         }
 
@@ -107,8 +54,15 @@ namespace WpfHandGazeDistance.ViewModels
         {
             string inputPath = FileManager.OpenFileDialog(".csv");
 
+            LoadParameters(inputPath);
+        }
+
+        public void LoadParameters(string inputPath)
+        {
             if (inputPath != null)
             {
+                ParameterList = new ObservableCollection<Parameter>();
+
                 using (var streamReader = new StreamReader(inputPath))
                 {
                     string headerLine = streamReader.ReadLine();
@@ -117,8 +71,8 @@ namespace WpfHandGazeDistance.ViewModels
                         string line = streamReader.ReadLine();
                         var values = line.Split(_csvDelimiter);
 
-                        //Parameter parameter = new Parameter(values[0], values[1], values[2], values[3]);
-
+                        Parameter parameter = new Parameter(values[0], values[1], values[2], values[3], values[4]);
+                        ParameterList.Add(parameter);
                     }
                 }
             }
@@ -143,14 +97,15 @@ namespace WpfHandGazeDistance.ViewModels
                 stringBuilder.AppendLine(headerLine);
 
 
-                //foreach (Parameter parameter in ParameterList)
-                //{
-                //    string line = $"{parameter.Name}";
-                //    line += _csvDelimiter + $"{parameter.Value}" + 
-                //            _csvDelimiter + $"{parameter.Minimum}" + 
-                //            _csvDelimiter + $"{parameter.Maximum}";
-                //    stringBuilder.AppendLine(line);
-                //}
+                foreach (Parameter parameter in ParameterList)
+                {
+                    string line = $"{parameter.Name}";
+                    line += _csvDelimiter + $"{parameter.Value}" +
+                            _csvDelimiter + $"{parameter.Minimum}" +
+                            _csvDelimiter + $"{parameter.Maximum}" +
+                            _csvDelimiter + $"{parameter.Type}";
+                    stringBuilder.AppendLine(line);
+                }
 
                 File.WriteAllText(savePath, stringBuilder.ToString());
             }
@@ -158,14 +113,7 @@ namespace WpfHandGazeDistance.ViewModels
 
         private void LoadDefaultParameters()
         {
-            //ParameterList = StandardParameters.GetParameters();
-            //UpdateProperties();
-            Parameters parameters = new Parameters();
-        }
-
-        private void CheckMinMax(object value, object parameter)
-        {
-
+            LoadParameters(_defaultParameterPath);
         }
     }
 }
