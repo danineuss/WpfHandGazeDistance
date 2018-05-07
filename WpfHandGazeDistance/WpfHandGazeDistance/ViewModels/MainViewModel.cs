@@ -8,7 +8,7 @@ namespace WpfHandGazeDistance.ViewModels
 {
     public class MainViewModel : BaseViewModel
     {
-        #region
+        #region Private Properties
 
         private string _videoPath;
 

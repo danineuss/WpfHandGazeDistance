@@ -39,14 +39,14 @@
         <DataGrid ItemsSource="{Binding ParameterList}" 
             AutoGenerateColumns="False" Margin="51,25,43,62.6" GridLinesVisibility="None">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Parameter Name" Width="SizeToCells" IsReadOnly="True">
+                <DataGridTemplateColumn Header="Parameter Name" Width="220" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Name}"></TextBlock>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header ="Slider" Width="160" IsReadOnly="True">
+                <DataGridTemplateColumn Header ="Slider" Width="200" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Slider Value="{Binding Path=Value, UpdateSourceTrigger=PropertyChanged}" 
@@ -54,7 +54,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Value" Width="120" IsReadOnly="True">
+                <DataGridTemplateColumn Header="Value" Width="80" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBox Text="{Binding Path=Value, UpdateSourceTrigger=LostFocus}"></TextBox>

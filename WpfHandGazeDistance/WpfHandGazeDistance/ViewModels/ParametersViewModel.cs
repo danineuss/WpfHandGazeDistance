@@ -29,11 +29,17 @@ namespace WpfHandGazeDistance.ViewModels
             "Type"
         };
 
+        private ObservableCollection<Parameter> _parameterList;
+
         #endregion
 
         #region Public Properties
 
-        public ObservableCollection<Parameter> ParameterList { get; set; }
+        public ObservableCollection<Parameter> ParameterList
+        {
+            get => _parameterList;
+            set => ChangeAndNotify(value, ref _parameterList);
+        }
 
         #endregion
 
@@ -50,18 +56,19 @@ namespace WpfHandGazeDistance.ViewModels
 
         public ICommand ResetParametersCommand => new RelayCommand(LoadDefaultParameters, true);
 
-        public void LoadParameters()
+        private void LoadParameters()
         {
             string inputPath = FileManager.OpenFileDialog(".csv");
 
             LoadParameters(inputPath);
         }
 
-        public void LoadParameters(string inputPath)
+        private void LoadParameters(string inputPath)
         {
             if (inputPath != null)
             {
                 ParameterList = new ObservableCollection<Parameter>();
+                ParameterList.Clear();
 
                 using (var streamReader = new StreamReader(inputPath))
                 {
@@ -78,7 +85,12 @@ namespace WpfHandGazeDistance.ViewModels
             }
         }
 
-        public void SaveParameters()
+        private void LoadDefaultParameters()
+        {
+            LoadParameters(_defaultParameterPath);
+        }
+
+        private void SaveParameters()
         {
             string savePath = FileManager.SaveFileDialog();
 
@@ -109,11 +121,6 @@ namespace WpfHandGazeDistance.ViewModels
 
                 File.WriteAllText(savePath, stringBuilder.ToString());
             }
-        }
-
-        private void LoadDefaultParameters()
-        {
-            LoadParameters(_defaultParameterPath);
         }
     }
 }
