@@ -1,11 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Windows.Input;
-using Microsoft.Office.Core;
 using WpfHandGazeDistance.Helpers;
 using WpfHandGazeDistance.Models;
 using WpfHandGazeDistance.ViewModels.Base;
@@ -48,6 +45,11 @@ namespace WpfHandGazeDistance.ViewModels
             ParameterList = new ObservableCollection<Parameter>();
             ParameterList.Clear();
             LoadDefaultParameters();
+        }
+
+        public ParametersViewModel(ObservableCollection<Parameter> parameterList)
+        {
+            ParameterList = parameterList;
         }
 
         public ICommand LoadParametersCommand => new RelayCommand(LoadParameters, true);

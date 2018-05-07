@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Collections.ObjectModel;
+using System.Windows;
+using WpfHandGazeDistance.Models;
 using WpfHandGazeDistance.ViewModels;
 
 namespace WpfHandGazeDistance.Views
@@ -12,6 +14,12 @@ namespace WpfHandGazeDistance.Views
         {
             InitializeComponent();
             DataContext = new ParametersViewModel();
+        }
+
+        public ParametersWindow(ObservableCollection<Parameter> parameterList)
+        {
+            InitializeComponent();
+            DataContext = new ParametersViewModel(parameterList);
         }
     }
 }

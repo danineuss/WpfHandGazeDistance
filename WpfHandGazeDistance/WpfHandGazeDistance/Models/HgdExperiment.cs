@@ -96,8 +96,6 @@ namespace WpfHandGazeDistance.Models
             set => ChangeAndNotify(value, ref _progress);
         }
 
-        public bool HgdFlags { get; set; }
-
         #endregion
 
         #region Commands

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using WpfHandGazeDistance.Helpers;
@@ -16,35 +12,18 @@ namespace WpfHandGazeDistance.ViewModels
 {
     public class PrototypingViewModel : BaseViewModel
     {
-        private VideoEditor _videoEditor;
+        private ParametersViewModel _parametersViewModel;
 
-        private string _cutVideoPath;
+        private ObservableCollection<HgdViewModel> _hgdViewModels;
+
         private float _startTime = 660f;
         private float _duration = 0f;
 
-        private BitmapSource _publicImage;
         private string _videoPath;
-        private HgdExperiment _hgdExperiment;
 
         private readonly BackgroundWorker _backgroundWorker;
         private readonly ICommand instigateWorkCommand;
         private int _currentProgress;
-
-        private int _pixelThreshold = 10000;
-        private int _pixelThresholdMin = 0;
-        private int _pixelThresholdMax = 100000;
-
-        public int PixelThreshold
-        {
-            get => _pixelThreshold;
-            set
-            {
-                if (value < _pixelThresholdMin) value = _pixelThresholdMin;
-                if (value > _pixelThresholdMax) value = _pixelThresholdMax;
-
-                ChangeAndNotify(value, ref _pixelThreshold);
-            } 
-        }
 
         public float StartTime
         {
@@ -64,21 +43,13 @@ namespace WpfHandGazeDistance.ViewModels
             set => ChangeAndNotify(value, ref _videoPath);
         }
 
-        public string CutVideoPath
-        {
-            get => _cutVideoPath;
-            set => ChangeAndNotify(value, ref _cutVideoPath);
-        }
-
-        public BitmapSource PublicImage
-        {
-            get => _publicImage;
-            set => ChangeAndNotify(value, ref _publicImage);
-        }
-
         public ObservableCollection<HgdExperiment> HgdExperiments { get; set; }
 
-        public ObservableCollection<Parameter> ParameterCollection { get; set; }
+        public ObservableCollection<HgdViewModel> HgdViewModels
+        {
+            get => _hgdViewModels;
+            set => ChangeAndNotify(value, ref _hgdViewModels);
+        }
 
         #region Constructor
 
@@ -90,6 +61,7 @@ namespace WpfHandGazeDistance.ViewModels
             //_backgroundWorker.DoWork += DoWork;
             //_backgroundWorker.ProgressChanged += ProgressChanged;
 
+            _parametersViewModel = new ParametersViewModel();
             InitializeMyList();
         }
 
@@ -118,13 +90,7 @@ namespace WpfHandGazeDistance.ViewModels
 
         public ICommand StopCommand => new RelayCommand(Stop, true);
 
-        public ICommand LoadPublicVideoCommand => new RelayCommand(LoadVideo, true);
-
         public ICommand AddExperimentCommand => new RelayCommand(AddExperiment, true);
-
-        public ICommand CutVideoCommand => new RelayCommand(CutVideo, true);
-
-        public ICommand LoadVideoCommand => new RelayCommand(LoadCutVideo, true);
 
         public ICommand OpenParametersCommand => new RelayCommand(OpenParameters, true);
 
@@ -135,33 +101,38 @@ namespace WpfHandGazeDistance.ViewModels
             HgdExperiments = new ObservableCollection<HgdExperiment>();
             HgdExperiments.Clear();
             HgdExperiments.Add(new HgdExperiment());
+
+            HgdViewModels = new ObservableCollection<HgdViewModel>();
+            HgdViewModels.Clear();
+            HgdViewModels.Add(new HgdViewModel(_parametersViewModel.ParameterList));
         }
         
-        private void LoadVideo()
-        {
-            VideoPath = FileManager.OpenFileDialog();
-            _hgdExperiment.VideoPath = VideoPath;
-            _hgdExperiment.Video = new Video(VideoPath);
-            _hgdExperiment.Video.ThumbnailImage.Resize(0.1);
-            _hgdExperiment.Thumbnail = _hgdExperiment.Video.ThumbnailImage.BitMapImage;
-            PublicImage = _hgdExperiment.Thumbnail;
-
-            foreach (HgdExperiment hgdExperiment in HgdExperiments)
-            {
-                hgdExperiment.Thumbnail = PublicImage;
-            }
-        }
+        //private void LoadVideo()
+        //{
+        //    VideoPath = FileManager.OpenFileDialog();
+        //    _hgdExperiment.VideoPath = VideoPath;
+        //    _hgdExperiment.Video = new Video(VideoPath);
+        //    _hgdExperiment.Video.ThumbnailImage.Resize(0.1);
+        //    _hgdExperiment.Thumbnail = _hgdExperiment.Video.ThumbnailImage.BitMapImage;
+        //}
 
         private void AddExperiment()
         {
             HgdExperiments.Add(new HgdExperiment());
+
+            HgdViewModels.Add(new HgdViewModel(_parametersViewModel.ParameterList));
         }
 
         private void AnalyseAllData()
         {
-            foreach(HgdExperiment hgdExperiment in HgdExperiments)
+            //foreach(HgdExperiment hgdExperiment in HgdExperiments)
+            //{
+            //    hgdExperiment.Analyse();
+            //}
+
+            foreach (HgdViewModel hgdViewModel in HgdViewModels)
             {
-                hgdExperiment.Analyse();
+                hgdViewModel.AnalyseData();
             }
         }
 
@@ -170,22 +141,18 @@ namespace WpfHandGazeDistance.ViewModels
 
         }
 
-        private void LoadCutVideo()
-        {
-            CutVideoPath = FileManager.OpenFileDialog(".avi");
-        }
-
-        private void CutVideo()
-        {
-            string outputVideoPath = @"C:\Users\dsinger.D\Desktop\ET_Data\dremel05_1100_1200.avi";
-            _videoEditor = new VideoEditor(CutVideoPath);
-            _videoEditor.CutVideo(outputVideoPath, StartTime, StartTime + Duration);
-        }
-
         private void OpenParameters()
         {
-            ParametersWindow parametersWindow = new ParametersWindow();
-            parametersWindow.Show();
+            if (_parametersViewModel.ParameterList == null)
+            {
+                ParametersWindow parametersWindow = new ParametersWindow();
+                parametersWindow.Show();
+            }
+            else
+            {
+                ParametersWindow parametersWindow = new ParametersWindow(_parametersViewModel.ParameterList);
+                parametersWindow.Show();
+            }
         }
 
         private void Go()

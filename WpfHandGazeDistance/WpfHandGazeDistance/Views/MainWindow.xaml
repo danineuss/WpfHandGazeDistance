@@ -30,7 +30,7 @@
         <TextBox HorizontalAlignment="Left" Height="23" Margin="187,139,0,0" TextWrapping="Wrap" Text="{Binding SnippetsPath}" VerticalAlignment="Top" Width="774"/>
         <Button Command="{Binding AnalyseDataCommand}" Content="Analyse Data" HorizontalAlignment="Left" Margin="55,184,0,0" VerticalAlignment="Top" Width="95"/>-->
 
-        <DataGrid DataContext="{Binding PrototypingViewModel}" ItemsSource="{Binding HgdExperiments}" 
+        <DataGrid DataContext="{Binding PrototypingViewModel}" ItemsSource="{Binding HgdViewModels}" 
             AutoGenerateColumns="False" Margin="65,42,110.4,52.2" GridLinesVisibility="None">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Image" Width="SizeToCells" IsReadOnly="True">
@@ -61,13 +61,6 @@
                         <DataTemplate>
                             <Button Command="{Binding SetFolderPathCommand}"  Content="{Binding ShortFolderPath}"
                                 Height="25"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="HgdFlags" Width="auto">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <CheckBox IsChecked="{Binding HgdFlags}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -106,7 +99,6 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <!--<Image DataContext="{Binding PrototypingViewModel}" Source="{Binding PublicImage}" HorizontalAlignment="Left" Height="323" Margin="541,242,0,0" VerticalAlignment="Top" Width="390"/>-->
         <Button DataContext="{Binding PrototypingViewModel}" 
             Command="{Binding AddExperimentCommand}" 
             Content="{StaticResource AddButton}" 

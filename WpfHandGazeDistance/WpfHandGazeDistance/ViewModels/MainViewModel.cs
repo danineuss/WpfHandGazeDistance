@@ -61,7 +61,8 @@ namespace WpfHandGazeDistance.ViewModels
             set
             {
                 ChangeAndNotify(value, ref _hgdPath);
-                HgdViewModel = new HgdViewModel(BeGazeViewModel.BeGazeData, VideoViewModel.Video);
+                HgdViewModel = new HgdViewModel(BeGazeViewModel.BeGazeData, VideoViewModel.Video, 
+                    ParametersViewModel.ParameterList);
             }
         }
 
@@ -80,9 +81,9 @@ namespace WpfHandGazeDistance.ViewModels
 
         public MainViewModel()
         {
-            HgdViewModel = new HgdViewModel();
             PrototypingViewModel = new PrototypingViewModel();
             ParametersViewModel = new ParametersViewModel();
+            HgdViewModel = new HgdViewModel(ParametersViewModel.ParameterList);
         }
 
         #region Commands
