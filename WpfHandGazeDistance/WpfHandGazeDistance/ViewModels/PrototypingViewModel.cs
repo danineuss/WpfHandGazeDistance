@@ -104,9 +104,14 @@ namespace WpfHandGazeDistance.ViewModels
 
             HgdViewModels = new ObservableCollection<HgdViewModel>();
             HgdViewModels.Clear();
-            HgdViewModels.Add(new HgdViewModel(_parametersViewModel.ParameterList));
+            AddHgdViewModel();
         }
-        
+
+        public void RemoveHgdViewModel(HgdViewModel hgdViewModel)
+        {
+            HgdViewModels.Remove(hgdViewModel);
+        }
+
         //private void LoadVideo()
         //{
         //    VideoPath = FileManager.OpenFileDialog();
@@ -120,7 +125,13 @@ namespace WpfHandGazeDistance.ViewModels
         {
             HgdExperiments.Add(new HgdExperiment());
 
-            HgdViewModels.Add(new HgdViewModel(_parametersViewModel.ParameterList));
+            HgdViewModels.Add(new HgdViewModel(_parametersViewModel.ParameterList, this));
+        }
+
+        private void AddHgdViewModel()
+        {
+            HgdViewModel hgdViewModel = new HgdViewModel(_parametersViewModel.ParameterList, this);
+            HgdViewModels.Add(hgdViewModel);
         }
 
         private void AnalyseAllData()

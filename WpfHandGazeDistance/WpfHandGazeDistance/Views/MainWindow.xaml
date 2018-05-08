@@ -91,8 +91,10 @@
                 <DataGridTemplateColumn Header="Remove">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Command="{Binding DataContext.RemoveExperimentCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-                                Content="{StaticResource ResourceKey=RemoveButton}" Height="25"/>
+                            <!--<Button Command="{Binding DataContext.RemoveExperimentCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                Content="{StaticResource ResourceKey=RemoveButton}" Height="25"/>-->
+                            <Button Command="{Binding RemoveCommand}"  Content="{StaticResource RemoveButton}"
+                                    Height="25" Width="30"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
