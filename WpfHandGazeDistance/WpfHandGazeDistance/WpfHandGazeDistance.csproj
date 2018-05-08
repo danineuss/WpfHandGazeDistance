@@ -84,7 +84,6 @@
     <Compile Include="Helpers\BitMapConverter.cs" />
     <Compile Include="Models\BeGazeData.cs" />
     <Compile Include="Models\HgdData.cs" />
-    <Compile Include="Models\HgdExperiment.cs" />
     <Compile Include="Models\Image.cs" />
     <Compile Include="Models\Parameter.cs" />
     <Compile Include="Models\StandardParameters.cs" />

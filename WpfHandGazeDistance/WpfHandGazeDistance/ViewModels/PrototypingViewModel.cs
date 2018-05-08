@@ -43,8 +43,6 @@ namespace WpfHandGazeDistance.ViewModels
             set => ChangeAndNotify(value, ref _videoPath);
         }
 
-        public ObservableCollection<HgdExperiment> HgdExperiments { get; set; }
-
         public ObservableCollection<HgdViewModel> HgdViewModels
         {
             get => _hgdViewModels;
@@ -55,35 +53,11 @@ namespace WpfHandGazeDistance.ViewModels
 
         public PrototypingViewModel()
         {
-            //instigateWorkCommand =
-            //    new DelegateCommand(o => _backgroundWorker.RunWorkerAsync(), o => !_backgroundWorker.IsBusy);
-            //_backgroundWorker = new BackgroundWorker();
-            //_backgroundWorker.DoWork += DoWork;
-            //_backgroundWorker.ProgressChanged += ProgressChanged;
-
             _parametersViewModel = new ParametersViewModel();
             InitializeMyList();
         }
 
         #endregion
-
-        //public ICommand InstigateWorkCommand => this.instigateWorkCommand;
-
-        //public int CurrentProgress
-        //{
-        //    get => _currentProgress;
-        //    private set => ChangeAndNotify(value, ref _currentProgress);
-        //}
-
-        //private void DoWork(object sender, DoWorkEventArgs e)
-        //{
-        //    // do time-consuming work here, calling ReportProgress as and when you can
-        //}
-
-        //private void ProgressChanged(object sender, ProgressChangedEventArgs e)
-        //{
-        //    CurrentProgress = e.ProgressPercentage;
-        //}
 
 
         public ICommand AnalyseAllDataCommand => new RelayCommand(AnalyseAllData, true);
@@ -98,10 +72,6 @@ namespace WpfHandGazeDistance.ViewModels
 
         public void InitializeMyList()
         {
-            HgdExperiments = new ObservableCollection<HgdExperiment>();
-            HgdExperiments.Clear();
-            HgdExperiments.Add(new HgdExperiment());
-
             HgdViewModels = new ObservableCollection<HgdViewModel>();
             HgdViewModels.Clear();
             AddHgdViewModel();
@@ -112,19 +82,8 @@ namespace WpfHandGazeDistance.ViewModels
             HgdViewModels.Remove(hgdViewModel);
         }
 
-        //private void LoadVideo()
-        //{
-        //    VideoPath = FileManager.OpenFileDialog();
-        //    _hgdExperiment.VideoPath = VideoPath;
-        //    _hgdExperiment.Video = new Video(VideoPath);
-        //    _hgdExperiment.Video.ThumbnailImage.Resize(0.1);
-        //    _hgdExperiment.Thumbnail = _hgdExperiment.Video.ThumbnailImage.BitMapImage;
-        //}
-
         private void AddExperiment()
         {
-            HgdExperiments.Add(new HgdExperiment());
-
             HgdViewModels.Add(new HgdViewModel(_parametersViewModel.ParameterList, this));
         }
 
@@ -136,11 +95,6 @@ namespace WpfHandGazeDistance.ViewModels
 
         private void AnalyseAllData()
         {
-            //foreach(HgdExperiment hgdExperiment in HgdExperiments)
-            //{
-            //    hgdExperiment.Analyse();
-            //}
-
             foreach (HgdViewModel hgdViewModel in HgdViewModels)
             {
                 hgdViewModel.AnalyseData();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
@@ -42,6 +43,10 @@ namespace WpfHandGazeDistance.ViewModels
         private string _shortFolderPath = "Select";
 
         private PrototypingViewModel _prototypingViewModel;
+
+        private BackgroundWorker _backgroundWorker;
+
+        private DelegateCommand _instigateWorkCommand;
 
         #endregion
 
@@ -93,6 +98,8 @@ namespace WpfHandGazeDistance.ViewModels
             set => ChangeAndNotify(value, ref _progress);
         }
 
+        public bool StopBool { get; set; }
+
         #endregion
 
         #region Constructors
@@ -109,11 +116,21 @@ namespace WpfHandGazeDistance.ViewModels
             _stdDevThreshold = (int)ParameterList[4].Value;
 
             _prototypingViewModel = prototypingViewModel;
+
+            _backgroundWorker = new BackgroundWorker { WorkerSupportsCancellation = true };
+            _backgroundWorker.DoWork += DoWork;
+            _backgroundWorker.ProgressChanged += ProgressChanged;
+            _instigateWorkCommand =
+                new DelegateCommand(o => _backgroundWorker.RunWorkerAsync(), o => !_backgroundWorker.IsBusy);
+
+            StopBool = false;
         }
 
         #endregion
 
         #region Commands
+
+        public ICommand InstigateWorkCommand => _instigateWorkCommand;
 
         public ICommand AnalyseCommand => new RelayCommand(AnalyseData, true);
 
@@ -125,10 +142,12 @@ namespace WpfHandGazeDistance.ViewModels
 
         public ICommand RemoveCommand => new RelayCommand(RemoveHgdViewModel, true);
 
+        public ICommand StopCommand => new RelayCommand(Stop, true);
+
         #endregion
 
         #region Public Members
-
+        
         public void LoadHgd(string loadPath)
         {
             HgdData = new HgdData();
@@ -151,27 +170,43 @@ namespace WpfHandGazeDistance.ViewModels
         }
 
         public void AnalyseData()
-        {
+        { 
             _handDetector = new HandDetector(BeGazeData, Video);
             HgdData = _handDetector.MeasureRawHgd();
-            HgdData.RecordingTime = HgdManipulations.RecordingTimeFromVideo(_handDetector);
-            HgdData.RawDistance = HgdManipulations.PruneValues(HgdData.RawDistance);
-            HgdData.MedianDistance = HgdManipulations.MovingMedian(HgdData.RawDistance, _medianPeriod);
-            HgdData.LongActions = HgdManipulations.LowPass(HgdData.MedianDistance, _longActionCount);
-            HgdData.StandardDeviation = HgdManipulations.MovingStdDev(HgdData.LongActions, _stdDevPeriod);
-            HgdData.RigidActions = HgdManipulations.Threshold(HgdData.StandardDeviation, _stdDevThreshold);
-            HgdData.UsabilityIssues = HgdManipulations.ConvertToBinary(HgdData.RigidActions);
-            HgdData.BufferedUsabilityIssues = HgdManipulations.Buffer(
-                HgdData.UsabilityIssues, _stdDevPeriod, _bufferLength);
 
-            SaveHgd(OutputPath);
-            _videoEditor = new VideoEditor(VideoPath);
-            _videoEditor.CutSnippets(FolderPath, HgdData);
+            if (HgdData.RawDistance.Count == _handDetector.Video.FrameCount)
+            {
+                HgdData.RecordingTime = HgdManipulations.RecordingTimeFromVideo(_handDetector);
+                HgdData.RawDistance = HgdManipulations.PruneValues(HgdData.RawDistance);
+                HgdData.MedianDistance = HgdManipulations.MovingMedian(HgdData.RawDistance, _medianPeriod);
+                HgdData.LongActions = HgdManipulations.LowPass(HgdData.MedianDistance, _longActionCount);
+                HgdData.StandardDeviation = HgdManipulations.MovingStdDev(HgdData.LongActions, _stdDevPeriod);
+                HgdData.RigidActions = HgdManipulations.Threshold(HgdData.StandardDeviation, _stdDevThreshold);
+                HgdData.UsabilityIssues = HgdManipulations.ConvertToBinary(HgdData.RigidActions);
+                HgdData.BufferedUsabilityIssues = HgdManipulations.Buffer(
+                    HgdData.UsabilityIssues, _stdDevPeriod, _bufferLength);
+
+                SaveHgd(OutputPath);
+                _videoEditor = new VideoEditor(VideoPath);
+                _videoEditor.CutSnippets(FolderPath, HgdData);
+            }
+
+            StopBool = false;
         }
 
         #endregion
 
         #region Private Members
+
+        private void DoWork(object sender, DoWorkEventArgs e)
+        {
+            AnalyseData();
+        }
+
+        private void ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            //Progress = e.Progress;
+        }
 
         private void LoadVideo()
         {
@@ -179,7 +214,6 @@ namespace WpfHandGazeDistance.ViewModels
             if (VideoPath != null)
             {
                 Video = new Video(VideoPath);
-                //Video.ThumbnailImage.Resize(0.25);
                 Thumbnail = Video.ThumbnailImage.BitMapImage;
 
                 ShortVideoPath = ShortenPath(VideoPath);
@@ -212,6 +246,12 @@ namespace WpfHandGazeDistance.ViewModels
         private void RemoveHgdViewModel()
         {
             _prototypingViewModel.RemoveHgdViewModel(this);
+        }
+
+        private void Stop()
+        {
+            _backgroundWorker.CancelAsync();
+            _handDetector.StopBool = true;
         }
 
         private string ShortenPath(string inputPath)

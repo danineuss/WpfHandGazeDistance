@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Windows.Input;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
@@ -16,9 +18,9 @@ namespace WpfHandGazeDistance.Helpers
     {
         #region Private Properties
 
-        private const int _pixelThreshold = 10000;
+        private const int PixelThreshold = 10000;
 
-        private const int _numberOfContours = 2;
+        private const int NumberOfContours = 2;
 
         #endregion
 
@@ -30,6 +32,10 @@ namespace WpfHandGazeDistance.Helpers
 
         public HgdData HgdData { get; }
 
+        public int Progress;
+
+        public bool StopBool;
+
         #endregion
 
         #region Constructor
@@ -38,7 +44,9 @@ namespace WpfHandGazeDistance.Helpers
         {
             BeGazeData = beGazeData;
             Video = video;
-            HgdData = new HgdData();            
+            HgdData = new HgdData();
+
+            StopBool = false;
         }
 
         #endregion
@@ -53,6 +61,8 @@ namespace WpfHandGazeDistance.Helpers
         /// <returns></returns>
         public HgdData MeasureRawHgd()
         {
+            StopBool = false;
+
             List<float> rawDistance = new List<float>();
 
             GC.Collect();
@@ -60,6 +70,8 @@ namespace WpfHandGazeDistance.Helpers
 
             for (int index = 0; index < Video.FrameCount; index++)
             {
+                if (StopBool) break;
+
                 PointF coordinates = BeGazeData.GetCoordinatePoint(index);
                 Image<Bgr, byte> frame = Video.GetBgrImageFrame();
 
@@ -71,7 +83,9 @@ namespace WpfHandGazeDistance.Helpers
                 }
 
                 rawDistance.Add(distance);
-                
+
+                Progress = index / Video.FrameCount;
+
                 int outputStep = 100;
                 if (index % outputStep == 0)
                 {
@@ -249,7 +263,7 @@ namespace WpfHandGazeDistance.Helpers
         /// <param name="numberOfContours">The n largest contours which will be picked from the list.</param>
         /// <returns>Vector of contours</returns>
         public static VectorOfVectorOfPoint LargestContours(Image<Gray, byte> inputImage, 
-            int pixelThreshold = _pixelThreshold, int numberOfContours = _numberOfContours)
+            int pixelThreshold = PixelThreshold, int numberOfContours = NumberOfContours)
         {
             VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
             VectorOfVectorOfPoint sortedContours = new VectorOfVectorOfPoint();

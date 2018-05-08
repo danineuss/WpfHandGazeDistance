@@ -67,7 +67,7 @@
                 <DataGridTemplateColumn Header="Analyse">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Command="{Binding AnalyseCommand}"  Content="{StaticResource PlayButton2}"
+                            <Button Command="{Binding InstigateWorkCommand}"  Content="{StaticResource PlayButton2}"
                                 Height="30" Width="30"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
