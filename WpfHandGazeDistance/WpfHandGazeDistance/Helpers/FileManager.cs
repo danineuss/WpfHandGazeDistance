@@ -21,6 +21,15 @@ namespace WpfHandGazeDistance.Helpers
             return null;
         }
 
+        public static string OpenFileDialog(string fileType, string title)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog {Title = title};
+            if (openFileDialog.ShowDialog() == true && openFileDialog.FileName.EndsWith(fileType))
+                return openFileDialog.FileName;
+            return null;
+
+        }
+
         public static string SaveFileDialog()
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();

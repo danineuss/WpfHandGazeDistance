@@ -45,10 +45,7 @@ namespace WpfHandGazeDistance.ViewModels
         {
             ParameterList = new ObservableCollection<Parameter>();
             ParameterList.Clear();
-            //LoadDefaultParameters();
-
-            string folder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
-            Debug.Print("FOLDER: " + folder);
+            LoadDefaultParameters();
         }
 
         public ParametersViewModel(ObservableCollection<Parameter> parameterList)
@@ -93,7 +90,17 @@ namespace WpfHandGazeDistance.ViewModels
 
         private void LoadDefaultParameters()
         {
-            LoadParameters(_defaultParameterPath);
+            string defaultFolder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+            string filter = "*.csv";
+            string[] files = Directory.GetFiles(defaultFolder, filter);
+            if (files.Length > 0)
+            {
+                LoadParameters(files[0]);
+                return;
+            }
+
+            string parameterPath = FileManager.OpenFileDialog(".csv", "Please first select Parameter File.");
+            if (parameterPath != null) LoadParameters(parameterPath);
         }
 
         private void SaveParameters()
