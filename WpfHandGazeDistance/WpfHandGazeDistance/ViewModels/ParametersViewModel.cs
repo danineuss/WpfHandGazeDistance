@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Windows.Input;
@@ -44,7 +45,10 @@ namespace WpfHandGazeDistance.ViewModels
         {
             ParameterList = new ObservableCollection<Parameter>();
             ParameterList.Clear();
-            LoadDefaultParameters();
+            //LoadDefaultParameters();
+
+            string folder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+            Debug.Print("FOLDER: " + folder);
         }
 
         public ParametersViewModel(ObservableCollection<Parameter> parameterList)
