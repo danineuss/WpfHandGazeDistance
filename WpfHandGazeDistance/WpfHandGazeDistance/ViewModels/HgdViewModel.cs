@@ -10,6 +10,7 @@ using System.Windows.Media.Imaging;
 using WpfHandGazeDistance.Helpers;
 using WpfHandGazeDistance.Models;
 using WpfHandGazeDistance.ViewModels.Base;
+using WpfHandGazeDistance.Views;
 
 namespace WpfHandGazeDistance.ViewModels
 {
@@ -43,11 +44,15 @@ namespace WpfHandGazeDistance.ViewModels
 
         private string _shortFolderPath = "Select";
 
-        private PrototypingViewModel _prototypingViewModel;
+        private MainViewModel _mainViewModel;
 
         private BackgroundWorker _backgroundWorker;
 
         private DelegateCommand _instigateWorkCommand;
+
+        private bool _running;
+
+        private bool _stopBool;
 
         #endregion
 
@@ -99,13 +104,31 @@ namespace WpfHandGazeDistance.ViewModels
             set => ChangeAndNotify(value, ref _progress);
         }
 
-        public bool StopBool { get; set; }
+        public bool Running
+        {
+            get => _running;
+            set
+            {
+                _running = value;
+                _mainViewModel.Running = value;
+            }
+        }
+
+        public bool StopBool
+        {
+            get => _stopBool;
+            set
+            {
+                _stopBool = value;
+                _mainViewModel.StopBool = value;
+            }
+        }
 
         #endregion
 
         #region Constructors
 
-        public HgdViewModel(ObservableCollection<Parameter> parameterList, PrototypingViewModel prototypingViewModel)
+        public HgdViewModel(ObservableCollection<Parameter> parameterList, MainViewModel mainViewModel)
         {
             HgdData = new HgdData();
 
@@ -116,7 +139,7 @@ namespace WpfHandGazeDistance.ViewModels
             _medianPeriod = (int)ParameterList[3].Value;
             _stdDevThreshold = (int)ParameterList[4].Value;
 
-            _prototypingViewModel = prototypingViewModel;
+            _mainViewModel = mainViewModel;
 
             _backgroundWorker = new BackgroundWorker
             {
@@ -175,7 +198,9 @@ namespace WpfHandGazeDistance.ViewModels
         }
 
         public void AnalyseData()
-        { 
+        {
+            Running = true;
+
             _handDetector = new HandDetector(BeGazeData, Video, _backgroundWorker);
             HgdData = _handDetector.MeasureRawHgd();
 
@@ -196,6 +221,7 @@ namespace WpfHandGazeDistance.ViewModels
                 _videoEditor.CutSnippets(FolderPath, HgdData);
             }
 
+            Running = false;
             StopBool = false;
         }
 
@@ -211,7 +237,6 @@ namespace WpfHandGazeDistance.ViewModels
         private void ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             Progress = e.ProgressPercentage;
-            Debug.Print(Progress.ToString());
         }
 
         private void LoadVideo()
@@ -251,7 +276,12 @@ namespace WpfHandGazeDistance.ViewModels
 
         private void RemoveHgdViewModel()
         {
-            _prototypingViewModel.RemoveHgdViewModel(this);
+            if (_mainViewModel.Running)
+            {
+                MessageBox("You can't remove experiments while the programm is running.");
+                return;
+            }
+            _mainViewModel.RemoveHgdViewModel(this);
         }
 
         private void Stop()
@@ -267,6 +297,12 @@ namespace WpfHandGazeDistance.ViewModels
             string parentFolder = inputPath.Substring(inputPath.LastIndexOf("\\") + 1);
 
             return @"...\" + parentFolder + @"\" + fileName;
+        }
+
+        private void MessageBox(string message)
+        {
+            MessageBox messageBox = new MessageBox(message);
+            messageBox.Show();
         }
 
         #endregion
