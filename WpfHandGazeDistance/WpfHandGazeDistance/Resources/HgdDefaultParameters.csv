@@ -1,0 +1,6 @@
+Parameter Name, Value, Minimum, Maximum, Type
+Long Action Duration [s],2,0,10,double
+Standard Deviation Window Duration [s],2,0,10,double
+Buffer Duration [s],0.5,0,2,double
+Median Window Length [frames],10,0,30,int
+Standard Deviation Threshold [px],60,0,200,double
