@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
@@ -117,7 +118,11 @@ namespace WpfHandGazeDistance.ViewModels
 
             _prototypingViewModel = prototypingViewModel;
 
-            _backgroundWorker = new BackgroundWorker { WorkerSupportsCancellation = true };
+            _backgroundWorker = new BackgroundWorker
+            {
+                WorkerSupportsCancellation = true,
+                WorkerReportsProgress = true
+            };
             _backgroundWorker.DoWork += DoWork;
             _backgroundWorker.ProgressChanged += ProgressChanged;
             _instigateWorkCommand =
@@ -171,7 +176,7 @@ namespace WpfHandGazeDistance.ViewModels
 
         public void AnalyseData()
         { 
-            _handDetector = new HandDetector(BeGazeData, Video);
+            _handDetector = new HandDetector(BeGazeData, Video, _backgroundWorker);
             HgdData = _handDetector.MeasureRawHgd();
 
             if (HgdData.RawDistance.Count == _handDetector.Video.FrameCount)
@@ -205,7 +210,8 @@ namespace WpfHandGazeDistance.ViewModels
 
         private void ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            //Progress = e.Progress;
+            Progress = e.ProgressPercentage;
+            Debug.Print(Progress.ToString());
         }
 
         private void LoadVideo()

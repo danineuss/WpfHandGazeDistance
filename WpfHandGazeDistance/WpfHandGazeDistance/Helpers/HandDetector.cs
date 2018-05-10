@@ -22,6 +22,8 @@ namespace WpfHandGazeDistance.Helpers
 
         private const int NumberOfContours = 2;
 
+        private BackgroundWorker _backgroundWorker;
+
         #endregion
 
         #region Public Properties
@@ -40,10 +42,11 @@ namespace WpfHandGazeDistance.Helpers
 
         #region Constructor
 
-        public HandDetector(BeGazeData beGazeData, Video video)
+        public HandDetector(BeGazeData beGazeData, Video video, BackgroundWorker backgroundWorker)
         {
             BeGazeData = beGazeData;
             Video = video;
+            _backgroundWorker = backgroundWorker;
             HgdData = new HgdData();
 
             StopBool = false;
@@ -84,12 +87,11 @@ namespace WpfHandGazeDistance.Helpers
 
                 rawDistance.Add(distance);
 
-                Progress = index / Video.FrameCount;
+                Progress = Convert.ToInt32(((double) index / Video.FrameCount) * 100);
 
-                int outputStep = 100;
-                if (index % outputStep == 0)
+                if (Progress % 2 == 0)
                 {
-                    Debug.Print(index.ToString() + " frames done.");
+                    _backgroundWorker.ReportProgress(Progress);
                 }
             }
 
