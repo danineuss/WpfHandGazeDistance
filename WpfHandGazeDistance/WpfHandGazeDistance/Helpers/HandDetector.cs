@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Input;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
@@ -14,6 +11,16 @@ using WpfHandGazeDistance.Models;
 
 namespace WpfHandGazeDistance.Helpers
 {
+    /// <summary>
+    /// This is the Computer Vision class of the project. All image manipulation functionality is concentrated here.
+    /// The class is only called in the HgdViewModel.Analyse() function in order to find the hands in the image.
+    /// 
+    /// The individual functions and its purposes/reasoning are detailed below.
+    /// 
+    /// This is not a static class, so when you need its services you first have to instatiate it, so that is has
+    /// all the required data for performing its job:     
+    ///     HandDetector handDetector = new HandDetector(...)
+    /// </summary>
     public class HandDetector
     {
         #region Private Properties

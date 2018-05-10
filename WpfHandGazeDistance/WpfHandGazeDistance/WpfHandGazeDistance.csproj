@@ -86,16 +86,13 @@
     <Compile Include="Models\HgdData.cs" />
     <Compile Include="Models\Image.cs" />
     <Compile Include="Models\Parameter.cs" />
-    <Compile Include="Models\StandardParameters.cs" />
     <Compile Include="Models\Video.cs" />
     <Compile Include="ViewModels\Base\BaseViewModel.cs" />
     <Compile Include="ViewModels\Base\RelayCommand.cs" />
-    <Compile Include="ViewModels\BeGazeViewModel.cs" />
     <Compile Include="ViewModels\HgdViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\ParametersViewModel.cs" />
     <Compile Include="ViewModels\PrototypingViewModel.cs" />
-    <Compile Include="ViewModels\VideoViewModel.cs" />
     <Compile Include="Views\MessageBox.xaml.cs">
       <DependentUpon>MessageBox.xaml</DependentUpon>
     </Compile>

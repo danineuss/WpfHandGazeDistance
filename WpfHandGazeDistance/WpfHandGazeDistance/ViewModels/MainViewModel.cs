@@ -1,8 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows.Input;
-using Microsoft.Office.Core;
 using WpfHandGazeDistance.Helpers;
 using WpfHandGazeDistance.ViewModels.Base;
 using WpfHandGazeDistance.Views;
@@ -18,10 +16,6 @@ namespace WpfHandGazeDistance.ViewModels
         private DelegateCommand _instigateWorkCommand;
 
         #region Public Properties
-
-        //public VideoViewModel VideoViewModel { get; set; }
-
-        //public BeGazeViewModel BeGazeViewModel { get; set; }
 
         public HgdViewModel HgdViewModel { get; set; }
 

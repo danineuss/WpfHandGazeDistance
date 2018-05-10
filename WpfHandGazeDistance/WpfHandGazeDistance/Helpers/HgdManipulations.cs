@@ -4,6 +4,13 @@ using System.Linq;
 
 namespace WpfHandGazeDistance.Helpers
 {
+    /// <summary>
+    /// This class contains all the core data manipulation knowledge. It is a static class as it will be called
+    /// by the HgdViewModel to basically transfer lists of numbers into different lists of numbers depending
+    /// on which action and filter is required. It is mostly used in the HgdViewModel.Analyse() function.
+    /// 
+    /// The individual functions and its purposes/reasoning are detailed below.
+    /// </summary>
     public static class HgdManipulations
     {
         public static List<float> RecordingTimeFromVideo(HandDetector handDetector)
