@@ -8,34 +8,6 @@
         Title="ParameterList" Height="267.4" Width="618.151">
 
     <Grid >
-        <!--<TextBlock Text="Long Action Duration [s]" HorizontalAlignment="Left" Margin="51,53,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="167"/>
-        <Slider Value="{Binding LongActionDuration}" 
-                Minimum="0" Maximum="10"
-                HorizontalAlignment="Left" Margin="283,52,0,0" VerticalAlignment="Top" Width="207"/>
-        <TextBox Text="{Binding LongActionDuration}"
-            HorizontalAlignment="Left" Height="23" Margin="510,49,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59" RenderTransformOrigin="0.603,5.557"/>
-
-        <TextBlock Text="Standard Deviation Window Duration [s]" HorizontalAlignment="Left" Margin="51,82,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="227"/>
-        <Slider Value="{Binding StdDevWindowDuration}" 
-            Minimum="0" Maximum="10"
-            HorizontalAlignment="Left" Margin="283,81,0,0" VerticalAlignment="Top" Width="207"/>
-        <TextBox Text="{Binding StdDevWindowDuration}"
-            HorizontalAlignment="Left" Height="23" Margin="510,77,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59"/>
-
-        <TextBlock Text="Buffer Duration [s]" HorizontalAlignment="Left" Margin="51,110,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="141"/>
-        <Slider Value="{Binding BufferDuration}" 
-            Minimum="0" Maximum="2"
-            HorizontalAlignment="Left" Margin="283,109,0,0" VerticalAlignment="Top" Width="207"/>
-        <TextBox Text="{Binding BufferDuration}"
-            HorizontalAlignment="Left" Height="23" Margin="510,105,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59"/>
-
-        <TextBlock Text="Median Window Length [frames]" HorizontalAlignment="Left" Margin="51,138,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="227"/>
-        <Slider Value="{Binding MedianWindowLength}" 
-            Minimum="0" Maximum="20"
-            HorizontalAlignment="Left" Margin="283,137,0,0" VerticalAlignment="Top" Width="207"/>
-        <TextBox Text="{Binding MedianWindowLength}"
-            HorizontalAlignment="Left" Height="23" Margin="510,133,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="59"/>-->
-
         <DataGrid ItemsSource="{Binding ParameterList}" 
             AutoGenerateColumns="False" Margin="51,25,43,62.6" GridLinesVisibility="None">
             <DataGrid.Columns>

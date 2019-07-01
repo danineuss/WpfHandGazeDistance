@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -15,8 +16,6 @@ namespace WpfHandGazeDistance.ViewModels
         #region Private Properties
 
         private readonly char _csvDelimiter = ',';
-
-        private readonly string _defaultParameterPath = @"C:\Users\mouseburglar\Desktop\ET_Data\HgdDefaultParameters.csv";
 
         private readonly List<string> _headerList = new List<string>()
         {

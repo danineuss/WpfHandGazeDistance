@@ -93,7 +93,7 @@ namespace WpfHandGazeDistance.ViewModels
 
             foreach (HgdViewModel hgdViewModel in _hgdViewModels)
             {
-                if (!StopBool) hgdViewModel.AnalyseData();
+                hgdViewModel.AnalyseData();
             }
 
             Running = false;

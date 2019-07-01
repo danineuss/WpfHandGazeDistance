@@ -79,7 +79,7 @@ namespace WpfHandGazeDistance.Models
 
                     foreach (KeyValuePair<int, List<float>> keyValuePair in _indexBeGaze)
                     {
-                        keyValuePair.Value.Add(Single.Parse(values[keyValuePair.Key]));
+                        keyValuePair.Value.Add(float.Parse(values[keyValuePair.Key]));
                     }
                 }
             }

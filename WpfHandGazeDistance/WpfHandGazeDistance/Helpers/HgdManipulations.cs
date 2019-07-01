@@ -72,7 +72,7 @@ namespace WpfHandGazeDistance.Helpers
             for (int i = 0; i < inputValues.Count; i++)
             {
                 if (i < period - 1)
-                    outputValues.Add(Single.NaN);
+                    outputValues.Add(float.NaN);
                 else
                 {
                     var values = new List<float>();
@@ -106,9 +106,9 @@ namespace WpfHandGazeDistance.Helpers
 
             for (int i = 0; i < inputValues.Count; i++)
             {
-                if (Single.IsNaN(inputValues[i]))
+                if (float.IsNaN(inputValues[i]))
                 {
-                    outputValues.Add(Single.NaN);
+                    outputValues.Add(float.NaN);
                     continue;
                 }
 
@@ -120,7 +120,7 @@ namespace WpfHandGazeDistance.Helpers
                 }
                 else
                 {
-                    List<float> nanList = Enumerable.Range(0, currentWindow.Count).Select(n => Single.NaN).ToList();
+                    List<float> nanList = Enumerable.Range(0, currentWindow.Count).Select(n => float.NaN).ToList();
                     outputValues.AddRange(nanList);
                 }
 
@@ -144,9 +144,9 @@ namespace WpfHandGazeDistance.Helpers
 
             for (int i = 0; i < inputValues.Count - period; i++)
             {
-                if (Single.IsNaN(inputValues[i]))
+                if (float.IsNaN(inputValues[i]))
                 {
-                    outputValues.Add(Single.NaN);
+                    outputValues.Add(float.NaN);
                     continue;
                 }
 
@@ -157,7 +157,7 @@ namespace WpfHandGazeDistance.Helpers
                 }
                 outputValues.Add(CalculateStdDev(currentWindow));
             }
-            outputValues.AddRange(Enumerable.Range(0, period).Select(n => Single.NaN).ToList());
+            outputValues.AddRange(Enumerable.Range(0, period).Select(n => float.NaN).ToList());
 
             return outputValues;
         }
@@ -177,7 +177,7 @@ namespace WpfHandGazeDistance.Helpers
             {
                 if (inputValues[i] > threshold)
                 {
-                    outputValues.Add(Single.NaN);
+                    outputValues.Add(float.NaN);
                 }
                 else
                 {
@@ -199,7 +199,7 @@ namespace WpfHandGazeDistance.Helpers
 
             foreach (var value in inputValues)
             {
-                outputValues.Add(Single.IsNaN(value) ? Single.NaN : 1);
+                outputValues.Add(float.IsNaN(value) ? float.NaN : 1);
             }
 
             return outputValues;
@@ -221,19 +221,17 @@ namespace WpfHandGazeDistance.Helpers
         {
             List<float> outputValues = new List<float>();
 
-            int count = 0;
             for (int i = 0; i < inputValues.Count; i++)
             {
-                if (Single.IsNaN(inputValues[i]))
+                if (float.IsNaN(inputValues[i]))
                 {
-                    outputValues.Add(Single.NaN);
+                    outputValues.Add(float.NaN);
                     continue;
                 }
 
                 List<float> currentWindow = ValueWindow(inputValues, i);
                 List<float> bufferList = Enumerable.Repeat(currentWindow.Average(), bufferLength).ToList();
                 List<float> stdDevWindow = Enumerable.Repeat(currentWindow.Average(), windowLength).ToList();
-                count++;
 
                 // The first action is at the very start of the video and the output is not
                 // far enough to contain more values than bufferLength
@@ -290,12 +288,12 @@ namespace WpfHandGazeDistance.Helpers
         public static List<float> ValueWindow(List<float> inputValues, int index)
         {
             List<float> currentWindow = new List<float>();
-            while (!Single.IsNaN(inputValues[index]))
+            while (!float.IsNaN(inputValues[index]))
             {
                 currentWindow.Add(inputValues[index]);
                 if (index + 1 < inputValues.Count)
                 {
-                    if (Single.IsNaN(inputValues[index + 1])) break;
+                    if (float.IsNaN(inputValues[index + 1])) break;
                     index++;
                 }
                 else

@@ -54,6 +54,7 @@ namespace WpfHandGazeDistance.Helpers
 
         public void CutSnippets(string outputFolder, HgdData hgdData)
         {
+            Console.WriteLine($"Buffered Issues Count: {hgdData.BufferedUsabilityIssues.Count}");
             for (int index = 0; index < hgdData.BufferedUsabilityIssues.Count; index++)
             {
                 if (float.IsNaN(hgdData.BufferedUsabilityIssues[index])) continue;

@@ -3,9 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfHandGazeDistance"
-        xmlns:viewModels="clr-namespace:WpfHandGazeDistance.ViewModels"
-        xmlns:helpers="clr-namespace:WpfHandGazeDistance.Helpers"
         mc:Ignorable="d"
         Title="Hand-Gaze Distance Algorithm" Height="568.6" Width="1380.575">
     <Window.Resources>
@@ -99,8 +96,8 @@
             Content="{StaticResource StopButton}"    
             HorizontalAlignment="Left" Margin="1298,86,0,0" VerticalAlignment="Top" Width="41" Height="39" Background="White"/>
         <Button 
-                Command="{Binding OpenParametersCommand}" 
-                Content="{StaticResource ParamtersButton}"    
-                HorizontalAlignment="Left" Margin="1298,155,0,0" VerticalAlignment="Top" Width="41" Height="39" Background="White"/>
+            Command="{Binding OpenParametersCommand}" 
+            Content="{StaticResource ParamtersButton}"    
+            HorizontalAlignment="Left" Margin="1298,155,0,0" VerticalAlignment="Top" Width="41" Height="39" Background="White"/>
     </Grid>
 </Window>
