@@ -1,9 +1,7 @@
 ﻿using System;
-using Emgu.CV;
 using System.Runtime.InteropServices;
-using System.Windows;
-using System.Windows.Interop;
 using System.Windows.Media.Imaging;
+using System.Windows.Media;
 
 namespace WpfHandGazeDistance.Helpers
 {
@@ -18,25 +16,32 @@ namespace WpfHandGazeDistance.Helpers
         private static extern int DeleteObject(IntPtr o);
 
         /// <summary>
-        /// Convert an IImage to a WPF BitmapSource. The result can be used in the Set Property of Image.Source
+        /// Convert a Bitmap to a WPF BitmapSource. The result can be used in the Set Property of Image.Source
         /// </summary>
-        /// <param name="image">The Emgu CV Image</param>
+        /// <param name="bitmap">The Emgu CV Bitmap</param>
         /// <returns>The equivalent BitmapSource</returns>
-        public static BitmapSource ToBitmapSource(IImage image)
+        public static BitmapSource Convert(System.Drawing.Bitmap bitmap)
         {
-            using (System.Drawing.Bitmap source = image.Bitmap)
-            {
-                IntPtr ptr = source.GetHbitmap(); //obtain the Hbitmap
+            var bitmapData = bitmap.LockBits(
+                new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
+                System.Drawing.Imaging.ImageLockMode.ReadOnly, 
+                bitmap.PixelFormat
+            );
 
-                BitmapSource bs = Imaging.CreateBitmapSourceFromHBitmap(
-                    ptr,
-                    IntPtr.Zero,
-                    Int32Rect.Empty,
-                    BitmapSizeOptions.FromEmptyOptions());
+            var bitmapSource = BitmapSource.Create(
+                bitmapData.Width, 
+                bitmapData.Height,
+                bitmap.HorizontalResolution,
+                bitmap.VerticalResolution,
+                PixelFormats.Bgr24, null,
+                bitmapData.Scan0, 
+                bitmapData.Stride * bitmapData.Height, 
+                bitmapData.Stride
+            );
 
-                DeleteObject(ptr); //release the HBitmap
-                return bs;
-            }
+            bitmap.UnlockBits(bitmapData);
+
+            return bitmapSource;
         }
     }
 }

@@ -3,7 +3,6 @@ using System.Windows.Media.Imaging;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
-using WpfHandGazeDistance.Helpers;
 
 namespace WpfHandGazeDistance.Models
 {
@@ -67,7 +66,7 @@ namespace WpfHandGazeDistance.Models
         public BitmapSource GetBitmapFrame()
         {
             Mat frameMat = GetMatFrame();
-            return frameMat != null ? BitMapConverter.ToBitmapSource(frameMat) : null;
+            return frameMat != null ? new Image(frameMat).BitMapImage : null;
         }
 
         #endregion

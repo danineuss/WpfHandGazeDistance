@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Emgu.CV;
+using Emgu.CV.CvEnum;
+using Emgu.CV.Structure;
+using Emgu.CV.Util;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
-using Emgu.CV;
-using Emgu.CV.CvEnum;
-using Emgu.CV.Structure;
-using Emgu.CV.Util;
 using WpfHandGazeDistance.Models;
 
 namespace WpfHandGazeDistance.Helpers
@@ -236,9 +236,9 @@ namespace WpfHandGazeDistance.Helpers
         /// <param name="inputImage">A standard BGR image.</param>
         /// <param name="iterations">How often the image is eroded. Standard value is 3.</param>
         /// <returns></returns>
-        private static Image<Gray, byte> Erode(IImage inputImage, int iterations = 3)
+        private static Image<Gray, byte> Erode(IInputArray inputImage, int iterations = 3)
         {
-            Image<Gray, byte> erodedImage = new Image<Gray, byte>(inputImage.Size);
+            Image<Gray, byte> erodedImage = new Image<Gray, byte>(inputImage.GetInputArray().GetSize());
 
             Mat kernelMat = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(-1, -1));
             CvInvoke.Erode(inputImage, erodedImage, kernelMat, new Point(-1, -1), iterations, BorderType.Default, CvInvoke.MorphologyDefaultBorderValue);
@@ -252,9 +252,9 @@ namespace WpfHandGazeDistance.Helpers
         /// </summary>
         /// <param name="inputImage">A standard BGR image.</param>
         /// <param name="iterations">How often the image is dilated. Standard value is 3.</param>
-        private static Image<Gray, byte> Dilate(IImage inputImage, int iterations = 3)
+        private static Image<Gray, byte> Dilate(IInputArray inputImage, int iterations = 3)
         {
-            Image<Gray, byte> dilatedImage = new Image<Gray, byte>(inputImage.Size);
+            Image<Gray, byte> dilatedImage = new Image<Gray, byte>(inputImage.GetInputArray().GetSize());
 
             Mat kernelMat = CvInvoke.GetStructuringElement(ElementShape.Rectangle, new Size(5, 5), new Point(-1, -1));
             CvInvoke.Dilate(inputImage, dilatedImage, kernelMat, new Point(-1, -1), iterations, BorderType.Default, CvInvoke.MorphologyDefaultBorderValue);
